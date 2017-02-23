@@ -28,6 +28,11 @@ var UserSchema = new Schema({
         type: String,
         required: true
     },
+    team: {
+		type: mongoose.Schema.Types.ObjectId,
+		ref: 'Team',
+		required: true
+	},
     apns_token: {
         type: String
     }
