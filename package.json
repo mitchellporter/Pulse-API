@@ -1,0 +1,26 @@
+{
+  "name": "pulse-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "async": "2.1.5",
+    "bcrypt": "1.0.2",
+    "bluebird": "3.4.7",
+    "body-parser": "1.16.1",
+    "casual": "1.5.10",
+    "express": "4.14.1",
+    "faker": "4.1.0",
+    "lodash": "4.17.4",
+    "mongoose": "4.8.4",
+    "morgan": "1.8.1",
+    "throng": "4.0.0",
+    "winston": "2.3.1"
+  }
+}
