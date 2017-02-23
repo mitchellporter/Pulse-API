@@ -3,7 +3,7 @@ var Schema = mongoose.Schema;
 
 var statuses = ['pending', 'in_progress', 'completed'];
 
-var Task = new Schema({
+var TaskSchema = new Schema({
 	created_at: {
 		type: Date,
 		required: true
@@ -42,13 +42,13 @@ var Task = new Schema({
 	}
 });
 
-Task.pre('validate', function(next) {
+TaskSchema.pre('validate', function(next) {
 	if(!this.created_at) this.created_at = new Date();
 	this.updated_at = new Date();
 	next();
 });
 
-Task.methods = {
+TaskSchema.methods = {
 	toJSON: function() {
 		var obj = this.toObject();
 		obj.created_at = this.created_at.getTime();
@@ -59,4 +59,4 @@ Task.methods = {
 	}
 }
 
-module.exports = mongoose.model('Task', Task);
+module.exports = mongoose.model('Task', TaskSchema);
