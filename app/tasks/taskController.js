@@ -23,7 +23,7 @@ exports.get = function(req, res, next) {
 	};
 	if (req.query.assignee) {
 		logger.silly('assignee id found in query string!')
-		query.assignee = req.query.assignee;
+		query.assignees = req.query.assignee;
 	};
 
 	var populate = [{ path:'assigner' }, { path:'assignees' }];

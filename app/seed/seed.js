@@ -46,6 +46,7 @@ var TASK_COUNT = 50;
 var ITEM_COUNT = 5;
 
 var task_statuses = ['pending', 'in_progress', 'completed'];
+var update_days = ['monday', 'wednesday', 'friday'];
 
 mongoose.connection.on('connected', function() {
     logger.silly('Mongoose default connection open');
@@ -173,6 +174,7 @@ function createDummyKoriUser() {
                 details: casual.description,
                 due_date: randomDueDate(), // optional
                 status: task_statuses[Math.floor(Math.random() * task_statuses.length)],
+                update_day: update_days[Math.floor(Math.random() * update_days.length)],
                 completion_percentage: randomCompletionPercentage()
             });
             tasks.push(task);
@@ -191,6 +193,7 @@ function createDummyKoriUser() {
                 details: casual.description,
                 due_date: randomDueDate(), // optional
                 status: task_statuses[Math.floor(Math.random() * task_statuses.length)],
+                update_day: update_days[Math.floor(Math.random() * update_days.length)],
                 completion_percentage: randomCompletionPercentage()
             });
             tasks.push(task);
