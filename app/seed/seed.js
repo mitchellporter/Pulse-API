@@ -42,9 +42,10 @@ var dummy_task_due_dates = [Date.now() + 86400000, Date.now() + 172800000, Date.
 
 // Constants
 var USER_COUNT = 17;
-var TASK_COUNT = 10;
+var TASK_COUNT = 50;
 var ITEM_COUNT = 5;
 
+var task_statuses = ['pending', 'in_progress', 'completed'];
 
 mongoose.connection.on('connected', function() {
     logger.silly('Mongoose default connection open');
@@ -80,8 +81,9 @@ function startSeed() {
     })
     .then(function(dummy_users) {
         users = dummy_users;
-        return createTasks();
+        return createMitchellCreatedTasks();
     })
+    .then(createMitchellReceivedTasks)
     .then(handleSeedSuccess)
     .catch(handleSeedError);
 
@@ -143,63 +145,6 @@ function createDummyKoriUser() {
 		return user.save();
     }
 
-    function createKoriDummyTasks() {
-        logger.silly('create kori dummy tasks');
-        var assignees = [mitchell, allen];
-        var titles = ['Lets chat about product', 'Hows that animation coming?'];
-        var tasks = [];
-        for (var x = 0; x < 2; x++) {
-            var task = new Task({
-                assigner: kori,
-                assignees: assignees[x],
-                title: titles[x],
-                details: casual.description,
-                due_date: randomDueDate(), // optional
-                completion_percentage: randomCompletionPercentage()
-            });
-            tasks.push(task);
-        }
-        return Task.create(tasks);
-    }
-
-    function createMitchellDummyTasks() {
-        logger.silly('create mitchell dummy tasks');
-        var assignees = [kori, allen];
-        var titles = ['whats the profile screen look like', 'Did you finish that custom control yet?'];
-        var tasks = [];
-        for (var x = 0; x < 2; x++) {
-            var task = new Task({
-                assigner: mitchell,
-                assignees: assignees[x],
-                title: titles[x],
-                details: casual.description,
-                due_date: randomDueDate(), // optional
-                completion_percentage: randomCompletionPercentage()
-            });
-            tasks.push(task);
-        }
-        return Task.create(tasks);
-    }
-
-    function createAllenDummyTasks() {
-        logger.silly('create allen dummy tasks');
-        var assignees = [kori, mitchell];
-        var titles = ['Can i get the latest sketch file?', 'Did you finish that custom control yet?'];
-        var tasks = [];
-        for (var x = 0; x < 2; x++) {
-            var task = new Task({
-                assigner: allen,
-                assignees: assignees[x],
-                title: titles[x],
-                details: casual.description,
-                due_date: randomDueDate(), // optional
-                completion_percentage: randomCompletionPercentage()
-            });
-            tasks.push(task);
-        }
-        return Task.create(tasks);
-    }
-
     function createUsers() {
         logger.silly('Creating users');
         var users = [mitchell, kori, allen];
@@ -217,19 +162,37 @@ function createDummyKoriUser() {
         return User.create(users);
     }
 
-    function createTasks() {
-        logger.silly('creating tasks');
+    function createMitchellCreatedTasks() {
+        logger.silly('creating mitchell created tasks');
         var tasks = [];
         for (var x = 0; x < TASK_COUNT; x++) {
             var task = new Task({
-                assigner: users[Math.floor(Math.random() * users.length)]._id,
+                assigner: mitchell,
                 assignees: users[Math.floor(Math.random() * users.length)]._id,
                 title: casual.title,
                 details: casual.description,
                 due_date: randomDueDate(), // optional
+                status: task_statuses[Math.floor(Math.random() * task_statuses.length)],
                 completion_percentage: randomCompletionPercentage()
             });
-            if (x === 0) task._id = dummy_task_id;
+            tasks.push(task);
+        }
+        return Task.create(tasks);
+    }
+
+    function createMitchellReceivedTasks() {
+        logger.silly('creating mitchell received tasks');
+        var tasks = [];
+        for (var x = 0; x < TASK_COUNT; x++) {
+            var task = new Task({
+                assigner: users[Math.floor(Math.random() * users.length)]._id,
+                assignees: mitchell,
+                title: casual.title,
+                details: casual.description,
+                due_date: randomDueDate(), // optional
+                status: task_statuses[Math.floor(Math.random() * task_statuses.length)],
+                completion_percentage: randomCompletionPercentage()
+            });
             tasks.push(task);
         }
         return Task.create(tasks);
