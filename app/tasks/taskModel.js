@@ -27,6 +27,11 @@ var TaskSchema = new Schema({
         type: String,
         required: true
     },
+	items: [{
+		type: mongoose.Schema.Types.ObjectId,
+		ref: 'Item',
+        required: true
+	}],
     due_date: {
         type: Date
     },

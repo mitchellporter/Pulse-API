@@ -12,11 +12,6 @@ var ItemSchema = new Schema({
 		type: Date,
 		required: true
 	},
-	task: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Task',
-        required: true
-    },
     status: {
 		type: String,
 		required: true,
