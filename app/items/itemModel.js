@@ -12,6 +12,10 @@ var ItemSchema = new Schema({
 		type: Date,
 		required: true
 	},
+	text: {
+		type: String,
+		required: true
+	},
     status: {
 		type: String,
 		required: true,

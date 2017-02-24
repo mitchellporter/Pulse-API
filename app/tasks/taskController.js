@@ -46,7 +46,7 @@ exports.post = function(req, res, next) {
 	var assigner = req.user;
 	var items_json = req.body.items;
 
-	logger.silly('items: ' + typeof items_json);
+	logger.silly('items: ' + items_json);
 
 	var task = new Task(req.body);
 	task.assigner = assigner;
@@ -58,6 +58,7 @@ exports.post = function(req, res, next) {
 
 		var item = new Item();
 		item.text = item_json;
+		logger.silly('item text: ' + item.text);
 		items.push(item);
 
 		callback();
