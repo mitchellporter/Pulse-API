@@ -2,6 +2,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var statuses = ['pending', 'in_progress', 'completed'];
+var update_days = ['monday', 'wednesday', 'friday'];
 
 var TaskSchema = new Schema({
 	created_at: {
@@ -34,6 +35,11 @@ var TaskSchema = new Schema({
 		required: true,
 		default: 'pending',
 		enum: statuses
+	},
+	update_day: {
+		type: String,
+		required: true,
+		enum: update_days
 	},
     completion_percentage: {
 		type: Number,
