@@ -40,6 +40,8 @@ var dummy_task_due_dates = [Date.now() + 86400000, Date.now() + 172800000, Date.
 // 2 tasks assigned to me - one from kori and one from allen
 // 2 tasks assigned to allen - one from kori and one from me
 
+var team_id = '58b080b2356e913f3a3af182';
+
 // Constants
 var USER_COUNT = 17;
 var TASK_COUNT = 50;
@@ -98,6 +100,7 @@ function createTeam() {
     var team = new Team({
         domain: 'designfirstapps.com'
     });
+    team._id = team_id;
     return team.save();
 }
 
