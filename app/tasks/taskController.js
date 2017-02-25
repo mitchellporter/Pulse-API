@@ -5,7 +5,6 @@ var async = require('async');
 
 exports.params = function(req, res, next, taskId) {
 	Task.findById(taskId)
-	.populate(populate)
 	.then(function(task) {
 		if(!task) return next(new Error('no task exists with that id'));
 		req.task = task;
@@ -87,4 +86,54 @@ exports.post = function(req, res, next) {
 			return task.save();
 		}
 	});
+};
+
+// TODO: This breaks with multiple assignees
+exports.requestUpdate = function(req, res, next) {
+	logger.silly('About to request task update');
+
+	var sender = req.user;
+	var task = req.task;
+	task.status = 'requires_update';
+
+	// 1. Update task status to requires_update
+	// 2. Populate updated task model's assignees array with id's
+	// 3. Loop through assignee id's and send real-time updates to them
+
+	Task.update(task)
+	.then(function() {
+
+		task.populate('assignees', '_id').execPopulate()
+		.then(function(task) {
+			// TODO: Loop through assignees and send real-time update w/ task + new "requires_update" status
+			res.status(201).json({
+				success: true
+			});
+		})
+		.catch(next);
+	})
+	.catch(next);
+};
+
+exports.sendUpdate = function(req, res, next) {
+	var sender = req.user;
+	var task = req.task;
+	var completion_percentage = req.body.completion_percentage;
+
+	task.status = 'has_update';
+	task.completion_percentage = completion_percentage;
+	
+	Task.update(task)
+	.then(function() {
+
+		task.populate('assignees', '_id').execPopulate()
+		.then(function(task) {
+			// TODO: Send assigner real-time update w/ task object that has updated completion_percentage
+			res.status(201).json({
+				success: true
+			});
+		})
+		.catch(next);
+	})
+	.catch(next);
 };

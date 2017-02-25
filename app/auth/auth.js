@@ -8,7 +8,7 @@ exports.getUser = function(req, res, next) {
 	
 	User.findById(userId)
 		.then(function(user) {
-		logger.silly('user? ' + user);
+		if(!user) return next(new Error('no user exists with that id'));
 		req.user = user;
 		next();
 	})

@@ -1,9 +1,9 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-var types = ['request', 'response'];
+var types = ['completion_percentage'];
 
-var NotificationSchema = new Schema({
+var UpdateRequestSchema = new Schema({
     created_at: {
         type: Date,
         required: true
@@ -12,24 +12,35 @@ var NotificationSchema = new Schema({
         type: Date,
         required: true
     },
-    text: {
-		type: String,
-		required: true
-	},
     type: {
 		type: String,
 		required: true,
 		enum: types
-	}
+	},
+	task: {
+		type: mongoose.Schema.Types.ObjectId,
+		ref: 'Task',
+		required: true
+	},
+	sender: {
+		type: mongoose.Schema.Types.ObjectId,
+		ref: 'User',
+		required: true
+	},
+	receivers: [{
+		type: mongoose.Schema.Types.ObjectId,
+		ref: 'User',
+		required: true
+	}]
 });
 
-NotificationSchema.pre('validate', function(next) {
+UpdateRquestSchema.pre('validate', function(next) {
 	if(!this.created_at) this.created_at = new Date();
 	this.updated_at = new Date();
 	next();
 });
 
-NotificationSchema.methods = {
+UpdateRequestSchema.methods = {
 	toJSON: function() {
 		var obj = this.toObject();
 		obj.created_at = this.created_at.getTime();
@@ -39,4 +50,4 @@ NotificationSchema.methods = {
 	}
 }
 
-module.exports = mongoose.model('Notification', NotificationSchema);
+module.exports = mongoose.model('UpdateRequest', UpdateRequestSchema);
