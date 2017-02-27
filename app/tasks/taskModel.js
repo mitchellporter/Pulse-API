@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-var statuses = ['pending', 'in_progress', 'requires_update', 'has_update', 'due_soon', 'completed'];
+var statuses = ['pending', 'in_progress', 'completed'];
 var update_days = ['monday', 'wednesday', 'friday'];
 
 var TaskSchema = new Schema({
