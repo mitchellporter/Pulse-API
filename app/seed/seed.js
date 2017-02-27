@@ -51,6 +51,7 @@ var TASK_COUNT = 50;
 var ITEM_COUNT = 5;
 
 var task_statuses = ['pending', 'in_progress', 'completed'];
+var item_statuses = ['in_progress', 'completed'];
 var update_days = ['monday', 'wednesday', 'friday'];
 
 mongoose.connection.on('connected', function() {
@@ -225,6 +226,7 @@ function createDummyKoriUser() {
             // Create 5 items for each task
             var item = new Item({
                 text: 'this is some item text',
+                status: item_statuses[Math.floor(Math.random() * item_statuses.length)]
             });
             items.push(item);
         }
