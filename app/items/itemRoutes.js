@@ -5,6 +5,5 @@ var auth = require('../auth/auth');
 router.param('id', itemController.params);
 
 router.route('/')
-.get(itemController.get)
 
 module.exports = router;

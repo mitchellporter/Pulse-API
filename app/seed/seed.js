@@ -5,6 +5,7 @@ var logger = require('../../lib/logger');
 var Team = require('../teams/teamModel');
 var User = require('../users/userModel');
 var Task = require('../tasks/taskModel');
+var Item = require('../items/itemModel');
 var async = require('async');
 var casual = require('casual');
 var faker = require('faker');
@@ -40,7 +41,9 @@ var dummy_task_due_dates = [Date.now() + 86400000, Date.now() + 172800000, Date.
 // 2 tasks assigned to me - one from kori and one from allen
 // 2 tasks assigned to allen - one from kori and one from me
 
+var task_id = '586ebcae9188e7b6bfdd85c4';
 var team_id = '58b080b2356e913f3a3af182';
+var item_id = '58b09c7c247aa67459185307';
 
 // Constants
 var USER_COUNT = 17;
@@ -62,7 +65,7 @@ function startSeed() {
 
     var design_first_apps_team;
     var users;
-    var tasks;
+    var final_tasks = [];
 
     dropDb()
     .then(createTeam)
@@ -87,6 +90,8 @@ function startSeed() {
         return createMitchellCreatedTasks();
     })
     .then(createMitchellReceivedTasks)
+    .then(createItems)
+    .then(addItemsToTasks)
     .then(handleSeedSuccess)
     .catch(handleSeedError);
 
@@ -180,14 +185,15 @@ function createDummyKoriUser() {
                 update_day: update_days[Math.floor(Math.random() * update_days.length)],
                 completion_percentage: randomCompletionPercentage()
             });
-            if (tasks.length == 0) task._id = '586ebcae9188e7b6bfdd85c4';
+            if (tasks.length == 0) task._id = task_id;
             tasks.push(task);
         }
         return Task.create(tasks);
     }
 
-    function createMitchellReceivedTasks() {
-        logger.silly('creating mitchell received tasks');
+    function createMitchellReceivedTasks(tasks) {
+        final_tasks = final_tasks.concat(tasks);
+
         var tasks = [];
         for (var x = 0; x < TASK_COUNT; x++) {
             var task = new Task({
@@ -205,9 +211,45 @@ function createDummyKoriUser() {
         return Task.create(tasks);
     }
 
-    function finishSeeding() {
-        logger.silly('finished seeding db');
-        process.exit();
+    // 1. Loop through all tasks
+    // 2. Create 5 items for each task
+    // 3. Save the items
+    // 4. Loop through the saved items, populate their task, add the item to the task's item array, and save the task
+    function createItems(tasks) {
+
+        final_tasks = final_tasks.concat(tasks);
+
+        logger.silly('creating items for tasks');
+        var items = [];
+        for (var y = 0; y < ITEM_COUNT; y++) {
+            // Create 5 items for each task
+            var item = new Item({
+                text: 'this is some item text',
+            });
+            items.push(item);
+        }
+        logger.silly('About to save this many items: ' + items.length);
+       return Item.create(items);
+    }
+
+    function addItemsToTasks(items) {
+        logger.silly('Adding items to tasks');
+
+        return new Promise(function (resolve, reject) {
+            async.forEachOf(final_tasks, function (value, key, callback) {
+                var task = value;
+                task.items = items
+               task.save()
+               .then(function(task) {
+                   callback();
+               })
+               .catch(callback);
+            }, function (err) {
+                if (err) logger.error('add items to tasks error: ' + err);
+                if (err) return reject(err);
+                return resolve();
+            });
+        });
     }
 
     function randomDueDate() {
