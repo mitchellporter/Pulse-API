@@ -10,7 +10,7 @@ exports.post = function(req, res, next) {
 
     var update_response = new UpdateResponse(req.body);
     update_response.sender = sender;
-
+    
     logger.silly('update response: ' + update_response);
 
     update_response.save()

@@ -6,6 +6,7 @@ var Team = require('../teams/teamModel');
 var User = require('../users/userModel');
 var Task = require('../tasks/taskModel');
 var Item = require('../items/itemModel');
+var UpdateRequest = require('../updates/updateRequestModel');
 var async = require('async');
 var casual = require('casual');
 var faker = require('faker');
@@ -49,6 +50,8 @@ var item_id = '58b09c7c247aa67459185307';
 var USER_COUNT = 17;
 var TASK_COUNT = 50;
 var ITEM_COUNT = 5;
+var SENT_UPDATE_REQUEST_COUNT = 5;
+var RECEIVED_UPDATE_REQUEST_COUNT = 5;
 
 var task_statuses = ['pending', 'in_progress', 'completed'];
 var item_statuses = ['in_progress', 'completed'];
@@ -93,6 +96,8 @@ function startSeed() {
     .then(createMitchellReceivedTasks)
     .then(createItems)
     .then(addItemsToTasks)
+    .then(createMitchellSentUpdateRequests)
+    .then(createMitchellReceivedUpdateRequests)
     .then(handleSeedSuccess)
     .catch(handleSeedError);
 
@@ -252,6 +257,36 @@ function createDummyKoriUser() {
                 return resolve();
             });
         });
+    }
+
+    function createMitchellSentUpdateRequests() {
+        logger.silly('creating update requests sent by Mitchell');
+
+        var update_requests = [];
+        for (var x = 0; x < SENT_UPDATE_REQUEST_COUNT; x++) {
+            var update_request = new UpdateRequest({
+                sender: mitchell,
+                receivers: [kori, allen],
+                task: final_tasks[Math.floor(Math.random() * final_tasks.length)]
+            });
+            update_requests.push(update_request);
+        }
+        return UpdateRequest.create(update_requests);
+    }
+
+    function createMitchellReceivedUpdateRequests() {
+        logger.silly('creating update requests received by Mitchell');
+
+        var update_requests = [];
+        for (var x = 0; x < RECEIVED_UPDATE_REQUEST_COUNT; x++) {
+            var update_request = new UpdateRequest({
+                sender: kori,
+                receivers: mitchell,
+                task: final_tasks[Math.floor(Math.random() * final_tasks.length)]
+            });
+            update_requests.push(update_request);
+        }
+        return UpdateRequest.create(update_requests);
     }
 
     function randomDueDate() {

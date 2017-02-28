@@ -1,9 +1,8 @@
 var logger = require('../../lib/logger');
-// var Update = require('./updateModel');
 var UpdateRequest = require('./updateRequestModel');
-// var UpdateResponse = require('./updateResponseModel');
 var async = require('async');
 
+// TODO: Update this, Update is no longer a model
 exports.params = function(req, res, next, id) {
     Update.findById(id)
     .then(function(update) {
@@ -18,7 +17,7 @@ exports.get = function(req, res, next) {
     // TODO: Implement paging
     var user = req.user;
 
-    Update.find({ $or:[{'sender':user}, {'receiver':user}] })
+    UpdateRequest.find({ $or:[{'sender':user}, {'receivers':user}] })
     .then(function(updates) {
         res.status(200).json({
             success: true,
