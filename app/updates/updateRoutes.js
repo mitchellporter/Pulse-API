@@ -6,7 +6,6 @@ router.param('id', updateController.params);
 
 router.route('/')
 .get(auth.getUser, updateController.get)
-.post(auth.getUser, updateController.post)
 
 router.route('/:id')
 .get(auth.getUser, updateController.getOne)
