@@ -33,8 +33,6 @@ TeamSchema.pre('validate', function(next) {
 TeamSchema.methods = {
 	toJSON: function() {
 		var obj = this.toObject();
-		obj.created_at = this.created_at.getTime();
-		obj.updated_at = this.updated_at.getTime();
 		delete obj.__v;
 		delete obj.password;
 		return obj;

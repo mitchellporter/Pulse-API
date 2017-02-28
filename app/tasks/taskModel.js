@@ -62,9 +62,6 @@ TaskSchema.pre('validate', function(next) {
 TaskSchema.methods = {
 	toJSON: function() {
 		var obj = this.toObject();
-		obj.created_at = this.created_at.getTime();
-		obj.updated_at = this.updated_at.getTime();
-		if (obj.due_date) obj.due_date = obj.due_date.getTime();
 		delete obj.__v;
 		return obj;
 	}
