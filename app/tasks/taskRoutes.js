@@ -13,6 +13,9 @@ router.route('/')
 router.route('/:id/updates')
 .post(auth.getUser, updateController.post)
 
+router.route('/:id/request_update')
+.post(auth.getUser, updateController.requestUpdate)
+
 router.use('/:id/items', require('../items/itemRoutes'));
 
 module.exports = router;

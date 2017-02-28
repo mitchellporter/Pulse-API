@@ -121,3 +121,22 @@ exports.post = function(req, res, next) {
             .catch(next);
     }
 };
+
+exports.requestUpdate = function(req, res, next) {
+    var sender = req.user;
+    var task = req.task;
+
+    var update_request = new update_request(req.body);
+    update_request.sender = sender;
+    update_request.receivers = task.assignees;
+    update_request.task = task;
+
+    update_request.save()
+    .then(function(update_request) {
+        res.status(201).json({
+            success: true,
+            update_request: update_request
+        });
+    })
+    .catch(next);
+};
