@@ -36,49 +36,73 @@ exports.getOne = function(req, res, next) {
 
 // TODO: Send socket notifications
 exports.post = function(req, res, next) {
-    logger.silly('requesting task update');
 
     var user = req.user;
     var task = req.task;
-    
-    task.populate('assignees', '_id').execPopulate()
-    .then(function(task) {
+    var type = req.body.type;
 
-        var assignees = task.assignees;
-        var updates = [];
-        async.forEachOf(assignees, function(value, key, callback) {
-            var assignee = value;
-            requestUpdateFromAssignee(assignee)
-            .then(function(update) {
-                updates.push(update);
-                callback();
+    switch (type) {
+        case 'request':
+        requestUpdate();
+        break;
+        case 'response':
+        sendUpdate();
+        break;
+        default: next(new Error('update needs a valid type - request or response'));
+    }
+
+    function requestUpdate() {
+        logger.silly('requesting task update');
+        task.populate('assignees', '_id').execPopulate()
+            .then(function (task) {
+
+                var assignees = task.assignees;
+                var updates = [];
+                async.forEachOf(assignees, function (value, key, callback) {
+                    var assignee = value;
+                    requestUpdateFromAssignee(assignee)
+                        .then(function (update) {
+                            updates.push(update);
+                            callback();
+                        })
+                        .catch(callback);
+                }, function (err) {
+                    if (err) logger.error(err);
+                    if (err) return next(err);
+
+                    res.status(201).json({
+                        success: true,
+                        updates: updates
+                    });
+                });
             })
-            .catch(callback);
-        }, function(err) {
-            if (err) logger.error(err);
-            if (err) return next(err);
+            .catch(next);
 
-            res.status(201).json({
-                success: true,
-                updates: updates
+        function requestUpdateFromAssignee(assignee) {
+            logger.silly('assignee: ' + assignee);
+            return new Promise(function (resolve, reject) {
+                var update = new Update(req.body);
+                update.sender = user;
+                update.receiver = assignee;
+                update.task = task;
+
+                logger.silly('update: ' + update);
+
+                update.save()
+                    .then(resolve)
+                    .catch(reject);
             });
-        });
-    })
-    .catch(next);
+        }
+    }
 
-    function requestUpdateFromAssignee(assignee) {
-        logger.silly('assignee: ' + assignee);
-        return new Promise(function (resolve, reject) {
+    function sendUpdate() {
+        logger.silly('sending task update');
+    }
+
+    function respondToUpdateRequest() {
             var update = new Update(req.body);
             update.sender = user;
-            update.receiver = assignee;
+            update.receiver = assigner;
             update.task = task;
-
-            logger.silly('update: ' + update);
-
-            update.save()
-            .then(resolve)
-            .catch(reject);
-        });
     }
 };
