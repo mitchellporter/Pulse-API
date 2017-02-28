@@ -37,7 +37,7 @@ exports.getOne = function(req, res, next) {
 // TODO: Send socket notifications
 exports.post = function(req, res, next) {
 
-    var user = req.user;
+    var sender = req.user;
     var task = req.task;
     var type = req.body.type;
 
@@ -82,7 +82,7 @@ exports.post = function(req, res, next) {
             logger.silly('assignee: ' + assignee);
             return new Promise(function (resolve, reject) {
                 var update = new Update(req.body);
-                update.sender = user;
+                update.sender = sender;
                 update.receiver = assignee;
                 update.task = task;
 
@@ -97,12 +97,27 @@ exports.post = function(req, res, next) {
 
     function sendUpdate() {
         logger.silly('sending task update');
-    }
 
-    function respondToUpdateRequest() {
-            var update = new Update(req.body);
-            update.sender = user;
-            update.receiver = assigner;
-            update.task = task;
+            task.populate('assigner', '_id').execPopulate()
+            .then(function(task) {
+                var assigner = task.assigner;
+
+                var update = new Update(req.body);
+                update.type = type;
+                update.sender = sender;
+                update.receiver = assigner;
+                update.task = task;
+
+                logger.silly('UPDATE: ' + update);
+
+                return update.save()
+            })
+            .then(function(update) {
+                res.status(201).json({
+                        success: true,
+                        update: update
+                    });
+            })
+            .catch(next);
     }
 };

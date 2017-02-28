@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-var types = ['request', 'reesponse'];
+var types = ['request', 'response'];
 
 var UpdateSchema = new Schema({
     created_at: {
