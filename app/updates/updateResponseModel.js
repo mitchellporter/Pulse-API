@@ -1,9 +1,8 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-var types = ['request', 'response'];
 
-var UpdateRequestSchema = new Schema({
+var UpdateResponseSchema = new Schema({
     created_at: {
         type: Date,
         required: true
@@ -17,11 +16,11 @@ var UpdateRequestSchema = new Schema({
 		ref: 'User',
 		required: true
 	},
-	receivers: [{
-		type: mongoose.Schema.Types.ObjectId,
-		ref: 'User',
+    update_request: {
+        type: mongoose.Schema.Types.ObjectId,
+		ref: 'UpdateRequest',
 		required: true
-	}],
+    },
 	task: {
 		type: mongoose.Schema.Types.ObjectId,
 		ref: 'Task',
@@ -29,13 +28,13 @@ var UpdateRequestSchema = new Schema({
 	}
 });
 
-UpdateRequestSchema.pre('validate', function(next) {
+UpdateResponseSchema.pre('validate', function(next) {
 	if(!this.created_at) this.created_at = new Date();
 	this.updated_at = new Date();
 	next();
 });
 
-UpdateRequestSchema.methods = {
+UpdateResponseSchema.methods = {
 	toJSON: function() {
 		var obj = this.toObject();
 		delete obj.__v;
@@ -43,4 +42,4 @@ UpdateRequestSchema.methods = {
 	}
 }
 
-module.exports = mongoose.model('UpdateRequest', UpdateRequestSchema);
+module.exports = mongoose.model('UpdateResponse', UpdateResponseSchema);
