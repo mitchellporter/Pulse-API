@@ -25,6 +25,14 @@ exports.get = function(req, res, next) {
     .catch(next);
 }
 
+exports.getOne = function(req, res, next) {
+    var update = req.update;
+    res.status(200).json({
+        success: true,
+        update: update
+    });
+}
+
 exports.post = function(req, res, next) {
     var user = req.user;
 
