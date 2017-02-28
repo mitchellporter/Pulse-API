@@ -37,7 +37,7 @@ var UpdateSchema = new Schema({
 	}
 });
 
-UpdateRquestSchema.pre('validate', function(next) {
+UpdateSchema.pre('validate', function(next) {
 	if(!this.created_at) this.created_at = new Date();
 	this.updated_at = new Date();
 	next();
