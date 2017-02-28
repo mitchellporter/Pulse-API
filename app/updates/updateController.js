@@ -1,5 +1,7 @@
 var logger = require('../../lib/logger');
-var Update = require('./updateModel');
+// var Update = require('./updateModel');
+var UpdateRequest = require('./updateRequestModel');
+// var UpdateResponse = require('./updateResponseModel');
 var async = require('async');
 
 exports.params = function(req, res, next, id) {
@@ -126,7 +128,7 @@ exports.requestUpdate = function(req, res, next) {
     var sender = req.user;
     var task = req.task;
 
-    var update_request = new update_request(req.body);
+    var update_request = new UpdateRequest(req.body);
     update_request.sender = sender;
     update_request.receivers = task.assignees;
     update_request.task = task;
@@ -140,3 +142,21 @@ exports.requestUpdate = function(req, res, next) {
     })
     .catch(next);
 };
+
+// exports.sendUpdate = function(req, res, next) {
+//     var sender = req.user;
+//     var task = req.task;
+
+//     var update_response = new UpdateResponse(req.body);
+//     update_response.sender = sender;
+//     update_response.task = task;
+
+//     update_response.save()
+//     .then(function(update_response) {
+//         res.status(201).json({
+//             success: true,
+//             update_response: update_response
+//         });
+//     })
+//     .catch(next);
+// };

@@ -21,9 +21,8 @@ var UpdateResponseSchema = new Schema({
 		ref: 'UpdateRequest',
 		required: true
     },
-	task: {
-		type: mongoose.Schema.Types.ObjectId,
-		ref: 'Task',
+	completion_percentage: {
+		type: Number,
 		required: true
 	}
 });

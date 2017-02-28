@@ -13,8 +13,11 @@ router.route('/')
 router.route('/:id/updates')
 .post(auth.getUser, updateController.post)
 
-router.route('/:id/request_update')
+router.route('/:id/request_updates')
 .post(auth.getUser, updateController.requestUpdate)
+
+// router.route('/:id/send_update')
+// .post(auth.getUser, updateController.sendUpdate)
 
 router.use('/:id/items', require('../items/itemRoutes'));
 
