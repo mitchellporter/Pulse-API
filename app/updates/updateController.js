@@ -18,6 +18,7 @@ exports.get = function(req, res, next) {
     var user = req.user;
 
     UpdateRequest.find({ $or:[{'sender':user}, {'receivers':user}] })
+    .populate('sender', '_id name position avatar_url')
     .then(function(updates) {
         res.status(200).json({
             success: true,

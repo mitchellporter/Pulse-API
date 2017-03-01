@@ -280,7 +280,7 @@ function createDummyKoriUser() {
         var update_requests = [];
         for (var x = 0; x < RECEIVED_UPDATE_REQUEST_COUNT; x++) {
             var update_request = new UpdateRequest({
-                sender: kori,
+                sender: users[Math.floor(Math.random() * users.length)],
                 receivers: mitchell,
                 task: final_tasks[Math.floor(Math.random() * final_tasks.length)]
             });
