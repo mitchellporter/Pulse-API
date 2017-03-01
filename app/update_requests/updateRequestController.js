@@ -18,10 +18,10 @@ exports.get = function(req, res, next) {
 
     UpdateRequest.find({ $or: [{'sender': user}, {'receivers': user}] })
     .populate('sender', '_id name position avatar_url')
-    .then(function(updates) {
+    .then(function(update_requests) {
         res.status(200).json({
             success: true,
-            updates: updates
+            update_requests: update_requests
         });
     })
     .catch(next);
