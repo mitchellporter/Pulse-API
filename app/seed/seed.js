@@ -6,7 +6,7 @@ var Team = require('../teams/teamModel');
 var User = require('../users/userModel');
 var Task = require('../tasks/taskModel');
 var Item = require('../items/itemModel');
-var UpdateRequest = require('../updates/updateRequestModel');
+var UpdateRequest = require('../update_requests/updateRequestModel');
 var async = require('async');
 var casual = require('casual');
 var faker = require('faker');
@@ -45,6 +45,7 @@ var dummy_task_due_dates = [Date.now() + 86400000, Date.now() + 172800000, Date.
 var task_id = '586ebcae9188e7b6bfdd85c4';
 var team_id = '58b080b2356e913f3a3af182';
 var item_id = '58b09c7c247aa67459185307';
+var update_request_id = '58b5f0a5e095de16fe4c2cda';
 
 // Constants
 var USER_COUNT = 17;
@@ -269,6 +270,7 @@ function createDummyKoriUser() {
                 receivers: [kori, allen],
                 task: final_tasks[Math.floor(Math.random() * final_tasks.length)]
             });
+            if (x == 0) update_request._id = update_request_id;
             update_requests.push(update_request);
         }
         return UpdateRequest.create(update_requests);

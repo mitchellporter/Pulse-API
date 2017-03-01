@@ -1,7 +1,6 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-var types = ['request', 'response'];
 
 var UpdateSchema = new Schema({
     created_at: {
@@ -12,28 +11,19 @@ var UpdateSchema = new Schema({
         type: Date,
         required: true
     },
-    type: {
-		type: String,
-		required: true,
-		enum: types
-	},
 	sender: {
 		type: mongoose.Schema.Types.ObjectId,
 		ref: 'User',
 		required: true
 	},
-	receiver: {
-		type: mongoose.Schema.Types.ObjectId,
-		ref: 'User',
+    update_request: {
+        type: mongoose.Schema.Types.ObjectId,
+		ref: 'UpdateRequest',
 		required: true
-	},
-	task: {
-		type: mongoose.Schema.Types.ObjectId,
-		ref: 'Task',
-		required: true
-	},
+    },
 	completion_percentage: {
-		type: Number
+		type: Number,
+		required: true
 	}
 });
 
