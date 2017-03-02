@@ -36,7 +36,8 @@ exports.params = function(req, res, next, id) {
     
 // };
 
-exports.updateItem = function(req, res, next) {
+// Use this for status changes - in_progress and completed
+exports.update = function(req, res, next) {
     var assignee = req.user;
     var task = req.task;
     var item = req.item;
@@ -50,6 +51,19 @@ exports.updateItem = function(req, res, next) {
         });
 
         // TODO: Broadcast changes to assigner and assignees
+    })
+    .catch(next);
+};
+
+exports.delete = function(req, res, next) {
+    var task = req.task;
+    var item = req.item;
+
+    Item.remove({ _id: item._id })
+    .then(function(item) {
+        res.status(200).json({
+            success: true
+        });
     })
     .catch(next);
 };

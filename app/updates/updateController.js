@@ -21,8 +21,6 @@ exports.post = function(req, res, next) {
     var update = new Update(req.body);
     update.sender = sender;
     
-    logger.silly('update: ' + update);
-
     update.save()
     .then(function(update) {
         res.status(201).json({
