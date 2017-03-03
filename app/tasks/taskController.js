@@ -5,6 +5,7 @@ var async = require('async');
 
 exports.params = function(req, res, next, taskId) {
 	Task.findById(taskId)
+	.populate('items')
 	.then(function(task) {
 		if(!task) return next(new Error('no task exists with that id'));
 		req.task = task;
@@ -39,6 +40,14 @@ exports.get = function(req, res, next) {
 		});
 	})
 	.catch(next);
+};
+
+exports.getOne = function(req, res, next) {
+	var task = req.task;
+	res.status(200).json({
+		success: true,
+		task: task
+	});
 };
 
 exports.post = function(req, res, next) {

@@ -10,6 +10,9 @@ router.route('/')
 .get(taskController.get)
 .post(auth.getUser, taskController.post)
 
+router.route('/:id')
+.get(taskController.getOne)
+
 router.route('/:id/update_requests')
 .get(auth.getUser, updateRequestController.get)
 .post(auth.getUser, updateRequestController.requestUpdate)
