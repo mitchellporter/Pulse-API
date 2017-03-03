@@ -163,7 +163,7 @@ function createDummyKoriUser() {
 
     function createUsers() {
         logger.silly('Creating users');
-        var users = [mitchell, kori, allen];
+        var users = [kori, allen];
         for (var x = 0; x < USER_COUNT; x++) {
             var user = new User({
                 name: casual.first_name + ' ' + casual.last_name,
