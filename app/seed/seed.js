@@ -231,7 +231,7 @@ function createDummyKoriUser() {
         for (var y = 0; y < ITEM_COUNT; y++) {
             // Create 5 items for each task
             var item = new Item({
-                text: 'this is some item text',
+                text: casual.title,
                 status: item_statuses[Math.floor(Math.random() * item_statuses.length)]
             });
             items.push(item);
