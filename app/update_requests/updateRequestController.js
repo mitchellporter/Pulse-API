@@ -15,7 +15,7 @@ exports.params = function(req, res, next, id) {
 exports.get = function(req, res, next) {
     // TODO: Implement paging
     var user = req.user;
-    var populate = [{ path: 'sender' }, { path: 'task' , populate: [{ path: 'assigner' }, { path: 'assignees' }]}];
+    var populate = [{ path: 'sender' }, { path: 'task' , populate: [{ path: 'assigner', select: '_id name position avatar_url' }, { path: 'assignees', select: '_id name position avatar_url' }]}];
     UpdateRequest.find({ $or: [{'sender': user}, {'receivers': user}] })
     .populate(populate)
     .then(function(update_requests) {
