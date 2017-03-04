@@ -1,5 +1,6 @@
 var logger = require('../../lib/logger');
 var Task = require('./taskModel');
+var TaskInvitation = require('./taskinvitationModel');
 var Item = require('../items/itemModel');
 var async = require('async');
 
@@ -99,7 +100,7 @@ exports.post = function(req, res, next) {
 
 exports.acceptTask = function(req, res, next) {
 	var user = req.user;
-	var task = req.task;
+	var task = req.task;	
 
 	task.status = 'in_progress';
 	task.save()
@@ -165,3 +166,51 @@ exports.sendUpdate = function(req, res, next) {
 	})
 	.catch(next);
 };
+
+exports.myTasks = function (req, res, next) {
+	var user = req.user;
+
+	var populate = [{ path: 'assigner' }, { path: 'assignees' }, { path: 'items' }];
+
+	// 1. Fetch task invitations sent to user
+	// 2. Fetch task's where user is an assignee
+
+	var response = {};
+	async.parallel([findTaskInvitationsForUser, findTasks], function(err) {
+		if (err) logger.error(err);
+		if (err) return next(err);
+
+		response.success = true;
+		res.status(200).json(response);
+	});
+
+	function findTaskInvitationsForUser(callback) {
+		TaskInvitation.find({ receiver: user })
+			.then(function (task_invitations) {
+				logger.silly('found this many task invitations: ' + task_invitations.length);
+				response.task_invitations = task_invitations;
+				callback(null, tasks);
+			})
+			.catch(function(err) {
+				callback(err, null);
+			});
+	}
+
+	function findTasks(callback) {
+		Task.find({ assignees: user })
+			.populate(populate)
+			.then(function (tasks) {
+				logger.silly('found this many tasks: ' + tasks.length);
+				response.tasks = tasks;
+				callback(null, tasks);
+			})
+			.catch(function(err) {
+				callback(err, null);
+			});
+	}
+};
+
+function callback(err) {
+	if (err) logger.error(err);
+	if (err) return next(err);
+}
