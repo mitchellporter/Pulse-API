@@ -97,6 +97,25 @@ exports.post = function(req, res, next) {
 	});
 };
 
+exports.acceptTask = function(req, res, next) {
+	var user = req.user;
+	var task = req.task;
+
+	task.status = 'in_progress';
+	task.save()
+	.then(function(task) {
+		res.status(201).json({
+			success: true,
+			task: task
+		});
+	})
+	.catch(next);
+};
+
+exports.declineTask = function(req, res, next) {
+
+};
+
 // TODO: This breaks with multiple assignees
 exports.requestUpdate = function(req, res, next) {
 	logger.silly('About to request task update');
