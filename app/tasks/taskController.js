@@ -189,7 +189,7 @@ exports.myTasks = function (req, res, next) {
 			.then(function (task_invitations) {
 				logger.silly('found this many task invitations: ' + task_invitations.length);
 				response.task_invitations = task_invitations;
-				callback(null, tasks);
+				callback(null, task_invitations);
 			})
 			.catch(function(err) {
 				callback(err, null);

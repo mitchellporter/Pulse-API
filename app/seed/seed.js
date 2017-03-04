@@ -5,6 +5,7 @@ var logger = require('../../lib/logger');
 var Team = require('../teams/teamModel');
 var User = require('../users/userModel');
 var Task = require('../tasks/taskModel');
+var TaskInvitation = require('../tasks/taskInvitationModel');
 var Item = require('../items/itemModel');
 var UpdateRequest = require('../update_requests/updateRequestModel');
 var async = require('async');
@@ -53,6 +54,7 @@ var TASK_COUNT = 50;
 var ITEM_COUNT = 5;
 var SENT_UPDATE_REQUEST_COUNT = 5;
 var RECEIVED_UPDATE_REQUEST_COUNT = 5;
+var TASK_INVITATION_COUNT = 5;
 
 var task_statuses = ['pending', 'in_progress', 'completed'];
 var item_statuses = ['in_progress', 'completed'];
@@ -99,6 +101,7 @@ function startSeed() {
     .then(addItemsToTasks)
     .then(createMitchellSentUpdateRequests)
     .then(createMitchellReceivedUpdateRequests)
+    .then(createTaskInvitationsSentToMitchell)
     .then(handleSeedSuccess)
     .catch(handleSeedError);
 
@@ -258,6 +261,20 @@ function createDummyKoriUser() {
                 return resolve();
             });
         });
+    }
+
+    function createTaskInvitationsSentToMitchell() {
+        logger.silly('creating task invitations sent to Mitchell');
+        var task_invitations = [];
+        for (var x = 0; x < TASK_INVITATION_COUNT; x++) {
+            var task_invitation = new TaskInvitation({
+                sender: users[Math.floor(Math.random() * users.length)],
+                task: final_tasks[Math.floor(Math.random() * final_tasks.length)],
+                receiver: mitchell
+            });
+            task_invitations.push(task_invitation);
+        }
+        return TaskInvitation.create(task_invitations);
     }
 
     function createMitchellSentUpdateRequests() {
