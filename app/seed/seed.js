@@ -50,7 +50,8 @@ var update_request_id = '58b5f0a5e095de16fe4c2cda';
 
 // Constants
 var USER_COUNT = 17;
-var TASK_COUNT = 50;
+var RECEIVED_TASKS_IN_PROGRESS_COUNT = 5;
+var RECEIVED_TASKS_COMPLETED_COUNT = 5;
 var ITEM_COUNT = 5;
 var SENT_UPDATE_REQUEST_COUNT = 5;
 var RECEIVED_UPDATE_REQUEST_COUNT = 5;
@@ -96,12 +97,13 @@ function startSeed() {
         users = dummy_users;
         return createMitchellCreatedTasks();
     })
-    .then(createMitchellReceivedTasks)
+    .then(createMitchellReceivedTasksInProgress)
+    .then(createMitchellReceivedTasksCompleted)
+    .then(createTaskInvitationsSentToMitchell)
     .then(createItems)
     .then(addItemsToTasks)
     .then(createMitchellSentUpdateRequests)
     .then(createMitchellReceivedUpdateRequests)
-    .then(createTaskInvitationsSentToMitchell)
     .then(handleSeedSuccess)
     .catch(handleSeedError);
 
@@ -184,7 +186,7 @@ function createDummyKoriUser() {
     function createMitchellCreatedTasks() {
         logger.silly('creating mitchell created tasks');
         var tasks = [];
-        for (var x = 0; x < TASK_COUNT; x++) {
+        for (var x = 0; x < final_tasks.length; x++) {
             var task = new Task({
                 assigner: mitchell,
                 assignees: users[Math.floor(Math.random() * users.length)]._id,
@@ -201,18 +203,41 @@ function createDummyKoriUser() {
         return Task.create(tasks);
     }
 
-    function createMitchellReceivedTasks(tasks) {
-        final_tasks = final_tasks.concat(tasks);
+    function createMitchellReceivedTasksInProgress(tasks) {
+        if (tasks && tasks.length != 0) final_tasks = final_tasks.concat(tasks);
+
+        logger.silly('creating tasks received by mitchell and in progress');
 
         var tasks = [];
-        for (var x = 0; x < TASK_COUNT; x++) {
+        for (var x = 0; x < RECEIVED_TASKS_IN_PROGRESS_COUNT; x++) {
             var task = new Task({
                 assigner: users[Math.floor(Math.random() * users.length)]._id,
                 assignees: mitchell,
                 title: '' + x,
                 details: casual.description,
                 due_date: randomDueDate(), // optional
-                status: task_statuses[Math.floor(Math.random() * task_statuses.length)],
+                status: 'in_progress',
+                update_day: update_days[Math.floor(Math.random() * update_days.length)],
+                completion_percentage: randomCompletionPercentage()
+            });
+            tasks.push(task);
+        }
+        return Task.create(tasks);
+    }
+
+    function createMitchellReceivedTasksCompleted(tasks) {
+        if (tasks && tasks.length != 0) final_tasks = final_tasks.concat(tasks);
+        logger.silly('creating tasks received by mitchell and completed');
+
+        var tasks = [];
+        for (var x = 0; x < RECEIVED_TASKS_COMPLETED_COUNT; x++) {
+            var task = new Task({
+                assigner: users[Math.floor(Math.random() * users.length)]._id,
+                assignees: mitchell,
+                title: '' + x,
+                details: casual.description,
+                due_date: randomDueDate(), // optional
+                status: 'completed',
                 update_day: update_days[Math.floor(Math.random() * update_days.length)],
                 completion_percentage: randomCompletionPercentage()
             });
@@ -225,9 +250,9 @@ function createDummyKoriUser() {
     // 2. Create 5 items for each task
     // 3. Save the items
     // 4. Loop through the saved items, populate their task, add the item to the task's item array, and save the task
-    function createItems(tasks) {
+    function createItems() {
 
-        final_tasks = final_tasks.concat(tasks);
+        // final_tasks = final_tasks.concat(tasks);
 
         logger.silly('creating items for tasks');
         var items = [];
@@ -263,7 +288,9 @@ function createDummyKoriUser() {
         });
     }
 
-    function createTaskInvitationsSentToMitchell() {
+    function createTaskInvitationsSentToMitchell(tasks) {
+        if (tasks && tasks.length != 0) final_tasks = final_tasks.concat(tasks);
+
         logger.silly('creating task invitations sent to Mitchell');
         var task_invitations = [];
         for (var x = 0; x < TASK_INVITATION_COUNT; x++) {
