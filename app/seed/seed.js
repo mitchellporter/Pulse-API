@@ -209,7 +209,7 @@ function createDummyKoriUser() {
             var task = new Task({
                 assigner: users[Math.floor(Math.random() * users.length)]._id,
                 assignees: mitchell,
-                title: casual.title,
+                title: '' + x,
                 details: casual.description,
                 due_date: randomDueDate(), // optional
                 status: task_statuses[Math.floor(Math.random() * task_statuses.length)],

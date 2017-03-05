@@ -197,7 +197,7 @@ exports.myTasks = function (req, res, next) {
 	}
 
 	function findTasks(callback) {
-		Task.find({ assignees: user })
+		Task.find({ $or: [{'status': 'in_progress'}, {'status': 'completed'}], assignees: user })
 			.populate(populate)
 			.then(function (tasks) {
 				logger.silly('found this many tasks: ' + tasks.length);
