@@ -210,7 +210,47 @@ exports.myTasks = function (req, res, next) {
 	}
 };
 
-function callback(err) {
-	if (err) logger.error(err);
-	if (err) return next(err);
-}
+exports.tasksCreated = function (req, res, next) {
+	var user = req.user;
+	logger.silly('user id: ' + user._id);
+	logger.silly('user name: ' + user.name);
+
+	var populate = [{ path: 'assigner' }, { path: 'assignees' }, { path: 'items' }];
+
+	// 1. Fetch task invitations sent to user
+	// 2. Fetch task's where user is an assignee
+
+	var response = {};
+	async.parallel([findTaskInvitationsSentByUser, findTasks], function(err) {
+		if (err) logger.error(err);
+		if (err) return next(err);
+
+		response.success = true;
+		res.status(200).json(response);
+	});
+
+	function findTaskInvitationsSentByUser(callback) {
+		TaskInvitation.find({ sender: user, status: 'pending' })
+			.then(function (task_invitations) {
+				logger.silly('found this many task invitations: ' + task_invitations.length);
+				response.task_invitations = task_invitations;
+				callback(null, task_invitations);
+			})
+			.catch(function(err) {
+				callback(err, null);
+			});
+	}
+
+	function findTasks(callback) {
+		Task.find({ $or: [{'status': 'in_progress'}, {'status': 'completed'}], assigner: user })
+			.populate(populate)
+			.then(function (tasks) {
+				logger.silly('found this many tasks: ' + tasks.length);
+				response.tasks = tasks;
+				callback(null, tasks);
+			})
+			.catch(function(err) {
+				callback(err, null);
+			});
+	}
+};

@@ -101,6 +101,7 @@ function startSeed() {
     .then(createMitchellReceivedTasksInProgress)
     .then(createMitchellReceivedTasksCompleted)
     .then(createTaskInvitationsSentToMitchell)
+    .then(createTaskInvitationsSentByMitchell)
     .then(createItems)
     .then(addItemsToTasks)
     .then(createMitchellSentUpdateRequests)
@@ -187,7 +188,7 @@ function createDummyKoriUser() {
     function createMitchellCreatedTasks() {
         logger.silly('creating mitchell created tasks');
         var tasks = [];
-        for (var x = 0; x < final_tasks.length; x++) {
+        for (var x = 0; x < 10; x++) {
             var task = new Task({
                 assigner: mitchell,
                 assignees: users[Math.floor(Math.random() * users.length)]._id,
@@ -299,6 +300,21 @@ function createDummyKoriUser() {
                 sender: users[Math.floor(Math.random() * users.length)],
                 task: final_tasks[Math.floor(Math.random() * final_tasks.length)],
                 receiver: mitchell,
+                status: task_invitation_statuses[Math.floor(Math.random() * task_invitation_statuses.length)]
+            });
+            task_invitations.push(task_invitation);
+        }
+        return TaskInvitation.create(task_invitations);
+    }
+
+    function createTaskInvitationsSentByMitchell() {
+        logger.silly('creating task invitations sent by Mitchell');
+        var task_invitations = [];
+        for (var x = 0; x < TASK_INVITATION_COUNT; x++) {
+            var task_invitation = new TaskInvitation({
+                sender: mitchell,
+                task: final_tasks[Math.floor(Math.random() * final_tasks.length)],
+                receiver: users[Math.floor(Math.random() * users.length)],
                 status: task_invitation_statuses[Math.floor(Math.random() * task_invitation_statuses.length)]
             });
             task_invitations.push(task_invitation);
