@@ -55,8 +55,9 @@ var RECEIVED_TASKS_COMPLETED_COUNT = 5;
 var ITEM_COUNT = 5;
 var SENT_UPDATE_REQUEST_COUNT = 5;
 var RECEIVED_UPDATE_REQUEST_COUNT = 5;
-var TASK_INVITATION_COUNT = 5;
+var TASK_INVITATION_COUNT = 10;
 
+var task_invitation_statuses = ['pending', 'accepted', 'denied'];
 var task_statuses = ['pending', 'in_progress', 'completed'];
 var item_statuses = ['in_progress', 'completed'];
 var update_days = ['monday', 'wednesday', 'friday'];
@@ -297,7 +298,8 @@ function createDummyKoriUser() {
             var task_invitation = new TaskInvitation({
                 sender: users[Math.floor(Math.random() * users.length)],
                 task: final_tasks[Math.floor(Math.random() * final_tasks.length)],
-                receiver: mitchell
+                receiver: mitchell,
+                status: task_invitation_statuses[Math.floor(Math.random() * task_invitation_statuses.length)]
             });
             task_invitations.push(task_invitation);
         }

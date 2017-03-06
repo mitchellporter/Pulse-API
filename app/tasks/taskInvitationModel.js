@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-var statuses = ['pending', 'in_progress', 'completed'];
+var statuses = ['pending', 'accepted', 'denied'];
 var update_days = ['monday', 'wednesday', 'friday'];
 
 var TaskInvitationSchema = new Schema({
@@ -27,6 +27,12 @@ var TaskInvitationSchema = new Schema({
 		type: mongoose.Schema.Types.ObjectId,
 		ref: 'Task',
 		required: true
+	},
+	status: {
+		type: String,
+		required: true,
+		default: 'pending',
+		enum: statuses
 	}
 });
 

@@ -185,7 +185,7 @@ exports.myTasks = function (req, res, next) {
 	});
 
 	function findTaskInvitationsForUser(callback) {
-		TaskInvitation.find({ receiver: user })
+		TaskInvitation.find({ receiver: user, status: 'pending' })
 			.then(function (task_invitations) {
 				logger.silly('found this many task invitations: ' + task_invitations.length);
 				response.task_invitations = task_invitations;
