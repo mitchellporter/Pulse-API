@@ -281,7 +281,7 @@ exports.getUpdates = function(req, res, next) {
 		});
 	}
 
-	function findTasksWithUpdates() {
+	function findTasksWithUpdates(callback) {
 		Task.find({ assigner: user, status: 'in_progress' })
 		.populate('updates')
 		.then(function(tasks) {

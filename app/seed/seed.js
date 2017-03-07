@@ -329,7 +329,7 @@ function createDummyKoriUser() {
         for (var x = 0; x < SENT_UPDATE_REQUEST_COUNT; x++) {
             var update_request = new UpdateRequest({
                 sender: mitchell,
-                receivers: [kori, allen],
+                receiver: kori,
                 task: final_tasks[Math.floor(Math.random() * final_tasks.length)]
             });
             if (x == 0) update_request._id = update_request_id;
@@ -345,7 +345,7 @@ function createDummyKoriUser() {
         for (var x = 0; x < RECEIVED_UPDATE_REQUEST_COUNT; x++) {
             var update_request = new UpdateRequest({
                 sender: users[Math.floor(Math.random() * users.length)],
-                receivers: mitchell,
+                receiver: mitchell,
                 task: final_tasks[Math.floor(Math.random() * final_tasks.length)]
             });
             update_requests.push(update_request);
