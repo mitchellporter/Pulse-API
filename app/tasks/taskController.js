@@ -272,6 +272,7 @@ exports.getUpdates = function(req, res, next) {
 
 	function findUpdateRequests(callback) {
 		UpdateRequest.find({ receiver: user, status: 'sent' })
+		.populate([{ path: 'sender' }, { path: 'receiver' }, { path: 'task', populate: [{ path: 'assigner', select: '_id name position email avatar_url' }, { path: 'assignees', select: '_id name position email avatar_url' }] }]) // task.assigner
 		.then(function(update_requests) {
 			response.update_requests = update_requests;
 			callback(null, update_requests);
