@@ -19,10 +19,15 @@ var UpdateSchema = new Schema({
     update_request: {
         type: mongoose.Schema.Types.ObjectId,
 		ref: 'UpdateRequest',
-		required: true
+		required: false
     },
 	completion_percentage: {
 		type: Number,
+		required: true
+	},
+	task: {
+		type: mongoose.Schema.Types.ObjectId,
+		ref: 'Task',
 		required: true
 	}
 });
