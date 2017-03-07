@@ -8,6 +8,7 @@ var Task = require('../tasks/taskModel');
 var TaskInvitation = require('../tasks/taskInvitationModel');
 var Item = require('../items/itemModel');
 var UpdateRequest = require('../update_requests/updateRequestModel');
+var Update = require('../updates/updateModel');
 var async = require('async');
 var casual = require('casual');
 var faker = require('faker');
@@ -75,6 +76,7 @@ function startSeed() {
     var design_first_apps_team;
     var users;
     var final_tasks = [];
+    var mitchell_created_tasks = [];
 
     dropDb()
     .then(createTeam)
@@ -106,6 +108,8 @@ function startSeed() {
     .then(addItemsToTasks)
     .then(createMitchellSentUpdateRequests)
     .then(createMitchellReceivedUpdateRequests)
+    .then(createUpdatesReceivedByMitchell)
+    .then(addUpdatesReceivedByMitchellToTasks)
     .then(handleSeedSuccess)
     .catch(handleSeedError);
 
@@ -201,6 +205,7 @@ function createDummyKoriUser() {
             });
             if (tasks.length == 0) task._id = task_id;
             tasks.push(task);
+            mitchell_created_tasks.push(task);
         }
         return Task.create(tasks);
     }
@@ -351,6 +356,46 @@ function createDummyKoriUser() {
             update_requests.push(update_request);
         }
         return UpdateRequest.create(update_requests);
+    }
+
+    function createUpdatesReceivedByMitchell() {
+        logger.silly('creating updates received by Mitchell');
+
+        var updates = [];
+        for (var x = 0; x < 10; x++) {
+            var update = new Update({
+                sender: users[Math.floor(Math.random() * users.length)],
+                receiver: mitchell,
+                task: mitchell_created_tasks[Math.floor(Math.random() * mitchell_created_tasks.length)],
+                completion_percentage: randomCompletionPercentage()
+            });
+            updates.push(update);
+        }
+        return Update.create(updates);
+    }
+
+    function addUpdatesReceivedByMitchellToTasks(updates) {
+        logger.silly('adding updates received by Mitchell to tasks updates array');
+
+        return new Promise(function (resolve, reject) {
+            async.forEachOf(mitchell_created_tasks, function (value, key, callback) {
+                var task = value;
+                task.updates = updates
+               task.save()
+               .then(function(task) {
+                   callback();
+               })
+               .catch(callback);
+            }, function (err) {
+                if (err) logger.error('add updates to tasks error: ' + err);
+                if (err) return reject(err);
+                return resolve();
+            });
+        });
+    }
+
+    function createUpdatesSentByMitchell() {
+        
     }
 
     function randomDueDate() {

@@ -50,7 +50,12 @@ var TaskSchema = new Schema({
 		type: Number,
 		required: true,
 		default: 0
-	}
+	},
+	updates: [{
+		type: mongoose.Schema.Types.ObjectId,
+		ref: 'Update',
+        required: true
+	}]
 });
 
 TaskSchema.pre('validate', function(next) {
