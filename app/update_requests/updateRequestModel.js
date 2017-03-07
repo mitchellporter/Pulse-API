@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-var types = ['request', 'response'];
+var statuses = ['sent', 'responded'];
 
 var UpdateRequestSchema = new Schema({
     created_at: {
@@ -17,15 +17,21 @@ var UpdateRequestSchema = new Schema({
 		ref: 'User',
 		required: true
 	},
-	receivers: [{
+	receiver: {
 		type: mongoose.Schema.Types.ObjectId,
 		ref: 'User',
 		required: true
-	}],
+	},
 	task: {
 		type: mongoose.Schema.Types.ObjectId,
 		ref: 'Task',
 		required: true
+	},
+	status: {
+		type: String,
+		required: true,
+		default: 'sent',
+		enum: statuses
 	}
 });
 
