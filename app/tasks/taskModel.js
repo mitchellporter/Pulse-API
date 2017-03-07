@@ -41,11 +41,11 @@ var TaskSchema = new Schema({
 		default: 'pending',
 		enum: statuses
 	},
-	update_day: {
+	update_days: [{
 		type: String,
 		required: true,
 		enum: update_days
-	},
+	}],
     completion_percentage: {
 		type: Number,
 		required: true,
