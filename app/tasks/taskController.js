@@ -60,6 +60,7 @@ exports.post = function(req, res, next) {
 
 	var task = new Task(req.body);
 	task.assigner = assigner;
+	// TODO: Set real due_date
 
 	// Loop through items and create items
 	var items = [];
@@ -68,7 +69,6 @@ exports.post = function(req, res, next) {
 
 		var item = new Item();
 		item.text = item_json;
-		logger.silly('item text: ' + item.text);
 		items.push(item);
 
 		callback();
