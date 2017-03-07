@@ -55,7 +55,7 @@ var RECEIVED_TASKS_COMPLETED_COUNT = 5;
 var ITEM_COUNT = 5;
 var SENT_UPDATE_REQUEST_COUNT = 5;
 var RECEIVED_UPDATE_REQUEST_COUNT = 5;
-var TASK_INVITATION_COUNT = 10;
+var TASK_INVITATION_COUNT = 5;
 
 var task_invitation_statuses = ['pending', 'accepted', 'denied'];
 var task_statuses = ['pending', 'in_progress', 'completed'];

@@ -1,6 +1,7 @@
 var logger = require('../../lib/logger');
 var Task = require('./taskModel');
 var TaskInvitation = require('./taskInvitationModel');
+var UpdateRequest = require('../update_requests/updateRequestModel');
 var Item = require('../items/itemModel');
 var async = require('async');
 
@@ -255,4 +256,41 @@ exports.tasksCreated = function (req, res, next) {
 				callback(err, null);
 			});
 	}
+};
+
+exports.getUpdates = function(req, res, next) {
+	var user = req.user;
+
+	var response = {};
+	async.parallel([findUpdateRequests, findTasksWithUpdates], function(err) {
+		if (err) logger.error(err);
+		if (err) return next(err);
+
+		response.success = true;
+		res.status(200).json(response);
+	});
+
+	function findUpdateRequests(callback) {
+		UpdateRequest.find({ receiver: user })
+		.then(function(update_requests) {
+			response.update_requests = update_requests;
+			callback(null, update_requests);
+		})
+		.catch(function(err) {
+			callback(err, null);
+		});
+	}
+
+	function findTasksWithUpdates() {
+		Task.find({ assigner: user, status: 'in_progress' })
+		.populate('updates')
+		.then(function(tasks) {
+			response.tasks = tasks;
+			callback(null, tasks);
+		})
+		.catch(function(err) {
+			callback(err, null);
+		});
+	}
+
 };

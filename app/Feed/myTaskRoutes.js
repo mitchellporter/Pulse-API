@@ -8,4 +8,7 @@ router.route('/my_tasks')
 router.route('/tasks_created')
 .get(auth.getUser, taskController.tasksCreated);
 
+router.route('/updates')
+.get(auth.getUser, taskController.getUpdates)
+
 module.exports = router;
