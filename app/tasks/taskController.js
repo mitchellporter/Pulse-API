@@ -271,7 +271,7 @@ exports.getUpdates = function(req, res, next) {
 	});
 
 	function findUpdateRequests(callback) {
-		UpdateRequest.find({ receiver: user })
+		UpdateRequest.find({ receiver: user, status: 'sent' })
 		.then(function(update_requests) {
 			response.update_requests = update_requests;
 			callback(null, update_requests);
