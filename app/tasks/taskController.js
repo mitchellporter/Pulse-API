@@ -305,7 +305,7 @@ exports.getUpdates = function(req, res, next) {
 
 	function findTasksWithUpdates(callback) {
 		Task.find({ assigner: user, status: 'in_progress' })
-		.populate('updates')
+		.populate([{ path: 'updates'}, { path: 'assigner', select: '_id name email position avatar_url' }])
 		.then(function(tasks) {
 			response.tasks = tasks;
 			callback(null, tasks);
