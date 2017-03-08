@@ -270,6 +270,7 @@ function createDummyKoriUser() {
                 text: casual.title,
                 status: item_statuses[Math.floor(Math.random() * item_statuses.length)]
             });
+            if(items.length == 0) item._id = item_id;
             items.push(item);
         }
         logger.silly('About to save this many items: ' + items.length);

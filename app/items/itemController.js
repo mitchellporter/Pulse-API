@@ -37,17 +37,25 @@ exports.params = function(req, res, next, id) {
 // };
 
 // Use this for status changes - in_progress and completed
-exports.update = function(req, res, next) {
+exports.put = function(req, res, next) {
     var assignee = req.user;
     var task = req.task;
     var item = req.item;
+    
+    item.status = req.body.status;
+    item.isNew = false;
+    item.save()
+    .then(function(item) {
 
-    item.status = req.status;
-    Item.update(item)
-    .then(function() {
+        var index = task.items.indexOf(item)
+        if (index) {
+            logger.silly('contains!');
+            task.items[index] = item;
+        }
+
         res.status(200).json({
             success: true,
-            item: item
+            task: task
         });
 
         // TODO: Broadcast changes to assigner and assignees
