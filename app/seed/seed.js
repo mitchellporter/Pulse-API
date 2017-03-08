@@ -45,6 +45,7 @@ var dummy_task_due_dates = [Date.now() + 86400000, Date.now() + 172800000, Date.
 // 2 tasks assigned to allen - one from kori and one from me
 
 var task_id = '586ebcae9188e7b6bfdd85c4';
+var task_invitation_id = '58bf269e9b5a8ff83f9a94e2';
 var team_id = '58b080b2356e913f3a3af182';
 var item_id = '58b09c7c247aa67459185307';
 var update_request_id = '58b5f0a5e095de16fe4c2cda';
@@ -307,6 +308,11 @@ function createDummyKoriUser() {
                 receiver: mitchell,
                 status: task_invitation_statuses[Math.floor(Math.random() * task_invitation_statuses.length)]
             });
+            if (task_invitations.length == 0) {
+                logger.silly('ZERO TASK INVITATIONS');
+
+                task_invitation._id = task_invitation_id;
+            }
             task_invitations.push(task_invitation);
         }
         return TaskInvitation.create(task_invitations);

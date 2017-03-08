@@ -13,12 +13,6 @@ router.route('/')
 router.route('/:id')
 .get(taskController.getOne)
 
-router.route('/:id/accept')
-.post(auth.getUser, taskController.acceptTask);
-
-router.route('/:id/decline')
-.post(auth.getUser, taskController.declineTask);
-
 router.route('/:id/update_requests')
 .get(auth.getUser, updateRequestController.get)
 .post(auth.getUser, updateRequestController.requestUpdate)
@@ -28,6 +22,8 @@ router.route('/:id/update_requests')
 
 // router.route('/:id/send_update')
 // .post(auth.getUser, updateController.sendUpdate)
+
+router.use('/:id/invitations', require('./taskInvitationRoutes'));
 
 router.use('/:id/items', require('../items/itemRoutes'));
 
