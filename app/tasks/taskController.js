@@ -52,6 +52,27 @@ exports.getOne = function(req, res, next) {
 	});
 };
 
+exports.put = function(req, res, next) {
+	var task = req.task;
+	var status = req.body.status;
+
+	task.status = status;
+	task.isNew = false;
+	task.save()
+	.then(function(task) {
+		
+		task.populate([{ path: 'assigner' }, { path: 'assignees' }, { path: 'items' }]).execPopulate()
+		.then(function(task) {
+			res.status(201).json({
+				success: true,
+				task: task
+			});
+		})
+		.catch(next);
+	})
+	.catch(next);
+};
+
 exports.post = function(req, res, next) {
 	var assigner = req.user;
 	var items_json = req.body.items;

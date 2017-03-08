@@ -12,6 +12,7 @@ router.route('/')
 
 router.route('/:id')
 .get(taskController.getOne)
+.put(taskController.put)
 
 router.route('/:id/update_requests')
 .get(auth.getUser, updateRequestController.get)
