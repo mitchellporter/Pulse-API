@@ -1,5 +1,6 @@
 var logger = require('../../lib/logger');
 var UpdateRequest = require('./updateRequestModel');
+var Update = require('../updates/updateModel');
 var async = require('async');
 
 exports.params = function(req, res, next, id) {
@@ -40,6 +41,8 @@ exports.post = function(req, res, next) {
 
     var sender = req.user;
     var task = req.task;
+
+    requestUpdate();
    
     function requestUpdate() {
         logger.silly('requesting task update');
@@ -47,12 +50,12 @@ exports.post = function(req, res, next) {
             .then(function (task) {
 
                 var assignees = task.assignees;
-                var updates = [];
+                var update_requests = [];
                 async.forEachOf(assignees, function (value, key, callback) {
                     var assignee = value;
                     requestUpdateFromAssignee(assignee)
-                        .then(function (update) {
-                            updates.push(update);
+                        .then(function (update_request) {
+                            update_requests.push(update_request);
                             callback();
                         })
                         .catch(callback);
@@ -62,7 +65,7 @@ exports.post = function(req, res, next) {
 
                     res.status(201).json({
                         success: true,
-                        updates: updates
+                        update_requests: update_requests
                     });
                 });
             })
@@ -71,16 +74,16 @@ exports.post = function(req, res, next) {
         function requestUpdateFromAssignee(assignee) {
             logger.silly('assignee: ' + assignee);
             return new Promise(function (resolve, reject) {
-                var update = new Update(req.body);
-                update.sender = sender;
-                update.receiver = assignee;
-                update.task = task;
+                var update_request = new UpdateRequest(req.body);
+                update_request.sender = sender;
+                update_request.receiver = assignee;
+                update_request.task = task;
 
-                logger.silly('update: ' + update);
+                logger.silly('update: ' + update_request);
 
-                update.save()
-                    .then(resolve)
-                    .catch(reject);
+                update_request.save()
+                .then(resolve)
+                .catch(reject);
             });
         }
     }
