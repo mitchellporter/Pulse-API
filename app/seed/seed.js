@@ -108,8 +108,7 @@ function startSeed() {
     .then(createItemsForAllTasks)
     .then(createMitchellSentUpdateRequests)
     .then(createMitchellReceivedUpdateRequests)
-    .then(createUpdatesReceivedByMitchell)
-    .then(addUpdatesReceivedByMitchellToTasks)
+    .then(createUpdatesReceivedByMitchellForAllTasks)
     .then(handleSeedSuccess)
     .catch(handleSeedError);
 
@@ -434,6 +433,43 @@ function createDummyKoriUser() {
                 if (err) return reject(err);
                 return resolve();
             });
+        });
+    }
+
+    function createUpdatesReceivedByMitchellForAllTasks() {
+        var seed_item_key_used = false;
+        return new Promise(function(resolve, reject) {
+            async.forEachOf(mitchell_created_tasks, function (value, key, callback) {
+            var task = value;
+
+            logger.silly('creating updates for mitchell created tasks');
+            var updates = [];
+            for (var y = 0; y < 5; y++) {
+                // Create 5 items for each task
+                var update = new Update({
+                    sender: users[Math.floor(Math.random() * users.length)],
+                    receiver: mitchell,
+                    task: mitchell_created_tasks[Math.floor(Math.random() * mitchell_created_tasks.length)],
+                    completion_percentage: randomCompletionPercentage()
+                });
+                
+                updates.push(update);
+            }
+            logger.silly('About to save this many updates: ' + updates.length);
+            Update.create(updates)
+            .then(function(updates) {
+                task.updates = updates
+                task.isNew = false;
+                task.save()
+                .then(function(task) {
+                    callback();
+                })
+            })
+            .catch(callback);
+        }, function (err) {
+            if (err) return reject(err);
+            resolve();
+        });
         });
     }
 
