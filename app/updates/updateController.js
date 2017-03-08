@@ -16,10 +16,14 @@ exports.get = function(req, res, next) {
 };
 
 exports.post = function(req, res, next) {
+    var task = req.task;
     var sender = req.user;
+    var receiver = task.assigner;
 
     var update = new Update(req.body);
+    update.task = task;
     update.sender = sender;
+    update.receiver = receiver;
     
     update.save()
     .then(function(update) {

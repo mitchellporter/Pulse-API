@@ -28,10 +28,10 @@ exports.get = function(req, res, next) {
 }
 
 exports.getOne = function(req, res, next) {
-    var update = req.update;
+    var update_request = req.update_request;
     res.status(200).json({
         success: true,
-        update: update
+        update_request: update_request
     });
 }
 

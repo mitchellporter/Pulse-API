@@ -15,6 +15,7 @@ router.route('/:id')
 .put(taskController.put)
 
 router.use('/:id/update_requests', require('../update_requests/updateRequestRoutes'));
+router.use('/:id/updates', require('../updates/updateRoutes'));
 
 // router.route('/:id/request_updates')
 // .post(auth.getUser, updateController.requestUpdate)
