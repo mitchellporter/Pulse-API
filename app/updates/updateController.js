@@ -76,6 +76,23 @@ exports.post = function(req, res, next) {
             success: true,
             update: update
         });
+
+        logger.silly('about to send update notification!!!');
+        var channel = update.receiver;
+        var message = {
+            type: 'update',
+            update: update
+        }
+
+        messenger.sendMessage(channel, message)
+            .then(function (response) {
+                logger.silly('successfully sent update notification!');
+                logger.silly('response: ' + response);
+            })
+            .catch(function (err) {
+                logger.silly('error: ' + err);
+            })
+
     })
     .catch(next);
 };
