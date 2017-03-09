@@ -4,6 +4,7 @@ var TaskInvitation = require('./taskInvitationModel');
 var UpdateRequest = require('../update_requests/updateRequestModel');
 var Item = require('../items/itemModel');
 var async = require('async');
+var messenger = require('../messenger/messenger');
 
 exports.params = function(req, res, next, taskId) {
 	Task.findById(taskId)
@@ -67,6 +68,25 @@ exports.put = function(req, res, next) {
 				success: true,
 				task: task
 			});
+
+			if (task.status === 'completed') {
+				logger.silly('About to send task completed notification!!!');
+				var channel = task.assigner._id;
+				var message = {
+					type: 'task_completed',
+					task: task
+				}
+
+					messenger.sendMessage(channel, message)
+					.then(function (response) {
+						logger.silly('response: ' + response);
+					})
+					.catch(function (err) {
+						logger.silly('error: ' + err);
+					})
+
+			}
+
 		})
 		.catch(next);
 	})
