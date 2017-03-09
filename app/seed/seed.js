@@ -110,6 +110,8 @@ function startSeed() {
     .then(createMitchellSentUpdateRequests)
     .then(createMitchellReceivedUpdateRequests)
     .then(createUpdatesReceivedByMitchellForAllTasks)
+    .then(createKoriReceivedTasksInProgress)
+    .then(createKoriReceivedTasksCompleted)
     .then(handleSeedSuccess)
     .catch(handleSeedError);
 
@@ -270,6 +272,28 @@ function createDummyKoriUser() {
         return Task.create(tasks);
     }
 
+    function createKoriReceivedTasksInProgress(tasks) {
+        if (tasks && tasks.length != 0) final_tasks = final_tasks.concat(tasks);
+
+        logger.silly('creating tasks received by kori and in progress');
+
+        var tasks = [];
+        for (var x = 0; x < RECEIVED_TASKS_IN_PROGRESS_COUNT; x++) {
+            var task = new Task({
+                assigner: users[Math.floor(Math.random() * users.length)]._id,
+                assignees: kori,
+                title: '' + x,
+                details: casual.description,
+                due_date: randomDueDate(), // optional
+                status: 'in_progress',
+                update_day: update_days[Math.floor(Math.random() * update_days.length)],
+                completion_percentage: randomCompletionPercentage()
+            });
+            tasks.push(task);
+        }
+        return Task.create(tasks);
+    }
+
     function createMitchellReceivedTasksCompleted(tasks) {
         if (tasks && tasks.length != 0) final_tasks = final_tasks.concat(tasks);
         logger.silly('creating tasks received by mitchell and completed');
@@ -279,6 +303,27 @@ function createDummyKoriUser() {
             var task = new Task({
                 assigner: users[Math.floor(Math.random() * users.length)]._id,
                 assignees: mitchell,
+                title: '' + x,
+                details: casual.description,
+                due_date: randomDueDate(), // optional
+                status: 'completed',
+                update_day: update_days[Math.floor(Math.random() * update_days.length)],
+                completion_percentage: randomCompletionPercentage()
+            });
+            tasks.push(task);
+        }
+        return Task.create(tasks);
+    }
+
+    function createKoriReceivedTasksCompleted(tasks) {
+        if (tasks && tasks.length != 0) final_tasks = final_tasks.concat(tasks);
+        logger.silly('creating tasks received by mitchell and completed');
+
+        var tasks = [];
+        for (var x = 0; x < RECEIVED_TASKS_COMPLETED_COUNT; x++) {
+            var task = new Task({
+                assigner: users[Math.floor(Math.random() * users.length)]._id,
+                assignees: kori,
                 title: '' + x,
                 details: casual.description,
                 due_date: randomDueDate(), // optional
