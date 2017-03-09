@@ -5,6 +5,7 @@ var async = require('async');
 exports.params = function(req, res, next, id) {
     logger.silly('TASK INVITATION PARAMS HANDLER: ' + id);
     TaskInvitation.findById(id)
+    .populate([{ path: 'task', populate: [{ path: 'assigner' }, { path: 'assignees' }, { path: 'items' }] }])
 	.then(function(task_invitation) {
 		if(!task_invitation) return next(new Error('no task invitation exists with that id'));
 		req.task_invitation = task_invitation;
@@ -25,14 +26,21 @@ exports.put = function(req, res, next) {
     task_invitation.save()
     .then(function(task_invitation) {
 
-        task_invitation.populate([{ path: 'sender', select: '_id name email position avatar_url' }, { path: 'receiver', select: '_id name email position avatar_url' }]).execPopulate()
-        .then(function(task_invitation) {
-            res.status(201).json({
-                success: true,
-                task_invitation: task_invitation
-            });
+        var task = task_invitation.task;
+        task.status = 'in_progress';
+        task.isNew = false;
+        task.save()
+            .then(function (task) {
+                logger.silly('saved task status: ' + task.status);
+                task_invitation.populate([{ path: 'sender', select: '_id name email position avatar_url' }, { path: 'receiver', select: '_id name email position avatar_url' }]).execPopulate()
+                    .then(function (task_invitation) {
+                        res.status(201).json({
+                            success: true,
+                            task_invitation: task_invitation
+                        });
+                    })
+                    .catch(next);
         })
-        .catch(next);
     })
     .catch(next);
 };

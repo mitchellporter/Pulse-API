@@ -121,6 +121,7 @@ exports.post = function(req, res, next) {
 
 		createItems()
 		.then(createTask)
+		.then(populateAssignees)
 		.then(createTaskInvitations)
 		.then(function(task_invitations) {
 			var task = task_invitations[0].task;
@@ -134,7 +135,7 @@ exports.post = function(req, res, next) {
 				var task_invitation = value;
 				logger.silly('assignee: ' + task_invitation);
 
-				var channel = task_invitation.receiver;
+				var channel = task_invitation.receiver._id;
 				var message = {
 					type: 'task_assigned',
 					task_invitation: task_invitation
@@ -166,6 +167,11 @@ exports.post = function(req, res, next) {
 		function createTask(items) {
 			task.items = items;
 			return task.save();
+		}
+
+		function populateAssignees(task) {
+			logger.silly('populate assignees');
+			return task.populate('assignees').execPopulate();
 		}
 
 		function createTaskInvitations(task) {
