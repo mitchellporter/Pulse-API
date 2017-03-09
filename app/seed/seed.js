@@ -106,8 +106,8 @@ function startSeed() {
     .then(createMitchellReceivedTasksCompleted) // x
     .then(createTaskInvitationsSentToMitchell) // x
     .then(createTaskInvitationsSentByMitchell) // x
-    .then(createMitchellSentUpdateRequests)
-    .then(createMitchellReceivedUpdateRequests)
+    .then(createMitchellSentUpdateRequests) // x
+    .then(createMitchellReceivedUpdateRequests) // x
     .then(createUpdatesReceivedByMitchellForAllTasks)
     .then(createKoriReceivedTasksInProgress)
     .then(createKoriReceivedTasksCompleted)
