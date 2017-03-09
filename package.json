@@ -20,6 +20,7 @@
     "lodash": "4.17.4",
     "mongoose": "4.8.4",
     "morgan": "1.8.1",
+    "pubnub": "4.5.0",
     "throng": "4.0.0",
     "winston": "2.3.1"
   }
