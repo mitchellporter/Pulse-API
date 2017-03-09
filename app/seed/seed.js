@@ -23,7 +23,7 @@ var avatar_asset_names = ['AllisonReynolds', 'DinaAlexander', 'DylanMcKay', 'Edd
 'RichardWang', 'Rufio', 'SamEmerson', 'ScottHoward', 'SimonHolmes', 'TinaCarlyle', 'WillSmith'];
 
 var positions = ['iOS Developer', 'Android Developer', 'Mobile Designer', 'Web Designer', 'Devops', 'Database Engineer', 'Customer Service Rep', 'Sales / Marketing', 'CEO'];
-var task_titles = [''];
+var task_titles = ['Design the new navigation icons for the mobile app', 'We need a basic marketing website for the new app can', 'We need to review resumes for new Android developers'];
 
 // Permanent dummy users
 var dummy_user_kori_id = '585c2130f31b2fbff4efbf68';
@@ -202,7 +202,7 @@ function createDummyKoriUser() {
             var task = new Task({
                 assigner: mitchell,
                 assignees: users[Math.floor(Math.random() * users.length)]._id,
-                title: casual.title,
+                title: task_titles[Math.floor(Math.random() * task_titles.length)],
                 details: casual.description,
                 due_date: randomDueDate(), // optional
                 status: task_statuses[Math.floor(Math.random() * task_statuses.length)],
@@ -263,7 +263,7 @@ function createDummyKoriUser() {
             var task = new Task({
                 assigner: users[Math.floor(Math.random() * users.length)]._id,
                 assignees: mitchell,
-                title: '' + x,
+                title: task_titles[Math.floor(Math.random() * task_titles.length)],
                 details: casual.description,
                 due_date: randomDueDate(), // optional
                 status: 'in_progress',
@@ -286,7 +286,7 @@ function createDummyKoriUser() {
             var task = new Task({
                 assigner: users[Math.floor(Math.random() * users.length)]._id,
                 assignees: kori,
-                title: '' + x,
+                title: task_titles[Math.floor(Math.random() * task_titles.length)],
                 details: casual.description,
                 due_date: randomDueDate(), // optional
                 status: 'in_progress',
@@ -307,7 +307,7 @@ function createDummyKoriUser() {
             var task = new Task({
                 assigner: users[Math.floor(Math.random() * users.length)]._id,
                 assignees: mitchell,
-                title: '' + x,
+                title: task_titles[Math.floor(Math.random() * task_titles.length)],
                 details: casual.description,
                 due_date: randomDueDate(), // optional
                 status: 'completed',
@@ -328,7 +328,7 @@ function createDummyKoriUser() {
             var task = new Task({
                 assigner: users[Math.floor(Math.random() * users.length)]._id,
                 assignees: kori,
-                title: '' + x,
+                title: task_titles[Math.floor(Math.random() * task_titles.length)],
                 details: casual.description,
                 due_date: randomDueDate(), // optional
                 status: 'completed',
