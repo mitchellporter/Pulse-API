@@ -2,6 +2,7 @@ var logger = require('../../lib/logger');
 var UpdateRequest = require('./updateRequestModel');
 var Update = require('../updates/updateModel');
 var async = require('async');
+var messenger = require('../messenger/messenger');
 
 exports.params = function(req, res, next, id) {
     UpdateRequest.findById(id)
@@ -56,12 +57,32 @@ exports.post = function(req, res, next) {
                     requestUpdateFromAssignee(assignee)
                         .then(function (update_request) {
                             update_requests.push(update_request);
-                            callback();
+
+                                logger.silly('about to send update request notification to assignee: ' + assignee._id);
+                                logger.silly('about to send update request notification to update requests assignee id: ' + update_request.receiver._id);
+
+                                var channel = assignee._id;
+                                var message = {
+                                    type: 'update_request',
+                                    update_request: update_request
+                                }
+                                messenger.sendMessage(channel, message)
+                                    .then(function (response) {
+                                        logger.silly('response: ' + response);
+                                        callback();
+                                    })
+                                    .catch(function (err) {
+                                        logger.silly('error: ' + err.errorData);
+                                        logger.silly('status: ' + Object.keys(err.status));
+                                        callback(err);
+                                    });
                         })
                         .catch(callback);
                 }, function (err) {
                     if (err) logger.error(err);
                     if (err) return next(err);
+
+                    logger.silly('successfully sent update request notifications to all assignees!');
 
                     res.status(201).json({
                         success: true,
