@@ -104,14 +104,14 @@ function startSeed() {
     })
     .then(createMitchellReceivedTasksInProgress) // x
     .then(createMitchellReceivedTasksCompleted) // x
-    .then(createTaskInvitationsSentToMitchell) // 
-    .then(createTaskInvitationsSentByMitchell)
-    .then(createItemsForAllTasks)
+    .then(createTaskInvitationsSentToMitchell) // x
+    .then(createTaskInvitationsSentByMitchell) // x
     .then(createMitchellSentUpdateRequests)
     .then(createMitchellReceivedUpdateRequests)
     .then(createUpdatesReceivedByMitchellForAllTasks)
     .then(createKoriReceivedTasksInProgress)
     .then(createKoriReceivedTasksCompleted)
+    .then(createItemsForAllTasks)
     .then(createTaskInvitationsSentToKori)
     .then(createTaskInvitationsSentToKori)
     .then(handleSeedSuccess)
