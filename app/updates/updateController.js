@@ -1,6 +1,7 @@
 var logger = require('../../lib/logger');
 var Update = require('./updateModel');
 var async = require('async');
+var messenger = require('../messenger/messenger');
 
 exports.get = function(req, res, next) {
     var update_request = req.update_request;
@@ -30,13 +31,31 @@ exports.respondToUpdateRequest = function (req, res, next) {
             update.receiver = receiver;
 
             update.save()
-                .then(function (update) {
+            .then(function (update) {
+
                     res.status(201).json({
                         success: true,
                         update: update
                     });
-                })
-                .catch(next);
+
+                    logger.silly('about to send response to update request notification!!!');
+                    var channel = update.receiver;
+                    var message = {
+                        type: 'update',
+                        update: update
+                    }
+
+                    messenger.sendMessage(channel, message)
+                        .then(function (response) {
+                            logger.silly('successfully sent response to update request notification!');
+                            logger.silly('response: ' + response);
+                        })
+                        .catch(function (err) {
+                            logger.silly('error: ' + err);
+                        })
+
+            })
+            .catch(next);
         })
         .catch(next);
 };
