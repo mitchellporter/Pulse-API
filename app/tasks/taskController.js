@@ -121,21 +121,23 @@ exports.post = function(req, res, next) {
 
 		createItems()
 		.then(createTask)
-		.then(function(task) {
+		.then(createTaskInvitations)
+		.then(function(task_invitations) {
+			var task = task_invitations[0].task;
 			res.status(201).json({
 				success: true,
 				task: task
 			});
 
 			logger.silly('About to send task completed notification!!!');
-			async.forEachOf(task.assignees, function(value, key, callback) {
-				var assignee = value;
-				logger.silly('assignee: ' + assignee);
+			async.forEachOf(task_invitations, function(value, key, callback) {
+				var task_invitation = value;
+				logger.silly('assignee: ' + task_invitation);
 
-				var channel = assignee;
+				var channel = task_invitation.receiver;
 				var message = {
 					type: 'task_assigned',
-					task: task
+					task_invitation: task_invitation
 				}
 
 					messenger.sendMessage(channel, message)
@@ -164,6 +166,27 @@ exports.post = function(req, res, next) {
 		function createTask(items) {
 			task.items = items;
 			return task.save();
+		}
+
+		function createTaskInvitations(task) {
+			return new Promise(function (resolve, reject) {
+				var task_invitations = [];
+				async.eachOf(task.assignees, function (value, key, callback) {
+					var assignee = value;
+					var task_invitation = new TaskInvitation({
+						sender: task.assigner,
+						receiver: assignee,
+						task: task,
+					});
+					task_invitations.push(task_invitation);
+					callback();
+				}, function (err) {
+					if (err) return reject(err);
+					TaskInvitation.create(task_invitations)
+					.then(resolve)
+					.catch(reject);
+				});
+			});
 		}
 	});
 };
