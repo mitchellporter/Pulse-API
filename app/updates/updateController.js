@@ -67,6 +67,7 @@ exports.post = function(req, res, next) {
 
     var update = new Update(req.body);
     update.task = task;
+    logger.silly('TASK TASK TASK: ' + task);
     update.sender = sender;
     update.receiver = receiver;
     

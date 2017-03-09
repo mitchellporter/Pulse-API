@@ -45,6 +45,7 @@ var dummy_task_due_dates = [Date.now() + 86400000, Date.now() + 172800000, Date.
 // 2 tasks assigned to allen - one from kori and one from me
 
 var task_id = '586ebcae9188e7b6bfdd85c4';
+var mitchell_received_task_id = '58c0b10f10f3aa4b62cf01ba';
 var task_invitation_id = '58bf269e9b5a8ff83f9a94e2';
 var team_id = '58b080b2356e913f3a3af182';
 var item_id = '58b09c7c247aa67459185307';
@@ -263,6 +264,7 @@ function createDummyKoriUser() {
                 update_day: update_days[Math.floor(Math.random() * update_days.length)],
                 completion_percentage: randomCompletionPercentage()
             });
+            if (tasks.length == 0) task._id = mitchell_received_task_id;
             tasks.push(task);
         }
         return Task.create(tasks);

@@ -47,7 +47,7 @@ exports.post = function(req, res, next) {
    
     function requestUpdate() {
         logger.silly('requesting task update');
-        task.populate('assignees', '_id name email position avatar_url').execPopulate()
+        task.populate([{ path: 'assignees', select: '_id name email position avatar_url' }, { path: 'assignees', select: '_id name email position avatar_url' }]).execPopulate()
             .then(function (task) {
 
                 var assignees = task.assignees;
