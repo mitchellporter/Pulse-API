@@ -112,6 +112,8 @@ function startSeed() {
     .then(createKoriReceivedTasksInProgress)
     .then(createKoriReceivedTasksCompleted)
     .then(createItemsForAllTasks)
+    .then(createKoriSentUpdateRequests)
+    .then(createKoriReceivedUpdateRequests)
     .then(createTaskInvitationsSentToKori)
     .then(createTaskInvitationsSentToKori)
     .then(handleSeedSuccess)
@@ -466,6 +468,21 @@ function createDummyKoriUser() {
         return UpdateRequest.create(update_requests);
     }
 
+    function createKoriSentUpdateRequests() {
+        logger.silly('creating update requests sent by Mitchell');
+
+        var update_requests = [];
+        for (var x = 0; x < SENT_UPDATE_REQUEST_COUNT; x++) {
+            var update_request = new UpdateRequest({
+                sender: kori,
+                receiver: mitchell,
+                task: final_tasks[Math.floor(Math.random() * final_tasks.length)]
+            });
+            update_requests.push(update_request);
+        }
+        return UpdateRequest.create(update_requests);
+    }
+
     function createMitchellReceivedUpdateRequests() {
         logger.silly('creating update requests received by Mitchell');
 
@@ -474,6 +491,21 @@ function createDummyKoriUser() {
             var update_request = new UpdateRequest({
                 sender: users[Math.floor(Math.random() * users.length)],
                 receiver: mitchell,
+                task: final_tasks[Math.floor(Math.random() * final_tasks.length)]
+            });
+            update_requests.push(update_request);
+        }
+        return UpdateRequest.create(update_requests);
+    }
+
+    function createKoriReceivedUpdateRequests() {
+        logger.silly('creating update requests received by Mitchell');
+
+        var update_requests = [];
+        for (var x = 0; x < RECEIVED_UPDATE_REQUEST_COUNT; x++) {
+            var update_request = new UpdateRequest({
+                sender: users[Math.floor(Math.random() * users.length)],
+                receiver: kori,
                 task: final_tasks[Math.floor(Math.random() * final_tasks.length)]
             });
             update_requests.push(update_request);
