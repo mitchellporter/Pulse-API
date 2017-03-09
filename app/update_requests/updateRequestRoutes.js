@@ -14,6 +14,6 @@ router.route('/:id')
 
 router.route('/:id/updates')
 .get(auth.getUser, updateController.get)
-.post(auth.getUser, updateController.post)
+.post(auth.getUser, updateController.respondToUpdateRequest)
 
 module.exports = router;
