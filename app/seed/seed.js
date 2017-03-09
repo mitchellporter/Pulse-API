@@ -24,6 +24,8 @@ var avatar_asset_names = ['AllisonReynolds', 'DinaAlexander', 'DylanMcKay', 'Edd
 
 var positions = ['iOS Developer', 'Android Developer', 'Mobile Designer', 'Web Designer', 'Devops', 'Database Engineer', 'Customer Service Rep', 'Sales / Marketing', 'CEO'];
 var task_titles = ['Design the new navigation icons for the mobile app', 'We need a basic marketing website for the new app can', 'We need to review resumes for new Android developers'];
+var item_titles = ['Needs, Sign up button, place to input email address, or phone number.', 'Make sure to hi-light the press we recieved (Time, Inc. NYT.)', 'Show screen shots of the app in action.', 'Nice big hero image at the top.'];
+
 
 // Permanent dummy users
 var dummy_user_kori_id = '585c2130f31b2fbff4efbf68';
@@ -226,7 +228,7 @@ function createDummyKoriUser() {
             for (var y = 0; y < ITEM_COUNT; y++) {
                 // Create 5 items for each task
                 var item = new Item({
-                    text: casual.title,
+                    text: item_titles[Math.floor(Math.random() * item_titles.length)],
                     status: item_statuses[Math.floor(Math.random() * item_statuses.length)]
                 });
                 if (seed_item_key_used === false) {
