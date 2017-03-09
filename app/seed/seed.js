@@ -102,9 +102,9 @@ function startSeed() {
         users = dummy_users;
         return createMitchellCreatedTasks();
     })
-    .then(createMitchellReceivedTasksInProgress)
-    .then(createMitchellReceivedTasksCompleted)
-    .then(createTaskInvitationsSentToMitchell)
+    .then(createMitchellReceivedTasksInProgress) // x
+    .then(createMitchellReceivedTasksCompleted) // x
+    .then(createTaskInvitationsSentToMitchell) // 
     .then(createTaskInvitationsSentByMitchell)
     .then(createItemsForAllTasks)
     .then(createMitchellSentUpdateRequests)
@@ -112,6 +112,8 @@ function startSeed() {
     .then(createUpdatesReceivedByMitchellForAllTasks)
     .then(createKoriReceivedTasksInProgress)
     .then(createKoriReceivedTasksCompleted)
+    .then(createTaskInvitationsSentToKori)
+    .then(createTaskInvitationsSentToKori)
     .then(handleSeedSuccess)
     .catch(handleSeedError);
 
@@ -401,12 +403,44 @@ function createDummyKoriUser() {
         return TaskInvitation.create(task_invitations);
     }
 
+    function createTaskInvitationsSentToKori(tasks) {
+        if (tasks && tasks.length != 0) final_tasks = final_tasks.concat(tasks);
+
+        logger.silly('creating task invitations sent to Mitchell');
+        var task_invitations = [];
+        for (var x = 0; x < TASK_INVITATION_COUNT; x++) {
+            var task_invitation = new TaskInvitation({
+                sender: users[Math.floor(Math.random() * users.length)],
+                task: final_tasks[Math.floor(Math.random() * final_tasks.length)],
+                receiver: kori,
+                status: task_invitation_statuses[Math.floor(Math.random() * task_invitation_statuses.length)]
+            });
+            task_invitations.push(task_invitation);
+        }
+        return TaskInvitation.create(task_invitations);
+    }
+
     function createTaskInvitationsSentByMitchell() {
         logger.silly('creating task invitations sent by Mitchell');
         var task_invitations = [];
         for (var x = 0; x < TASK_INVITATION_COUNT; x++) {
             var task_invitation = new TaskInvitation({
                 sender: mitchell,
+                task: final_tasks[Math.floor(Math.random() * final_tasks.length)],
+                receiver: users[Math.floor(Math.random() * users.length)],
+                status: task_invitation_statuses[Math.floor(Math.random() * task_invitation_statuses.length)]
+            });
+            task_invitations.push(task_invitation);
+        }
+        return TaskInvitation.create(task_invitations);
+    }
+
+    function createTaskInvitationsSentByKori() {
+        logger.silly('creating task invitations sent by Mitchell');
+        var task_invitations = [];
+        for (var x = 0; x < TASK_INVITATION_COUNT; x++) {
+            var task_invitation = new TaskInvitation({
+                sender: kori,
                 task: final_tasks[Math.floor(Math.random() * final_tasks.length)],
                 receiver: users[Math.floor(Math.random() * users.length)],
                 status: task_invitation_statuses[Math.floor(Math.random() * task_invitation_statuses.length)]
