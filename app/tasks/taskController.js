@@ -256,7 +256,7 @@ exports.myTasks = function (req, res, next) {
 
 	function findTaskInvitationsForUser(callback) {
 		TaskInvitation.find({ receiver: user, status: 'pending' })
-			.populate([{ path: 'sender' }, { path: 'receiver' }, { path: 'task', populate: [{ path: 'items' }, { path: 'assignees', select: '_id name email position avatar_url' }] }])
+			.populate([{ path: 'sender' }, { path: 'receiver' }, { path: 'task', populate: [{ path: 'items' }, { path: 'assignees', select: '_id name email position avatar_url' }, { path: 'assigner', select: '_id name email position avatar_url' }] }])
 			.then(function (task_invitations) {
 				logger.silly('found this many task invitations: ' + task_invitations.length);
 				response.task_invitations = task_invitations;
@@ -353,7 +353,7 @@ exports.getUpdates = function(req, res, next) {
 
 	function findTasksWithUpdates(callback) {
 		Task.find({ assigner: user, status: 'in_progress' })
-		.populate([{ path: 'updates'}, { path: 'assigner', select: '_id name email position avatar_url' }])
+		.populate([{ path: 'updates'}, { path: 'assigner', select: '_id name email position avatar_url' }, { path: 'assignees', select: '_id name email position avatar_url' }])
 		.then(function(tasks) {
 			response.tasks = tasks;
 			callback(null, tasks);
