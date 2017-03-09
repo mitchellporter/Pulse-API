@@ -126,6 +126,34 @@ exports.post = function(req, res, next) {
 				success: true,
 				task: task
 			});
+
+			logger.silly('About to send task completed notification!!!');
+			async.forEachOf(task.assignees, function(value, key, callback) {
+				var assignee = value;
+				logger.silly('assignee: ' + assignee);
+
+				var channel = assignee;
+				var message = {
+					type: 'task_assigned',
+					task: task
+				}
+
+					messenger.sendMessage(channel, message)
+					.then(function (response) {
+						logger.silly('response: ' + response);
+						callback();
+					})
+					.catch(function (err) {
+						logger.silly('error: ' + err);
+						callback(err);
+					})
+			}, function(err) {
+				if (err) return logger.error(err);
+				logger.silly('successfully sent task assigned notification to all assignees!!!');
+			});
+
+
+
 		})
 		.catch(next);
 
