@@ -20,8 +20,8 @@ exports.respondToUpdateRequest = function (req, res, next) {
     var update_request = req.update_request;
     var sender = req.user;
     var receiver = update_request.sender;
-
-    update_request.populate('task').execPopulate()
+    
+    update_request.populate([{ path: 'task'}, { path: 'sender' }]).execPopulate()
         .then(function (update_request) {
             var task = update_request.task;
 
@@ -31,28 +31,36 @@ exports.respondToUpdateRequest = function (req, res, next) {
             update.receiver = receiver;
 
             update.save()
-            .then(function (update) {
+            .then(function(update) {
+                update_request.status = 'responded';
+                update_request.isNew = false;
+                return update_request.save();
+            })
+            .then(function (update_request) {
+
+                logger.silly('saved update_request: ' + update_request);
 
                     res.status(201).json({
                         success: true,
-                        update: update
+                        update: update,
+                        update_request: update_request
                     });
 
-                    logger.silly('about to send response to update request notification!!!');
-                    var channel = update.receiver;
-                    var message = {
-                        type: 'update',
-                        update: update
-                    }
+                    // logger.silly('about to send response to update request notification!!!');
+                    // var channel = update.receiver;
+                    // var message = {
+                    //     type: 'update',
+                    //     update: update
+                    // }
 
-                    messenger.sendMessage(channel, message)
-                        .then(function (response) {
-                            logger.silly('successfully sent response to update request notification!');
-                            logger.silly('response: ' + response);
-                        })
-                        .catch(function (err) {
-                            logger.silly('error: ' + err);
-                        })
+                    // messenger.sendMessage(channel, message)
+                    //     .then(function (response) {
+                    //         logger.silly('successfully sent response to update request notification!');
+                    //         logger.silly('response: ' + response);
+                    //     })
+                    //     .catch(function (err) {
+                    //         logger.silly('error: ' + err);
+                    //     })
 
             })
             .catch(next);
