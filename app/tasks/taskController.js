@@ -127,7 +127,8 @@ exports.post = function(req, res, next) {
 			var task = task_invitations[0].task;
 			res.status(201).json({
 				success: true,
-				task: task
+				task: task,
+				task_invitations: task_invitations
 			});
 
 			logger.silly('About to send task completed notification!!!');
