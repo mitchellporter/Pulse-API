@@ -102,6 +102,10 @@ exports.post = function(req, res, next) {
 	var task = new Task(req.body);
 	task.assigner = assigner;
 	// TODO: Set real due_date
+	var due_date_interval = req.body.due_date;
+	var due_date = new Date(1970, 0, 1);
+	due_date.setSeconds(due_date_interval);
+	task.due_date = due_date;
 
 	// Loop through items and create items
 	var items = [];
