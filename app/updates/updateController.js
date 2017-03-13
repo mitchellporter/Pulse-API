@@ -32,12 +32,13 @@ exports.respondToUpdateRequest = function (req, res, next) {
 
             update.save()
             .then(function(update) {
+
                 update_request.status = 'responded';
                 update_request.isNew = false;
                 return update_request.save();
             })
             .then(function (update_request) {
-
+                task.updates.push(update);
                 task.completion_percentage = update.completion_percentage;
                 task.isNew = false;
                 return task.save();
