@@ -91,7 +91,7 @@ exports.post = function(req, res, next) {
     update.save()
     .then(function(update) {
         // TODO: Need to use addToSet to prevent duplicates
-        task.updates.push(update._id);
+        task.updates.push(update);
         task.completion_percentage = update.completion_percentage;
         task.isNew = false;
         return task.save();
