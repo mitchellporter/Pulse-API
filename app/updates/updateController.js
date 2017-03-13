@@ -44,23 +44,7 @@ exports.respondToUpdateRequest = function (req, res, next) {
 
                 logger.silly('saved update_request: ' + update_request);
 
-                    
-
-                    // logger.silly('about to send response to update request notification!!!');
-                    // var channel = update.receiver;
-                    // var message = {
-                    //     type: 'update',
-                    //     update: update
-                    // }
-
-                    // messenger.sendMessage(channel, message)
-                    //     .then(function (response) {
-                    //         logger.silly('successfully sent response to update request notification!');
-                    //         logger.silly('response: ' + response);
-                    //     })
-                    //     .catch(function (err) {
-                    //         logger.silly('error: ' + err);
-                    //     })
+                sendMessage();
 
             })
             .then(function(task) {
@@ -73,6 +57,24 @@ exports.respondToUpdateRequest = function (req, res, next) {
             .catch(next);
         })
         .catch(next);
+
+    function sendMessage() {
+        logger.silly('about to send response to update request notification!!!');
+        var channel = update.receiver;
+        var message = {
+            type: 'update',
+            update: update
+        }
+
+        messenger.sendMessage(channel, message)
+            .then(function (response) {
+                logger.silly('successfully sent response to update request notification!');
+                logger.silly('response: ' + response);
+            })
+            .catch(function (err) {
+                logger.silly('error: ' + err);
+            })
+    }
 };
 
 exports.post = function(req, res, next) {
@@ -93,22 +95,6 @@ exports.post = function(req, res, next) {
         task.isNew = false;
         return task.save();
 
-        // logger.silly('about to send update notification!!!');
-        // var channel = update.receiver;
-        // var message = {
-        //     type: 'update',
-        //     update: update
-        // }
-
-        // messenger.sendMessage(channel, message)
-        //     .then(function (response) {
-        //         logger.silly('successfully sent update notification!');
-        //         logger.silly('response: ' + response);
-        //     })
-        //     .catch(function (err) {
-        //         logger.silly('error: ' + err);
-        //     })
-
     })
     .then(function(task) {
         res.status(201).json({
@@ -117,4 +103,22 @@ exports.post = function(req, res, next) {
         });
     })
     .catch(next);
+
+    // function sendMessage() {
+    //     logger.silly('about to send update notification!!!');
+    //     var channel = update.receiver;
+    //     var message = {
+    //         type: 'update',
+    //         update: update
+    //     }
+
+    //     messenger.sendMessage(channel, message)
+    //         .then(function (response) {
+    //             logger.silly('successfully sent update notification!');
+    //             logger.silly('response: ' + response);
+    //         })
+    //         .catch(function (err) {
+    //             logger.silly('error: ' + err);
+    //         })
+    // }
 };

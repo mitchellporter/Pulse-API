@@ -70,27 +70,31 @@ exports.put = function(req, res, next) {
 			});
 
 			if (task.status === 'completed') {
-				logger.silly('About to send task completed notification!!!');
-				var channel = task.assigner._id;
-				var message = {
-					type: 'task_completed',
-					task: task
-				}
-
-					messenger.sendMessage(channel, message)
-					.then(function (response) {
-						logger.silly('response: ' + response);
-					})
-					.catch(function (err) {
-						logger.silly('error: ' + err);
-					})
-
+				sendMessage();
 			}
 
 		})
 		.catch(next);
 	})
 	.catch(next);
+
+
+	function sendMessage() {
+		logger.silly('About to send task completed notification!!!');
+		var channel = task.assigner._id;
+		var message = {
+			type: 'task_completed',
+			task: task
+		}
+
+		messenger.sendMessage(channel, message)
+			.then(function (response) {
+				logger.silly('response: ' + response);
+			})
+			.catch(function (err) {
+				logger.silly('error: ' + err);
+			})
+	}
 };
 
 exports.post = function(req, res, next) {
@@ -140,66 +144,66 @@ exports.post = function(req, res, next) {
 				var task_invitation = value;
 				logger.silly('assignee: ' + task_invitation);
 
-				var channel = task_invitation.receiver._id;
-				var message = {
-					type: 'task_assigned',
-					task_invitation: task_invitation
-				}
-
-					messenger.sendMessage(channel, message)
-					.then(function (response) {
-						logger.silly('response: ' + response);
-						callback();
-					})
-					.catch(function (err) {
-						logger.silly('error: ' + err);
-						callback(err);
-					})
 			}, function(err) {
 				if (err) return logger.error(err);
 				logger.silly('successfully sent task assigned notification to all assignees!!!');
 			});
-
-
-
 		})
 		.catch(next);
+	});
 
-		function createItems() {
-			return Item.create(items);	
-		}
+	function createItems() {
+		return Item.create(items);
+	}
 
-		function createTask(items) {
-			task.items = items;
-			return task.save();
-		}
+	function createTask(items) {
+		task.items = items;
+		return task.save();
+	}
 
-		function populateAssignees(task) {
-			logger.silly('populate assignees');
-			return task.populate('assignees').execPopulate();
-		}
+	function populateAssignees(task) {
+		logger.silly('populate assignees');
+		return task.populate('assignees').execPopulate();
+	}
 
-		function createTaskInvitations(task) {
-			return new Promise(function (resolve, reject) {
-				var task_invitations = [];
-				async.eachOf(task.assignees, function (value, key, callback) {
-					var assignee = value;
-					var task_invitation = new TaskInvitation({
-						sender: task.assigner,
-						receiver: assignee,
-						task: task,
-					});
-					task_invitations.push(task_invitation);
-					callback();
-				}, function (err) {
-					if (err) return reject(err);
-					TaskInvitation.create(task_invitations)
+	function createTaskInvitations(task) {
+		return new Promise(function (resolve, reject) {
+			var task_invitations = [];
+			async.eachOf(task.assignees, function (value, key, callback) {
+				var assignee = value;
+				var task_invitation = new TaskInvitation({
+					sender: task.assigner,
+					receiver: assignee,
+					task: task,
+				});
+				task_invitations.push(task_invitation);
+				callback();
+			}, function (err) {
+				if (err) return reject(err);
+				TaskInvitation.create(task_invitations)
 					.then(resolve)
 					.catch(reject);
-				});
 			});
+		});
+	}
+
+	function sendMessage() {
+		var channel = task_invitation.receiver._id;
+		var message = {
+			type: 'task_assigned',
+			task_invitation: task_invitation
 		}
-	});
+
+		messenger.sendMessage(channel, message)
+			.then(function (response) {
+				logger.silly('response: ' + response);
+				callback();
+			})
+			.catch(function (err) {
+				logger.silly('error: ' + err);
+				callback(err);
+			})
+	}
 };
 
 exports.acceptTask = function(req, res, next) {

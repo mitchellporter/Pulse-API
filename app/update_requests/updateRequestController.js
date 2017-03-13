@@ -61,21 +61,7 @@ exports.post = function(req, res, next) {
                                 logger.silly('about to send update request notification to assignee: ' + assignee._id);
                                 logger.silly('about to send update request notification to update requests assignee id: ' + update_request.receiver._id);
 
-                                var channel = assignee._id;
-                                var message = {
-                                    type: 'update_request',
-                                    update_request: update_request
-                                }
-                                messenger.sendMessage(channel, message)
-                                    .then(function (response) {
-                                        logger.silly('response: ' + response);
-                                        callback();
-                                    })
-                                    .catch(function (err) {
-                                        logger.silly('error: ' + err.errorData);
-                                        logger.silly('status: ' + Object.keys(err.status));
-                                        callback(err);
-                                    });
+                                sendMessage();
                         })
                         .catch(callback);
                 }, function (err) {
@@ -106,6 +92,24 @@ exports.post = function(req, res, next) {
                 .then(resolve)
                 .catch(reject);
             });
+        }
+
+        function sendMessage() {
+            var channel = assignee._id;
+            var message = {
+                type: 'update_request',
+                update_request: update_request
+            }
+            messenger.sendMessage(channel, message)
+                .then(function (response) {
+                    logger.silly('response: ' + response);
+                    callback();
+                })
+                .catch(function (err) {
+                    logger.silly('error: ' + err.errorData);
+                    logger.silly('status: ' + Object.keys(err.status));
+                    callback(err);
+                });
         }
     }
 
