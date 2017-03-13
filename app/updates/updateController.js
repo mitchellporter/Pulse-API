@@ -84,7 +84,6 @@ exports.post = function(req, res, next) {
 
     var update = new Update(req.body);
     update.task = task;
-    logger.silly('TASK TASK TASK: ' + task);
     update.sender = sender;
     update.receiver = receiver;
     
@@ -102,24 +101,26 @@ exports.post = function(req, res, next) {
             success: true,
             update: update
         });
+
+        sendMessage();
     })
     .catch(next);
 
-    // function sendMessage() {
-    //     logger.silly('about to send update notification!!!');
-    //     var channel = update.receiver;
-    //     var message = {
-    //         type: 'update',
-    //         update: update
-    //     }
+    function sendMessage() {
+        logger.silly('about to send update notification!!!');
+        var channel = update.receiver;
+        var message = {
+            type: 'update',
+            update: update
+        }
 
-    //     messenger.sendMessage(channel, message)
-    //         .then(function (response) {
-    //             logger.silly('successfully sent update notification!');
-    //             logger.silly('response: ' + response);
-    //         })
-    //         .catch(function (err) {
-    //             logger.silly('error: ' + err);
-    //         })
-    // }
+        messenger.sendMessage(channel, message)
+            .then(function (response) {
+                logger.silly('successfully sent update notification!');
+                logger.silly('response: ' + response);
+            })
+            .catch(function (err) {
+                logger.silly('error: ' + err);
+            })
+    }
 };
