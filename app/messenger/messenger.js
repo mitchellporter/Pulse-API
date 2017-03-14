@@ -11,10 +11,11 @@ var test_pub_channel = 'nodejs_channel'; // messages sent from me
 var test_sub_channel = 'ios_channel' // messages from iOS client
 
 exports.sendMessage = function(channel, message) {
-    return pubnub.publish({
-        channel: channel,
-        message: message
-    });
+    return Promise.resolve();
+    // return pubnub.publish({
+    //     channel: channel,
+    //     message: message
+    // });
 };
 
 // exports.sendMessage = function(channel, message) {
