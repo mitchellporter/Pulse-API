@@ -35,6 +35,9 @@ var mitchell_avatar_url = 'https://d33833kh9ui3rd.cloudfront.net/mitchell.png';
 var dummy_user_allen_id = '5881130a387e980f48c743f7';
 var allen_avatar_url = 'https://d33833kh9ui3rd.cloudfront.net/allen.png';
 
+var dummy_user_arch_id = '58c70df6105bd171feeb2cbc';
+var arch_avatar_url = 'https://d33833kh9ui3rd.cloudfront.net/arch.png'
+
 // Dummy project + task
 var dummy_task_ids = ['586ebcae9188e7b6bfdd85c4', '58a4a8c2800575168e6540a1', '58a4aad7b9b05716731911c8', '58a4da3f17c40703dcf50321'];
 var dummy_task_names = ['Hummingbird iOS App', 'Hummingbird Android App', 'Hummingbird Gmail Plugin', 'Hummingbird Slack Bot'];
@@ -76,6 +79,7 @@ function startSeed() {
     var mitchell;
     var kori;
     var allen; 
+    var arch;
 
     var design_first_apps_team;
     var users;
@@ -98,6 +102,10 @@ function startSeed() {
     })
     .then(function(allen_user) {
         allen = allen_user;
+        return createDummyArchUser();
+    })
+    .then(function(arch_user) {
+        arch = arch_user;
         return createUsers();
     })
     .then(function(dummy_users) {
@@ -175,6 +183,21 @@ function createDummyKoriUser() {
             email_address: 'allen@designfirstapps.com',
             position: 'iOS Developer',
             avatar_url: allen_avatar_url,
+            team: design_first_apps_team
+		});
+		return user.save();
+    }
+
+    function createDummyArchUser() {  
+        logger.silly('creating arch dummy user');
+
+		var user = new User({
+			_id: new mongoose.mongo.ObjectId(dummy_user_arch_id),
+            name: 'Arch',
+            password: '1234',
+            email_address: 'arch@designfirstapps.com',
+            position: 'web dev',
+            avatar_url: arch_avatar_url,
             team: design_first_apps_team
 		});
 		return user.save();
