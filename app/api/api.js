@@ -1,5 +1,6 @@
 var router = require('express').Router();
 
+router.use('/auth', require('../auth/routes'));
 router.use('/users', require('../users/userRoutes'));
 router.use('/tasks', require('../tasks/taskRoutes'));
 router.use('/task_invitations', require('../tasks/taskInvitationRoutes'));

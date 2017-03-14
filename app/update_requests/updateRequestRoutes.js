@@ -3,17 +3,20 @@ var updateRequestController = require('./updateRequestController');
 var updateController = require('../updates/updateController');
 var auth = require('../auth/auth');
 
+var checkUser = [auth.decodeToken(), auth.getUser];
+
+
 router.param('id', updateRequestController.params);
 
 router.route('/')
-.get(auth.getUser, updateRequestController.get)
-.post(auth.getUser, updateRequestController.post)
+.get(checkUser, updateRequestController.get)
+.post(checkUser, updateRequestController.post)
 
 router.route('/:id')
-.get(auth.getUser, updateRequestController.getOne)
+.get(checkUser, updateRequestController.getOne)
 
 router.route('/:id/updates')
-.get(auth.getUser, updateController.get)
-.post(auth.getUser, updateController.respondToUpdateRequest)
+.get(checkUser, updateController.get)
+.post(checkUser, updateController.respondToUpdateRequest)
 
 module.exports = router;

@@ -10,5 +10,9 @@ module.exports = {
 	mongo_url: 'mongodb://localhost/pulse',
 	
 	// Concurrency
-	web_concurrency: process.env.WEB_CONCURRENCY || 1
+	web_concurrency: process.env.WEB_CONCURRENCY || 1,
+
+	secrets: {
+		jwt: process.env.JWT_KEY || 'TL9rQ9VSxG4MGk+FleLXrcT6r6819YwuxIhCF+On2pE='
+	}
 }
