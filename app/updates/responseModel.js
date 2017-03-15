@@ -22,7 +22,11 @@ var ResponseSchema = new Schema({
         required: true,
         default: 'requested',
         enum: statuses
-    }
+    },
+    completion_percentage: {
+		type: Number,
+		required: true
+	}
 });
 
 ResponseSchema.pre('validate', function(next) {

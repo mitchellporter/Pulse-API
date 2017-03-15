@@ -79,19 +79,20 @@ exports.respondToUpdateRequest = function (req, res, next) {
 };
 
 exports.post = function(req, res, next) {
+
     var task = req.task;
+    var type = req.body.type;
 
     var update = new Update(req.body);
     update.task = task;
+    update.type = type;
     
     update.save()
     .then(function(update) {
         // TODO: Need to use addToSet to prevent duplicates
         task.updates.push(update);
-        task.completion_percentage = update.completion_percentage;
         task.isNew = false;
         return task.save();
-
     })
     .then(function(task) {
         res.status(201).json({
