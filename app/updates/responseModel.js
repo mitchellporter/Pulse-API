@@ -1,6 +1,8 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
+var statuses = ['requested', 'sent'];
+
 var ResponseSchema = new Schema({
     created_at: {
         type: Date,
@@ -10,10 +12,16 @@ var ResponseSchema = new Schema({
         type: Date,
         required: true
     },
-    sender: {
+    assignee: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: true
+    },
+    status: {
+        type: String,
+        required: true,
+        default: 'requested',
+        enum: statuses
     }
 });
 

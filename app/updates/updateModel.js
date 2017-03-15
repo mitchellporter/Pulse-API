@@ -1,7 +1,7 @@
+var async = require('async');
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
-
-var ResponseSchema = require('./responseModel').schema;
+var Response = require('./responseModel');
 
 var types = ['automated', 'requested', 'random'];
 
@@ -28,13 +28,31 @@ var UpdateSchema = new Schema({
 		type: Number,
 		required: true
 	},
-	responses: [ResponseSchema]
+	responses: [Response.schema]
 });
 
 UpdateSchema.pre('validate', function(next) {
 	if(!this.created_at) this.created_at = new Date();
 	this.updated_at = new Date();
 	next();
+});
+
+UpdateSchema.pre('save', function(next) {
+	if (!this.isNew) return next();
+
+	// TODO: task should never be an id here, we need the real task object
+	var task = this.task;
+	async.forEachOf(task.assignees, function(value, key, callback) {
+		var assignee = value;
+		var response = new Response({
+			assignee: assignee
+		});
+		this.responses.push(response);
+		callback();
+	}, function(err) {
+		if (err) return next(err);
+		next();
+	});
 });
 
 UpdateSchema.methods = {
