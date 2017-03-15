@@ -26,28 +26,18 @@ var positions = ['iOS Developer', 'Android Developer', 'Mobile Designer', 'Web D
 var task_titles = ['Design the new navigation icons for the mobile app', 'We need a basic marketing website for the new app can', 'We need to review resumes for new Android developers'];
 var item_titles = ['Needs, Sign up button, place to input email address, or phone number.', 'Make sure to hi-light the press we recieved (Time, Inc. NYT.)', 'Show screen shots of the app in action.', 'Nice big hero image at the top.'];
 
-
 // Permanent dummy users
 var dummy_user_kori_id = '585c2130f31b2fbff4efbf68';
 var kori_avatar_url = 'https://d33833kh9ui3rd.cloudfront.net/kori.png';
 var dummy_user_mitchell_id = '586ecdc0213f22d94db5ef7f';
 var mitchell_avatar_url = 'https://d33833kh9ui3rd.cloudfront.net/mitchell.png';
-var dummy_user_allen_id = '5881130a387e980f48c743f7';
-var allen_avatar_url = 'https://d33833kh9ui3rd.cloudfront.net/allen.png';
 
 var dummy_user_arch_id = '58c70df6105bd171feeb2cbc';
 var arch_avatar_url = 'https://d33833kh9ui3rd.cloudfront.net/arch.png'
 
-// Dummy project + task
-var dummy_task_ids = ['586ebcae9188e7b6bfdd85c4', '58a4a8c2800575168e6540a1', '58a4aad7b9b05716731911c8', '58a4da3f17c40703dcf50321'];
-var dummy_task_names = ['Hummingbird iOS App', 'Hummingbird Android App', 'Hummingbird Gmail Plugin', 'Hummingbird Slack Bot'];
 
 // 1 day in ms, 2 days, ... 
 var dummy_task_due_dates = [Date.now() + 86400000, Date.now() + 172800000, Date.now() + 259200000, Date.now() + 345600000];
-
-// 2 tasks assigned to kori - one from me and one from allen
-// 2 tasks assigned to me - one from kori and one from allen
-// 2 tasks assigned to allen - one from kori and one from me
 
 var task_id = '586ebcae9188e7b6bfdd85c4';
 var task_invitation_id = '58bf269e9b5a8ff83f9a94e2';
