@@ -50,26 +50,46 @@ exports.put = function(req, res, next) {
     var assignee = req.user;
     var task = req.task;
     var item = req.item;
-    
+
     item.status = req.body.status;
     item.isNew = false;
-    item.save()
-    .then(function(item) {
 
-        var index = task.items.indexOf(item)
-        if (index) {
-            logger.silly('contains!');
-            task.items[index] = item;
-        }
+    task.isNew = false;
 
-        res.status(200).json({
-            success: true,
-            task: task
-        });
+    var index = task.items.indexOf(item)
+    if (index != undefined) {
+        logger.silly('contains!');
+        task.items[index] = item;
+    }
 
-        // TODO: Broadcast changes to assigner and assignees
-    })
-    .catch(next);
+    task.save()
+        .then(function (task) {
+            res.status(200).json({
+                success: true,
+                task: task
+            });
+        })
+        .catch(next);
+
+    
+
+    // item.save()
+    // .then(function(item) {
+
+        // var index = task.items.indexOf(item)
+        // if (index) {
+        //     logger.silly('contains!');
+        //     task.items[index] = item;
+        // }
+
+        // res.status(200).json({
+        //     success: true,
+        //     task: task
+        // });
+
+    //     // TODO: Broadcast changes to assigner and assignees
+    // })
+    // .catch(next);
 };
 
 exports.delete = function(req, res, next) {
