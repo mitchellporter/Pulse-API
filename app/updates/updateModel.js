@@ -1,6 +1,8 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
+var ResponseSchema = require('./responseModel').schema;
+
 var types = ['automated', 'requested', 'random'];
 
 var UpdateSchema = new Schema({
@@ -25,7 +27,8 @@ var UpdateSchema = new Schema({
 	completion_percentage: {
 		type: Number,
 		required: true
-	}
+	},
+	responses: [ResponseSchema]
 });
 
 UpdateSchema.pre('validate', function(next) {
