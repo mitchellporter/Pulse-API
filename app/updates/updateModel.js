@@ -63,4 +63,11 @@ UpdateSchema.methods = {
 	}
 }
 
+function getResponseForAssignee(id) {
+	var response = this.responses.find(function(response) {
+		return response.assignee == id;
+	});
+	return response;
+}
+
 module.exports = mongoose.model('Update', UpdateSchema);
