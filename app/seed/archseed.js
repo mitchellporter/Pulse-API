@@ -67,7 +67,7 @@ function startSeed() {
     var arch;
 
     var design_first_apps_team;
-
+    logger.silly('starting arch seed process...');
     dropDb()
         .then(createTeam)
         .then(function (team) {

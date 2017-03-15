@@ -1,3 +1,4 @@
+var logger = require('../../lib/logger');
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var Item = require('../items/itemModel').schema;
@@ -56,6 +57,7 @@ var TaskSchema = new Schema({
 });
 
 TaskSchema.pre('validate', function(next) {
+	logger.silly('Task Validation!!!!');
 	if(!this.created_at) this.created_at = new Date();
 	this.updated_at = new Date();
 	next();
