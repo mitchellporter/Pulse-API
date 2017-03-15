@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
+var Item = require('../items/itemModel').schema;
 
 var statuses = ['pending', 'in_progress', 'completed'];
 var update_days = ['monday', 'wednesday', 'friday'];
@@ -27,11 +28,7 @@ var TaskSchema = new Schema({
         type: String,
         required: true
     },
-	items: [{
-		type: mongoose.Schema.Types.ObjectId,
-		ref: 'Item',
-        required: true
-	}],
+	items: [Item],
     due_date: {
         type: Date
     },

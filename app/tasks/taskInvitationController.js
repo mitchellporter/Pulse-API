@@ -3,7 +3,6 @@ var TaskInvitation = require('./taskInvitationModel');
 var async = require('async');
 
 exports.params = function(req, res, next, id) {
-    logger.silly('TASK INVITATION PARAMS HANDLER: ' + id);
     TaskInvitation.findById(id)
     .populate([{ path: 'task', populate: [{ path: 'assigner' }, { path: 'assignees' }, { path: 'items' }] }])
 	.then(function(task_invitation) {

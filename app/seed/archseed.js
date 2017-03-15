@@ -55,9 +55,6 @@ var team_id = '58b080b2356e913f3a3af182';
 var item_id = '58b09c7c247aa67459185307';
 
 // Constants
-var task_invitation_statuses = ['pending', 'accepted', 'denied'];
-var task_statuses = ['pending', 'in_progress', 'completed'];
-var item_statuses = ['in_progress', 'completed'];
 var update_days = ['monday', 'wednesday', 'friday'];
 
 mongoose.connection.on('connected', function () {
@@ -151,6 +148,8 @@ function startSeed() {
             var item = new Item({
                 text: 'This is an individual item on the task.',
             });
+            if (task.items.length == 0) item._id = item_id;
+            logger.silly('item: ' + item);
             task.items.push(item);
         }
         task.isNew = false;
@@ -159,6 +158,7 @@ function startSeed() {
 
     function createTaskInvitation(task) {
             var task_invitation = new TaskInvitation({
+                _id: task_invitation_id,
                 sender: boss_man,
                 receiver: arch,
                 task: task,

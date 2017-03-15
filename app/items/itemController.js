@@ -2,15 +2,24 @@ var logger = require('../../lib/logger');
 var Item = require('./itemModel');
 
 exports.params = function(req, res, next, id) {
-    Item.findById(id)
-	.then(function(item) {
-		if(!item) return next(new Error('no item exists with that id'));
-		req.item = item;
-		next();
-	})
-	.catch(function(err) {
-		next(err);
-	})
+    var items = req.task.items;
+    var item = items.find(function(item) {
+        return item._id == id;
+    });
+    
+    if (!item) return new(new Error('no item exists with that id'));
+    req.item = item;
+    next();
+
+    // Item.findById(id)
+	// .then(function(item) {
+	// 	if(!item) return next(new Error('no item exists with that id'));
+	// 	req.item = item;
+	// 	next();
+	// })
+	// .catch(function(err) {
+	// 	next(err);
+	// })
 };
 
 

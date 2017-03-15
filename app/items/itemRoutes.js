@@ -7,7 +7,7 @@ var checkUser = [auth.decodeToken(), auth.getUser];
 
 router.param('id', itemController.params);
 
-router.route(checkUser, '/:id')
-.put(itemController.put)
+router.route('/:id')
+.put(checkUser, itemController.put)
 
 module.exports = router;

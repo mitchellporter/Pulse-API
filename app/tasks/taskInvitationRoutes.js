@@ -6,8 +6,8 @@ var checkUser = [auth.decodeToken(), auth.getUser];
 
 router.param('id', taskInvitationController.params);
 
-router.route(checkUser, '/:id')
-.put(taskInvitationController.put)
+router.route('/:id')
+.put(checkUser, taskInvitationController.put)
 
 // router.route('/')
 // .get(taskController.get)
