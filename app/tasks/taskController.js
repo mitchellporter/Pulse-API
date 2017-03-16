@@ -1,7 +1,6 @@
 var logger = require('../../lib/logger');
 var Task = require('./taskModel');
 var TaskInvitation = require('./taskInvitationModel');
-var UpdateRequest = require('../update_requests/updateRequestModel');
 var Item = require('../items/itemModel');
 var async = require('async');
 var messenger = require('../messenger/messenger');
@@ -223,33 +222,6 @@ exports.acceptTask = function(req, res, next) {
 
 exports.declineTask = function(req, res, next) {
 
-};
-
-// TODO: This breaks with multiple assignees
-exports.requestUpdate = function(req, res, next) {
-	logger.silly('About to request task update');
-
-	var sender = req.user;
-	var task = req.task;
-	task.status = 'requires_update';
-
-	// 1. Update task status to requires_update
-	// 2. Populate updated task model's assignees array with id's
-	// 3. Loop through assignee id's and send real-time updates to them
-
-	Task.update(task)
-	.then(function() {
-
-		task.populate('assignees', '_id').execPopulate()
-		.then(function(task) {
-			// TODO: Loop through assignees and send real-time update w/ task + new "requires_update" status
-			res.status(201).json({
-				success: true
-			});
-		})
-		.catch(next);
-	})
-	.catch(next);
 };
 
 exports.sendUpdate = function(req, res, next) {

@@ -7,7 +7,6 @@ var User = require('../users/userModel');
 var Task = require('../tasks/taskModel');
 var TaskInvitation = require('../tasks/taskInvitationModel');
 var Item = require('../items/itemModel');
-var UpdateRequest = require('../update_requests/updateRequestModel');
 var Update = require('../updates/updateModel');
 var async = require('async');
 var casual = require('casual');
