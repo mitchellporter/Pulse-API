@@ -1,7 +1,7 @@
 var logger = require('../../lib/logger');
 var Task = require('../tasks/taskModel');
 var TaskInvitation = require('../tasks/taskInvitationModel');
-var UpdateRequest = require('../update_requests/updateRequestModel');
+var Update = require('../updates/updateModel');
 var Item = require('../items/itemModel');
 var async = require('async');
 var messenger = require('../messenger/messenger');
@@ -52,9 +52,13 @@ exports.myTasks = function (req, res, next) {
 
 exports.getUpdates = function(req, res, next) {
 	var user = req.user;
+	
+	var response = {
+		updates: []
+	};
 
-	var response = {};
-	async.parallel([findUpdateRequests, findTasksWithUpdates], function(err) {
+	// Can turn this into one request
+	async.parallel([findUpdatesThatNeedResponses, findUpdatesForAssigner], function(err) {
 		if (err) logger.error(err);
 		if (err) return next(err);
 
@@ -62,30 +66,37 @@ exports.getUpdates = function(req, res, next) {
 		res.status(200).json(response);
 	});
 
-	function findUpdateRequests(callback) {
-		UpdateRequest.find({ receiver: user, status: 'sent' })
-		.populate([{ path: 'sender' }, { path: 'receiver' }, { path: 'task', populate: [{ path: 'assigner', select: '_id name position email avatar_url' }, { path: 'assignees', select: '_id name position email avatar_url' }] }]) // task.assigner
-		.then(function(update_requests) {
-			response.update_requests = update_requests;
-			callback(null, update_requests);
+	function findUpdatesThatNeedResponses(callback) {
+		// Filter by responses.response.assignee == user._id AND status == requested
+
+		// Updates we want:
+		// A. Give me Updates that contain a response with an assignee id equal to mine AND a status of requested aka “updates I haven’t responded to”. This is the first table view section.
+		// B. Give me Updates where the task's assigner id is equal to mine
+
+		Update.find({ $and: [{ 'responses.assignee': user}, { 'responses.status': 'requested' }] })
+		.populate([{ path: 'task', populate: [{ path: 'assigner', select: '_id name position email avatar_url' }, { path: 'assignees', select: '_id name position email avatar_url' }] }]) // task.assigner
+		.then(function(updates) {
+			Array.prototype.push.apply(response.updates, updates);
+			callback(null, updates);
 		})
 		.catch(function(err) {
 			callback(err, null);
 		});
 	}
 
-	function findTasksWithUpdates(callback) {
-		Task.find({ assigner: user, status: 'in_progress' })
-		.populate([{ path: 'updates'}, { path: 'assigner', select: '_id name email position avatar_url' }, { path: 'assignees', select: '_id name email position avatar_url' }])
-		.then(function(tasks) {
-			response.tasks = tasks;
-			callback(null, tasks);
+	function findUpdatesForAssigner(callback) {
+		logger.silly('finding updates for assigner');
+
+		Update.findByTaskAssigner(user)
+		.populate([ { path: 'task', populate: [{ path: 'assigner', select: '_id name position email avatar_url' }, { path: 'assignees', select: '_id name position email avatar_url' }] }]) // task.assigner
+		.then(function(updates) {
+			Array.prototype.push.apply(response.updates, updates);
+			callback(null, updates);
 		})
 		.catch(function(err) {
 			callback(err, null);
 		});
 	}
-
 };
 
 exports.tasksCreated = function (req, res, next) {

@@ -3,6 +3,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var Response = require('../responses/responseModel');
 var logger = require('../../lib/logger');
+var Task = require('../tasks/taskModel');
 
 var types = ['automated', 'requested', 'random'];
 
@@ -61,11 +62,16 @@ UpdateSchema.methods = {
 	}
 }
 
-function getResponseForAssignee(id) {
-	var response = this.responses.find(function(response) {
-		return response.assignee == id;
-	});
-	return response;
+UpdateSchema.statics.findByTaskAssigner = function (assigner, callback) {
+  var query = this.find();
+  var task_id = this.task;
+// B. Give me Updates where the task's assigner id is equal to mine
+
+  Task.findOne({ _id: task_id })
+  .then(function(task) {
+		query.where({ assigner: assigner });
+  })
+  return query
 }
 
 module.exports = mongoose.model('Update', UpdateSchema);
