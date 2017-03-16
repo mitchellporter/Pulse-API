@@ -1,7 +1,7 @@
 var async = require('async');
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
-var Response = require('./responseModel');
+var Response = require('../responses/responseModel');
 var logger = require('../../lib/logger');
 
 var types = ['automated', 'requested', 'random'];

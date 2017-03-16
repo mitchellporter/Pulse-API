@@ -3,6 +3,17 @@ var Update = require('./updateModel');
 var async = require('async');
 var messenger = require('../messenger/messenger');
 
+exports.params = function(req, res, next, id) {
+    logger.silly('update params');
+    Update.findById(id)
+    .then(function(update) {
+        if (!update) return next(new Error('no update exists with that id'));
+        req.update = update;
+        next();
+    })
+    .catch(next);
+};
+
 exports.get = function(req, res, next) {
     var update_request = req.update_request;
 

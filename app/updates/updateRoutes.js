@@ -4,8 +4,11 @@ var auth = require('../auth/auth');
 
 var checkUser = [auth.decodeToken(), auth.getUser];
 
+router.param('id', updateController.params);
 
 router.route('/')
 .post(checkUser, updateController.post)
+
+router.use('/:id/responses', require('../responses/responseRoutes'));
 
 module.exports = router;
