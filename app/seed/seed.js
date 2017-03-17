@@ -53,15 +53,14 @@ var mitchell_received_task_id = '58c0b10f10f3aa4b62cf01ba';
 var task_invitation_id = '58bf269e9b5a8ff83f9a94e2';
 var team_id = '58b080b2356e913f3a3af182';
 var item_id = '58b09c7c247aa67459185307';
-var update_request_id = '58b5f0a5e095de16fe4c2cda';
+var update_id = '58b5f0a5e095de16fe4c2cda';
 
 // Constants
 var USER_COUNT = 17;
 var RECEIVED_TASKS_IN_PROGRESS_COUNT = 5;
 var RECEIVED_TASKS_COMPLETED_COUNT = 5;
 var ITEM_COUNT = 5;
-var SENT_UPDATE_REQUEST_COUNT = 5;
-var RECEIVED_UPDATE_REQUEST_COUNT = 5;
+var UPDATE_COUNT = 5;
 var TASK_INVITATION_COUNT = 5;
 
 var task_invitation_statuses = ['pending', 'accepted', 'denied'];

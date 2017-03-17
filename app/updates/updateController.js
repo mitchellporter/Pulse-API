@@ -15,9 +15,9 @@ exports.params = function(req, res, next, id) {
 };
 
 exports.get = function(req, res, next) {
-    var update_request = req.update_request;
+    var task = req.task;
 
-    Update.find({ update_request: update_request })
+    Update.find({ task: task })
     .then(function(updates) {
         res.status(200).json({
             success: true,
@@ -27,7 +27,7 @@ exports.get = function(req, res, next) {
     .catch(next);
 };
 
-exports.respondToUpdateRequest = function (req, res, next) {
+exports.respondToUpdate = function (req, res, next) {
     var update_request = req.update_request;
     var sender = req.user;
     var receiver = update_request.sender;
