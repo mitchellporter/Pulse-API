@@ -31,8 +31,13 @@ var kori_avatar_url = 'https://d33833kh9ui3rd.cloudfront.net/kori.png';
 var dummy_user_mitchell_id = '586ecdc0213f22d94db5ef7f';
 var mitchell_avatar_url = 'https://d33833kh9ui3rd.cloudfront.net/mitchell.png';
 
+var dummy_user_allen_id = '5881130a387e980f48c743f7';
+var allen_avatar_url = 'https://d33833kh9ui3rd.cloudfront.net/allen.png';
+
+
 var dummy_user_arch_id = '58c70df6105bd171feeb2cbc';
 var arch_avatar_url = 'https://d33833kh9ui3rd.cloudfront.net/arch.png'
+
 
 
 // 1 day in ms, 2 days, ... 
@@ -53,9 +58,11 @@ mongoose.connection.on('connected', function () {
 });
 
 function startSeed() {
-    var boss_man;
+    var mitchell;
+    var kori;
+    var allen;
     var arch;
-    var task;
+    var users = [];
 
     var design_first_apps_team;
     logger.silly('starting arch seed process...');
@@ -63,19 +70,28 @@ function startSeed() {
         .then(createTeam)
         .then(function (team) {
             design_first_apps_team = team;
-            return createBossMan();
+            return createMitchell();
         })
-        .then(function (boss_man_user) {
-            boss_man = boss_man_user;
+        .then(function (mitchell_user) {
+            mitchell = mitchell_user;
+            users.push(mitchell);
+            return createKori();
+        })
+        .then(function(kori_user) {
+            kori = kori_user;
+            users.push(kori);
+            return createAllen();
+        })
+        .then(function(allen_user) {
+            allen = allen_user;
+            users.push(allen);
             return createArch();
         })
         .then(function(arch_user) {
             arch = arch_user;
-            return createTask();
+            users.push(arch);
+            return createTasks();
         })
-        .then(createTaskItems)
-        .then(createTaskInvitation)
-        .then(createUpdateThatNeedsResponseFromArch)
         .then(handleSeedSuccess)
         .catch(handleSeedError)
        
@@ -94,15 +110,46 @@ function startSeed() {
         return team.save();
     }
 
-    function createBossMan() {
-        logger.silly('creating boss man user');
+    function createMitchell() {
+        logger.silly('creating mitchell user');
+
+        var user = new User({
+            _id: new mongoose.mongo.ObjectId(dummy_user_mitchell_id),
+            name: 'Mitchell',
+            password: '1234',
+            email_address: 'mitchell@designfirstapps.com',
+            position: 'iOS dev',
+            avatar_url: mitchell_avatar_url,
+            team: design_first_apps_team
+        });
+        return user.save();
+    }
+
+    function createKori() {
+        logger.silly('creating kori user');
+
         var user = new User({
             _id: new mongoose.mongo.ObjectId(dummy_user_kori_id),
-            name: 'John Brown',
+            name: 'Kori',
             password: '1234',
-            email_address: 'jbrown@designfirstapps.com',
-            position: 'CEO',
+            email_address: 'kori@designfirstapps.com',
+            position: 'designer',
             avatar_url: kori_avatar_url,
+            team: design_first_apps_team
+        });
+        return user.save();
+    }
+
+    function createAllen() {
+        logger.silly('creating allen user');
+
+        var user = new User({
+            _id: new mongoose.mongo.ObjectId(dummy_user_allen_id),
+            name: 'Allen',
+            password: '1234',
+            email_address: 'arch@designfirstapps.com',
+            position: 'iOS dev',
+            avatar_url: allen_avatar_url,
             team: design_first_apps_team
         });
         return user.save();
@@ -123,6 +170,35 @@ function startSeed() {
         return user.save();
     }
 
+    function createTasks() {
+        logger.silly('creating tasks ' + users.length);
+        var tasks = [];
+        return new Promise(function (resolve, reject) {
+            async.forEachOf(users, function (value, key, callback) {
+                var assigner = value;
+
+                var assignees = Array.from(users);
+                var filtered_assignees = assignees.filter(function(assignee) {
+                    return assignee != assigner
+                }); //  Filter out the assigner
+                
+                var task = new Task({
+                    assigner: assigner,
+                    assignees: filtered_assignees,
+                    title: 'This tasks assigner is ' + assigner.name,
+                    details: 'description goes here',
+                    due_date: randomDueDate(), // optional,
+                    status: 'in_progress'
+                });
+                tasks.push(task);
+                callback();
+            }, function (err) {
+                if (err) return reject(err);
+                resolve(Task.create(tasks));
+            });
+        });
+    }
+
     function createTask() {
         var task = new Task({
             _id: task_id,
@@ -134,58 +210,6 @@ function startSeed() {
         });
         return task.save();
     }
-
-    function createTaskItems(created_task) {
-        task = created_task;
-        for (var x = 0; x < 5; x++) {
-            var item = new Item({
-                text: 'This is an individual item on the task.',
-            });
-            if (task.items.length == 0) item._id = item_id;
-            logger.silly('item: ' + item);
-            task.items.push(item);
-        }
-        task.isNew = false;
-        return task.save();
-    }
-
-    function createTaskInvitation(task) {
-            var task_invitation = new TaskInvitation({
-                _id: task_invitation_id,
-                sender: boss_man,
-                receiver: arch,
-                task: task,
-            });
-        return task_invitation.save();    
-    }
-
-    function createUpdateThatNeedsResponseFromArch() {
-        var update = new Update({
-            _id: new mongoose.mongo.ObjectId(update_id),
-            task: task,
-            type: 'requested'
-        });
-        return update.save();
-            // .then(function (update) {
-            //     // TODO: Need to use addToSet to prevent duplicates
-            //     task.updates.push(update);
-            //     task.isNew = false;
-            //     return task.save();
-            // })
-            // .then(function (task) {
-               
-            // })
-            // .catch(next);
-    }
-
-    // function createUpdateForTaskWhereArchIsAssigner() {
-    //     var update = new Update({
-    //         _id: new mongoose.mongo.ObjectId(update_id),
-    //         task: task,
-    //         type: 'requested'
-    //     });
-    //     return update.save();
-    // }
 
     function randomDueDate() {
         return dummy_task_due_dates[Math.floor(Math.random() * dummy_task_due_dates.length)];
