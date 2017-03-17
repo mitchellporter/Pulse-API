@@ -62,16 +62,17 @@ UpdateSchema.methods = {
 	}
 }
 
-UpdateSchema.statics.findByTaskAssigner = function (assigner, callback) {
-  var query = this.find();
-  var task_id = this.task;
-// B. Give me Updates where the task's assigner id is equal to mine
-
-  Task.findOne({ _id: task_id })
-  .then(function(task) {
-		query.where({ assigner: assigner });
-  })
-  return query
+UpdateSchema.statics.findByTaskAssigner = function (assigner) {
+	return new Promise(function (resolve, reject) {
+		Task.find({ assigner: assigner })
+			.then(function (tasks) {
+				this.find({ task: tasks }).exec(function(err, results) {
+					if (err) return reject(err);
+					resolve(results);
+				});
+			}.bind(this))
+			.catch(reject);
+	}.bind(this));
 }
 
 module.exports = mongoose.model('Update', UpdateSchema);

@@ -58,7 +58,7 @@ exports.getUpdates = function(req, res, next) {
 	};
 
 	// Can turn this into one request
-	async.parallel([findUpdatesThatNeedResponses, findUpdatesForAssigner], function(err) {
+	async.parallel([findUpdatesForAssigner], function(err) {
 		if (err) logger.error(err);
 		if (err) return next(err);
 
@@ -73,7 +73,7 @@ exports.getUpdates = function(req, res, next) {
 		// A. Give me Updates that contain a response with an assignee id equal to mine AND a status of requested aka “updates I haven’t responded to”. This is the first table view section.
 		// B. Give me Updates where the task's assigner id is equal to mine
 
-		Update.find({ $and: [{ 'responses.assignee': user}, { 'responses.status': 'requested' }] })
+		Update.find({ $and: [{ 'responses.assignee': user }, { 'responses.status': 'requested' }] })
 		.populate([{ path: 'task', populate: [{ path: 'assigner', select: '_id name position email avatar_url' }, { path: 'assignees', select: '_id name position email avatar_url' }] }]) // task.assigner
 		.then(function(updates) {
 			Array.prototype.push.apply(response.updates, updates);
@@ -88,7 +88,7 @@ exports.getUpdates = function(req, res, next) {
 		logger.silly('finding updates for assigner');
 
 		Update.findByTaskAssigner(user)
-		.populate([ { path: 'task', populate: [{ path: 'assigner', select: '_id name position email avatar_url' }, { path: 'assignees', select: '_id name position email avatar_url' }] }]) // task.assigner
+		// .populate([ { path: 'task', populate: [{ path: 'assigner', select: '_id name position email avatar_url' }, { path: 'assignees', select: '_id name position email avatar_url' }] }]) // task.assigner
 		.then(function(updates) {
 			Array.prototype.push.apply(response.updates, updates);
 			callback(null, updates);

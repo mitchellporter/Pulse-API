@@ -42,6 +42,7 @@ var task_id = '586ebcae9188e7b6bfdd85c4';
 var task_invitation_id = '58bf269e9b5a8ff83f9a94e2';
 var team_id = '58b080b2356e913f3a3af182';
 var item_id = '58b09c7c247aa67459185307';
+var update_id = '58c9d33a1f3ffc0ee7c2c80d';
 
 // Constants
 var update_days = ['monday', 'wednesday', 'friday'];
@@ -54,6 +55,7 @@ mongoose.connection.on('connected', function () {
 function startSeed() {
     var boss_man;
     var arch;
+    var task;
 
     var design_first_apps_team;
     logger.silly('starting arch seed process...');
@@ -73,6 +75,7 @@ function startSeed() {
         })
         .then(createTaskItems)
         .then(createTaskInvitation)
+        .then(createUpdateThatNeedsResponseFromArch)
         .then(handleSeedSuccess)
         .catch(handleSeedError)
        
@@ -132,7 +135,8 @@ function startSeed() {
         return task.save();
     }
 
-    function createTaskItems(task) {
+    function createTaskItems(created_task) {
+        task = created_task;
         for (var x = 0; x < 5; x++) {
             var item = new Item({
                 text: 'This is an individual item on the task.',
@@ -154,6 +158,34 @@ function startSeed() {
             });
         return task_invitation.save();    
     }
+
+    function createUpdateThatNeedsResponseFromArch() {
+        var update = new Update({
+            _id: new mongoose.mongo.ObjectId(update_id),
+            task: task,
+            type: 'requested'
+        });
+        return update.save();
+            // .then(function (update) {
+            //     // TODO: Need to use addToSet to prevent duplicates
+            //     task.updates.push(update);
+            //     task.isNew = false;
+            //     return task.save();
+            // })
+            // .then(function (task) {
+               
+            // })
+            // .catch(next);
+    }
+
+    // function createUpdateForTaskWhereArchIsAssigner() {
+    //     var update = new Update({
+    //         _id: new mongoose.mongo.ObjectId(update_id),
+    //         task: task,
+    //         type: 'requested'
+    //     });
+    //     return update.save();
+    // }
 
     function randomDueDate() {
         return dummy_task_due_dates[Math.floor(Math.random() * dummy_task_due_dates.length)];
