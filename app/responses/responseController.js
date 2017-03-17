@@ -8,7 +8,7 @@ exports.params = function(req, res, next, id) {
         return response._id == id;
     });
     
-    if (!response) return new(new Error('no update response exists with that id'));
+    if (!response) return next(new Error('no update response exists with that id'));
     req.response = response;
     next();
 };
