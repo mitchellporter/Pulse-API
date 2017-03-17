@@ -62,14 +62,17 @@ UpdateSchema.methods = {
 	}
 }
 
-UpdateSchema.statics.findByTaskAssigner = function (assigner, callback) {
-	var query = this.find();
-	Task.find({ assigner: '585c2130f31b2fbff4efbf68' })
-		.then(function (tasks) {
-			query.where({ task: tasks }).exec(callback);
-		})
-		.catch(callback);
-	return query;
+UpdateSchema.statics.findByTaskAssigner = function (assigner) {
+	return new Promise(function (resolve, reject) {
+		Task.find({ assigner: assigner })
+			.then(function (tasks) {
+				this.find({ task: tasks })
+				.populate([ { path: 'task', populate: [{ path: 'assigner', select: '_id name position email avatar_url' }, { path: 'assignees', select: '_id name position email avatar_url' }] }])
+				.then(resolve)
+				.catch(reject);
+			}.bind(this))
+			.catch(reject);
+	}.bind(this));
 }
 
 module.exports = mongoose.model('Update', UpdateSchema);

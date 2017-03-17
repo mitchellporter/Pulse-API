@@ -86,13 +86,8 @@ exports.getUpdates = function(req, res, next) {
 
 	// TODO: Clean this up
 	function findUpdatesForAssigner(callback) {
-		logger.silly('finding updates for assigner');
-
-		Update.findByTaskAssigner(user, function(err, updates) {
-			logger.silly('callback error: ' + err);
-			logger.silly('callback updates: ' + updates);
-		})
-		.populate([ { path: 'task', populate: [{ path: 'assigner', select: '_id name position email avatar_url' }, { path: 'assignees', select: '_id name position email avatar_url' }] }]) // task.assigner
+		logger.silly('finding updates for assigner: ' + user._id);
+		Update.findByTaskAssigner(user)
 		.then(function(updates) {
 			Array.prototype.push.apply(response.updates, updates);
 			callback(null, updates);
