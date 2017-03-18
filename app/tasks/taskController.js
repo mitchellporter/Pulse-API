@@ -7,7 +7,7 @@ var messenger = require('../messenger/messenger');
 
 exports.params = function(req, res, next, taskId) {
 	Task.findById(taskId)
-	.populate('items')
+	.populate('items assigner assignees')
 	.then(function(task) {
 		if(!task) return next(new Error('no task exists with that id'));
 		req.task = task;

@@ -97,9 +97,15 @@ exports.post = function(req, res, next) {
     var update = new Update(req.body);
     update.task = task;
     update.type = type;
+
+    logger.silly('about to save update: ' + update);
     
     update.save()
     .then(function(update) {
+
+        logger.silly('saved update: ' + update);
+
+
         // TODO: Need to use addToSet to prevent duplicates
         task.updates.push(update);
         task.isNew = false;

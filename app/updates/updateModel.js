@@ -43,7 +43,8 @@ UpdateSchema.pre('save', function(next) {
 	async.forEachOf(task.assignees, function(value, key, callback) {
 		var assignee = value;
 		var response = new Response({
-			assignee: assignee
+			assignee: assignee,
+			completion_percentage: 0
 		});
 		this.responses.push(response);
 		callback();

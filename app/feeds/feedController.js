@@ -58,7 +58,7 @@ exports.getUpdates = function(req, res, next) {
 	};
 
 	// Can turn this into one request
-	async.parallel([findUpdatesForAssigner], function(err) {
+	async.parallel([findUpdatesForAssigner, findUpdatesThatNeedResponses], function(err) {
 		if (err) logger.error(err);
 		if (err) return next(err);
 
