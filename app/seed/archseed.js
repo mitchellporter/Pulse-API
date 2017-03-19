@@ -63,6 +63,7 @@ function startSeed() {
     var allen;
     var arch;
     var users = [];
+    var tasks = [];
 
     var design_first_apps_team;
     logger.silly('starting arch seed process...');
@@ -92,6 +93,12 @@ function startSeed() {
             users.push(arch);
             return createTasks();
         })
+        .then(function(created_tasks) {
+            tasks = created_tasks;
+            return createItemsForTasks();
+        })
+        .then(createTaskInvitations)
+        .then(createRequestedTaskUpdate)
         .then(handleSeedSuccess)
         .catch(handleSeedError)
        
@@ -172,6 +179,8 @@ function startSeed() {
 
     function createTasks() {
         logger.silly('creating tasks ' + users.length);
+
+        var task_id_used = false;
         var tasks = [];
         return new Promise(function (resolve, reject) {
             async.forEachOf(users, function (value, key, callback) {
@@ -190,6 +199,10 @@ function startSeed() {
                     due_date: randomDueDate(), // optional,
                     status: 'in_progress'
                 });
+                if (task.assigner != arch && !task_id_used) {
+                    task._id = task_id;
+                    task_id_used = true;
+                }
                 tasks.push(task);
                 callback();
             }, function (err) {
@@ -199,16 +212,107 @@ function startSeed() {
         });
     }
 
-    function createTask() {
-        var task = new Task({
-            _id: task_id,
-            assigner: boss_man,
-            assignees: arch,
-            title: 'Design the new navigation icons for the mobile app',
-            details: 'description goes here',
-            due_date: randomDueDate(), // optional
+    function createItemsForTasks() {
+        logger.silly('creating items for tasks');
+
+        return new Promise(function (resolve, reject) {
+            async.forEachOf(tasks, function (value, key, callback) {
+                var task = value;
+
+                    var item1 = new Item({
+                        text: 'This is a task item 1'
+                    });
+                    var item2 = new Item({
+                        text: 'This is a task item 2'
+                    });
+                    var item3 = new Item({
+                        text: 'This is a task item 3'
+                    });
+                    var item4 = new Item({
+                        text: 'This is a task item 4'
+                    });
+                    var item5 = new Item({
+                        text: 'This is a task item 5'
+                    });
+                    task.items.push(item1);
+                    task.items.push(item2);
+                    task.items.push(item3);
+                    task.items.push(item4);
+                    task.items.push(item5);
+
+                    task.isNew = false;
+                    task.save()
+                    .then(function(task) {
+                        callback();
+                    })
+                    .catch(callback)
+                
+            }, function (err) {
+                if (err) return reject(err);
+                resolve();
+            });
         });
-        return task.save();
+    }
+
+    function createTaskInvitations() {
+        logger.silly('creating task invitations');
+        var task_invitation_id_used = false;
+        return new Promise(function (resolve, reject) {
+            async.forEachOf(tasks, function (value, key, callback) {
+                var task = value;
+
+                var task_invitations = [];
+                async.eachOf(task.assignees, function (value, key, callback2) {
+                    var assignee = value;
+                    var task_invitation = new TaskInvitation({
+                        sender: task.assigner,
+                        receiver: assignee,
+                        task: task,
+                    });
+                    // Our hardcoded task is now attached to the hardcoded task invitation
+                    if (task._id == task_id && assignee === arch && !task_invitation_id_used) {
+                        task_invitation._id = '58bf269e9b5a8ff83f9a94e2';
+                        task_invitation_id_used = true;
+                    }
+                    task_invitations.push(task_invitation);
+                    callback2();
+                }, function (err) {
+                    if (err) return reject(err);
+                    TaskInvitation.create(task_invitations)
+                    .then(function(task_invitation) {
+                        callback();
+                    })
+                    .catch(callback);
+                });
+            }, function (err) {
+                if (err) return reject(err);
+                resolve();
+            });
+        });
+    }
+
+    function createRequestedTaskUpdate() {
+        return new Promise(function (resolve, reject) {
+            async.forEachOf(tasks, function (value, key, callback) {
+                var task = value;
+                if (task._id != task_id) return callback();
+
+                var update = new Update({
+                    _id: update_id,
+                    task: task,
+                    type: 'requested'
+                });
+                update.save()
+                    .then(function (update) {
+                        callback();
+                    })
+                    .catch(callback);
+
+            }, function (err) {
+                if (err) return reject(err);
+                resolve();
+            });
+        });
     }
 
     function randomDueDate() {

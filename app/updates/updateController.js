@@ -89,6 +89,56 @@ exports.respondToUpdate = function (req, res, next) {
     }
 };
 
+exports.put = function(req, res, next) {
+    logger.silly('updates put');
+
+    var assignee_id = req.user._id;
+    logger.silly('assignee id: ' + assignee_id);
+    var update = req.update;
+    var completion_percentage = req.body.completion_percentage;
+
+    //  TODO: I think its broken right now because you're modifying the array while iterating over it
+    async.forEachOf(update.responses, function(value, key, callback) {
+        var response = value;
+        logger.silly('response assignee: ' + response.assignee);
+        if (response.assignee.toString() == assignee_id) {
+            logger.silly('found a match!');
+
+            response.isNew = false;
+            response.completion_percentage = completion_percentage;
+            response.status = 'sent';
+            response.save()
+            .then(function(response) {
+                // TODO: There's a cleaner way to do this
+                // Filter out old response and add updated one
+                var filtered_responses = update.responses.filter(function(response) {
+                    return response.assignee.toString() != assignee_id;
+                });
+                logger.silly('filtered responses length before: ' + filtered_responses.length);
+                filtered_responses.push(response);
+                logger.silly('filtered responses length after: ' + filtered_responses.length);
+                update.responses = filtered_responses;
+                logger.silly('update responses length: ' + update.responses.length);
+                callback();
+            })
+            .catch(callback);
+        } else {
+            callback();
+        }
+    }, function(err) {
+        if (err) return next(err);
+        update.isNew = false;
+        update.save()
+        .then(function(update) {
+            res.status(200).json({
+                success: true,
+                update: update
+            });
+        })
+        .catch(next);
+    });
+};
+
 exports.post = function(req, res, next) {
 
     var task = req.task;
