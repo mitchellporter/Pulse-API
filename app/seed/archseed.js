@@ -91,12 +91,13 @@ function startSeed() {
         .then(function(arch_user) {
             arch = arch_user;
             users.push(arch);
-            return createTasks();
+            return createInProgressTasks();
         })
         .then(function(created_tasks) {
             tasks = created_tasks;
             return createItemsForTasks();
         })
+        .then(createPendingTasks)
         .then(createTaskInvitations)
         .then(createRequestedTaskUpdates)
         .then(handleSeedSuccess)
@@ -177,9 +178,9 @@ function startSeed() {
         return user.save();
     }
 
-    function createTasks() {
-        logger.silly('creating tasks ' + users.length);
-
+    function createInProgressTasks() {
+        logger.silly('creating in_progress tasks');
+ 
         var task_id_used = false;
         var tasks = [];
         return new Promise(function (resolve, reject) {
@@ -203,6 +204,36 @@ function startSeed() {
                     task._id = task_id;
                     task_id_used = true;
                 }
+                tasks.push(task);
+                callback();
+            }, function (err) {
+                if (err) return reject(err);
+                resolve(Task.create(tasks));
+            });
+        });
+    }
+
+    function createPendingTasks() {
+        logger.silly('creating pending tasks');
+
+        var tasks = [];
+        return new Promise(function (resolve, reject) {
+            async.forEachOf(users, function (value, key, callback) {
+                var assigner = value;
+
+                var assignees = Array.from(users);
+                var filtered_assignees = assignees.filter(function(assignee) {
+                    return assignee != assigner
+                }); //  Filter out the assigner
+                
+                var task = new Task({
+                    assigner: assigner,
+                    assignees: filtered_assignees,
+                    title: 'This tasks assigner is ' + assigner.name,
+                    details: 'description goes here',
+                    due_date: randomDueDate()
+                });
+        
                 tasks.push(task);
                 callback();
             }, function (err) {
@@ -254,7 +285,7 @@ function startSeed() {
         });
     }
 
-    function createTaskInvitations() {
+    function createTaskInvitations(tasks) {
         logger.silly('creating task invitations');
         var task_invitation_id_used = false;
         return new Promise(function (resolve, reject) {
