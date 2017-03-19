@@ -74,7 +74,7 @@ exports.getUpdates = function(req, res, next) {
 		// B. Give me Updates where the task's assigner id is equal to mine
 
 		Update.find({ $and: [{ 'responses.assignee': user }, { 'responses.status': 'requested' }] })
-		.populate([{ path: 'task', populate: [{ path: 'assigner', select: '_id name position email avatar_url' }, { path: 'assignees', select: '_id name position email avatar_url' }] }]) // task.assigner
+		.populate([{ path: 'task', populate: [{ path: 'assigner', select: '_id name position email avatar_url' }, { path: 'assignees', select: '_id name position email avatar_url' }] }, { path: 'responses.assignee', select: '_id name position email avatar_url' } ]) // task.assigner
 		.then(function(updates) {
 			Array.prototype.push.apply(response.updates, updates);
 			callback(null, updates);
