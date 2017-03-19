@@ -301,21 +301,31 @@ function startSeed() {
                         task: task,
                         type: 'requested'
                     });
-                    update.save()
+                    update.generateResponses()
+                    .then(function(update) {
+                        update.save()
                         .then(function (update) {
                             callback();
                         })
                         .catch(callback);
+                    })
+                    .catch(callback);
+                    
                 } else {
                     var update = new Update({
                         task: task,
                         type: 'requested'
                     });
-                    update.save()
+
+                    update.generateResponses()
+                    .then(function(update) {
+                        update.save()
                         .then(function (update) {
                             callback();
                         })
                         .catch(callback);
+                    })
+                    .catch(callback);
                 }
             }, function (err) {
                 if (err) return reject(err);

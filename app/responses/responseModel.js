@@ -1,6 +1,6 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
-
+var logger = require('../../lib/logger');
 var statuses = ['requested', 'sent'];
 
 var ResponseSchema = new Schema({
@@ -29,7 +29,17 @@ var ResponseSchema = new Schema({
 	}
 });
 
+// TODO: Needs investigating: This doesn't get called right now due to nesting in Update model
 ResponseSchema.pre('validate', function(next) {
+        logger.silly('RESPONSE SCHEMA PRE VALIDATE');
+    if(!this.created_at) this.created_at = new Date();
+	this.updated_at = new Date();
+	next();
+});
+
+ResponseSchema.pre('save', function(next) {
+    logger.silly('RESPONSE SCHEMA PRE SAVE');
+    if (!this.isNew) return next();
     if(!this.created_at) this.created_at = new Date();
 	this.updated_at = new Date();
 	next();
