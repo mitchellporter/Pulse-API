@@ -98,7 +98,7 @@ function startSeed() {
             return createItemsForTasks();
         })
         .then(createTaskInvitations)
-        .then(createRequestedTaskUpdate)
+        .then(createRequestedTaskUpdates)
         .then(handleSeedSuccess)
         .catch(handleSeedError)
        
@@ -291,23 +291,32 @@ function startSeed() {
         });
     }
 
-    function createRequestedTaskUpdate() {
+    function createRequestedTaskUpdates() {
         return new Promise(function (resolve, reject) {
             async.forEachOf(tasks, function (value, key, callback) {
                 var task = value;
-                if (task._id != task_id) return callback();
-
-                var update = new Update({
-                    _id: update_id,
-                    task: task,
-                    type: 'requested'
-                });
-                update.save()
-                    .then(function (update) {
-                        callback();
-                    })
-                    .catch(callback);
-
+                if (task._id == task_id) {
+                    var update = new Update({
+                        _id: update_id,
+                        task: task,
+                        type: 'requested'
+                    });
+                    update.save()
+                        .then(function (update) {
+                            callback();
+                        })
+                        .catch(callback);
+                } else {
+                    var update = new Update({
+                        task: task,
+                        type: 'requested'
+                    });
+                    update.save()
+                        .then(function (update) {
+                            callback();
+                        })
+                        .catch(callback);
+                }
             }, function (err) {
                 if (err) return reject(err);
                 resolve();
