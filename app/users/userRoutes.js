@@ -8,5 +8,6 @@ router.param('id', userController.params);
 
 router.route('/')
 .get(checkUser, userController.get)
+.post(userController.post)
 
 module.exports = router;
