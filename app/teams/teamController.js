@@ -12,6 +12,49 @@ exports.params = function(req, res, next, id) {
     .catch(next);
 };
 
+exports.post = function(req, res, next) {
+    // Signup for new team:
+// team
+// username
+// email address
+// password
+
+// Create team, then create user
+var team_name = req.body.team_name;
+var team = new Team({
+    name: team_name
+});
+
+createTeam()
+.then(createUser)
+.then(function(user) {
+    res.status(201).json({
+        success: true,
+        user: user
+    });
+})
+.catch(next);
+
+function createTeam() {
+    return team.save();
+}
+
+function createUser(team) {
+    var user = new User(req.body);
+    user.team = team;
+    return user.save();
+}
+
+
+// Signup for existing team:
+// team
+// username
+// email address
+// password
+
+// Just create user
+};
+
 exports.getMembers = function(req, res, next) {
     var team = req.team;
     

@@ -12,25 +12,26 @@ var UserSchema = new Schema({
 		type: Date,
 		required: true
 	},
+	username: {
+        type: String,
+        required: true
+    },
     email_address: {
         type: String,
         required: true
     },
     name: {
-        type: String,
-        required: true
+        type: String
     },
 	password: {
 		type: String,
 		required: true
 	},
     avatar_url: {
-        type: String,
-        required: true
+        type: String
     },
     position: {
-        type: String,
-        required: true
+        type: String
     },
     team: {
 		type: mongoose.Schema.Types.ObjectId,
