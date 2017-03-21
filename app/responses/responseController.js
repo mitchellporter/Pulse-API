@@ -24,6 +24,7 @@ exports.put = function(req, res, next) {
     var update = req.update;
     var response = req.response;
 
+    response.message = req.body.message;
     response.completion_percentage = req.body.completion_percentage;
     response.status = 'sent';
     response.isNew = false;
