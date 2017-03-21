@@ -26,7 +26,10 @@ var ResponseSchema = new Schema({
     completion_percentage: {
 		type: Number,
 		required: true
-	}
+	},
+    message: {
+        type: String
+    }
 });
 
 // TODO: Needs investigating: This doesn't get called right now due to nesting in Update model
