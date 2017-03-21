@@ -7,5 +7,6 @@ router.use('/task_invitations', require('../tasks/taskInvitationRoutes'));
 router.use('/updates', require('../updates/updateRoutes'));
 router.use('/teams', require('../teams/teamRoutes'));
 router.use('/feeds', require('../feeds/feedRoutes'));
+router.use('/availability', require('../availability/availabilityRoutes'));
 
 module.exports = router;
