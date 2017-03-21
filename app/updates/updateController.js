@@ -96,6 +96,7 @@ exports.put = function(req, res, next) {
     logger.silly('assignee id: ' + assignee_id);
     var update = req.update;
     var completion_percentage = req.body.completion_percentage;
+    var message = req.body.message;
 
     //  TODO: I think its broken right now because you're modifying the array while iterating over it
     async.forEachOf(update.responses, function(value, key, callback) {
@@ -105,6 +106,7 @@ exports.put = function(req, res, next) {
             logger.silly('found a match!');
 
             response.isNew = false;
+            response.message = message;
             response.completion_percentage = completion_percentage;
             response.status = 'sent';
             // TODO: There's a cleaner way to do this
