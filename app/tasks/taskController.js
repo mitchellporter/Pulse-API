@@ -107,7 +107,9 @@ exports.post = function(req, res, next) {
 	var assigner = req.user;
 	var items_json = req.body.items;
 
-	logger.silly('items: ' + items_json);
+	// NOTE: If you don't delete this, and req.body is used for Task's init,
+	// then mongoose always throws an exception. Not sure why yet.
+	delete req.body.items;
 
 	var task = new Task(req.body);
 	task.assigner = assigner;
