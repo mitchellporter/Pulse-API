@@ -13,11 +13,6 @@ exports.params = function(req, res, next, id) {
 };
 
 exports.post = function(req, res, next) {
-    // Signup for new team:
-// team
-// username
-// email address
-// password
 
 // Create team, then create user
 var team_name = req.body.team_name;
@@ -30,6 +25,7 @@ createTeam()
 .then(function(user) {
     res.status(201).json({
         success: true,
+        team: user.team,
         user: user
     });
 })
@@ -44,15 +40,6 @@ function createUser(team) {
     user.team = team;
     return user.save();
 }
-
-
-// Signup for existing team:
-// team
-// username
-// email address
-// password
-
-// Just create user
 };
 
 exports.getMembers = function(req, res, next) {
