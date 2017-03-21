@@ -53,6 +53,8 @@ exports.getOne = function(req, res, next) {
 };
 
 exports.put = function(req, res, next) {
+	logger.silly('task put');
+
 	var task = req.task;
 	var status = req.body.status;
 
@@ -60,6 +62,8 @@ exports.put = function(req, res, next) {
 	task.isNew = false;
 	task.save()
 	.then(function(task) {
+
+		logger.silly('updated task');
 		
 		task.populate([{ path: 'assigner' }, { path: 'assignees' }, { path: 'items' }]).execPopulate()
 		.then(function(task) {
@@ -68,10 +72,13 @@ exports.put = function(req, res, next) {
 				task: task
 			});
 
+			logger.silly('task completed? ' + task.status);
 			if (task.status === 'completed') {
+				logger.silly('send message');
+
+				// TODO: Handle success / failure
 				sendMessage();
 			}
-
 		})
 		.catch(next);
 	})
@@ -142,6 +149,8 @@ exports.post = function(req, res, next) {
 			async.forEachOf(task_invitations, function(value, key, callback) {
 				var task_invitation = value;
 				logger.silly('assignee: ' + task_invitation);
+
+				sendMessage
 
 			}, function(err) {
 				if (err) return logger.error(err);
