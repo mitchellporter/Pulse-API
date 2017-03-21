@@ -1,6 +1,11 @@
+var async = require('async');
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
-
+var Response = require('../responses/responseModel');
+var logger = require('../../lib/logger');
+var Task = require('../tasks/taskModel');
+var logger = require('../../lib/logger');
+var types = ['automated', 'requested', 'random'];
 
 var UpdateSchema = new Schema({
     created_at: {
@@ -11,30 +16,17 @@ var UpdateSchema = new Schema({
         type: Date,
         required: true
     },
-	sender: {
-		type: mongoose.Schema.Types.ObjectId,
-		ref: 'User',
-		required: true
-	},
-	receiver: {
-		type: mongoose.Schema.Types.ObjectId,
-		ref: 'User',
-		required: true
-	},
-    update_request: {
-        type: mongoose.Schema.Types.ObjectId,
-		ref: 'UpdateRequest',
-		required: false
-    },
-	completion_percentage: {
-		type: Number,
-		required: true
+	type: {
+		type: String,
+		required: true,
+		enum: types
 	},
 	task: {
 		type: mongoose.Schema.Types.ObjectId,
 		ref: 'Task',
 		required: true
-	}
+	},
+	responses: [Response.schema]
 });
 
 UpdateSchema.pre('validate', function(next) {
@@ -43,12 +35,68 @@ UpdateSchema.pre('validate', function(next) {
 	next();
 });
 
+// The handlers for Response model wont get called unless they are in the
+// update's responses array BEFORE save is called
+UpdateSchema.pre('save', function(next) {
+	logger.silly('UPDATE PRE SAVE');
+	if (!this.isNew) return next();
+	logger.silly('UPDATE PRE SAVE isNew');
+	next();
+	// TODO: task should never be an id here, we need the real task object
+	// var task = this.task;
+	// async.forEachOf(task.assignees, function(value, key, callback) {
+	// 	var assignee = value;
+	// 	var response = new Response({
+	// 		assignee: assignee,
+	// 		completion_percentage: 0
+	// 	});
+	// 	this.responses.push(response);
+	// 	callback();
+	// }.bind(this), function(err) {
+	// 	if (err) return next(err);
+	// 	next();
+	// });
+});
+
 UpdateSchema.methods = {
+	// TODO: Remove all responses except for the user's in toJSON - they shouldn't be able to see everyone else's updates
+	generateResponses: generateResponses,
 	toJSON: function() {
 		var obj = this.toObject();
 		delete obj.__v;
 		return obj;
 	}
+}
+
+function generateResponses() {
+	return new Promise(function (resolve, reject) {
+		var task = this.task;
+		async.forEachOf(task.assignees, function (value, key, callback) {
+			var assignee = value;
+			var response = new Response({
+				assignee: assignee,
+				completion_percentage: 0
+			});
+			this.responses.push(response);
+			callback();
+		}.bind(this), function (err) {
+			if (err) return reject(err);
+			resolve(this);
+		}.bind(this));
+	}.bind(this));
+}
+
+UpdateSchema.statics.findByTaskAssigner = function (assigner) {
+	return new Promise(function (resolve, reject) {
+		Task.find({ assigner: assigner })
+			.then(function (tasks) {
+				this.find({ task: tasks })
+				.populate([ { path: 'task', populate: [{ path: 'assigner', select: '_id name position email avatar_url' }, { path: 'assignees', select: '_id name position email avatar_url' }] }])
+				.then(resolve)
+				.catch(reject);
+			}.bind(this))
+			.catch(reject);
+	}.bind(this));
 }
 
 module.exports = mongoose.model('Update', UpdateSchema);

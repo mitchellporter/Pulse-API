@@ -7,7 +7,6 @@ var User = require('../users/userModel');
 var Task = require('../tasks/taskModel');
 var TaskInvitation = require('../tasks/taskInvitationModel');
 var Item = require('../items/itemModel');
-var UpdateRequest = require('../update_requests/updateRequestModel');
 var Update = require('../updates/updateModel');
 var async = require('async');
 var casual = require('casual');
@@ -26,33 +25,29 @@ var positions = ['iOS Developer', 'Android Developer', 'Mobile Designer', 'Web D
 var task_titles = ['Design the new navigation icons for the mobile app', 'We need a basic marketing website for the new app can', 'We need to review resumes for new Android developers'];
 var item_titles = ['Needs, Sign up button, place to input email address, or phone number.', 'Make sure to hi-light the press we recieved (Time, Inc. NYT.)', 'Show screen shots of the app in action.', 'Nice big hero image at the top.'];
 
-
 // Permanent dummy users
 var dummy_user_kori_id = '585c2130f31b2fbff4efbf68';
 var kori_avatar_url = 'https://d33833kh9ui3rd.cloudfront.net/kori.png';
 var dummy_user_mitchell_id = '586ecdc0213f22d94db5ef7f';
 var mitchell_avatar_url = 'https://d33833kh9ui3rd.cloudfront.net/mitchell.png';
+
 var dummy_user_allen_id = '5881130a387e980f48c743f7';
 var allen_avatar_url = 'https://d33833kh9ui3rd.cloudfront.net/allen.png';
+
 
 var dummy_user_arch_id = '58c70df6105bd171feeb2cbc';
 var arch_avatar_url = 'https://d33833kh9ui3rd.cloudfront.net/arch.png'
 
-// Dummy project + task
-var dummy_task_ids = ['586ebcae9188e7b6bfdd85c4', '58a4a8c2800575168e6540a1', '58a4aad7b9b05716731911c8', '58a4da3f17c40703dcf50321'];
-var dummy_task_names = ['Hummingbird iOS App', 'Hummingbird Android App', 'Hummingbird Gmail Plugin', 'Hummingbird Slack Bot'];
+
 
 // 1 day in ms, 2 days, ... 
 var dummy_task_due_dates = [Date.now() + 86400000, Date.now() + 172800000, Date.now() + 259200000, Date.now() + 345600000];
-
-// 2 tasks assigned to kori - one from me and one from allen
-// 2 tasks assigned to me - one from kori and one from allen
-// 2 tasks assigned to allen - one from kori and one from me
 
 var task_id = '586ebcae9188e7b6bfdd85c4';
 var task_invitation_id = '58bf269e9b5a8ff83f9a94e2';
 var team_id = '58b080b2356e913f3a3af182';
 var item_id = '58b09c7c247aa67459185307';
+var update_id = '58c9d33a1f3ffc0ee7c2c80d';
 
 // Constants
 var update_days = ['monday', 'wednesday', 'friday'];
@@ -63,27 +58,48 @@ mongoose.connection.on('connected', function () {
 });
 
 function startSeed() {
-    var boss_man;
+    var mitchell;
+    var kori;
+    var allen;
     var arch;
+    var users = [];
+    var tasks = [];
 
     var design_first_apps_team;
-
+    logger.silly('starting arch seed process...');
     dropDb()
         .then(createTeam)
         .then(function (team) {
             design_first_apps_team = team;
-            return createBossMan();
+            return createMitchell();
         })
-        .then(function (boss_man_user) {
-            boss_man = boss_man_user;
+        .then(function (mitchell_user) {
+            mitchell = mitchell_user;
+            users.push(mitchell);
+            return createKori();
+        })
+        .then(function(kori_user) {
+            kori = kori_user;
+            users.push(kori);
+            return createAllen();
+        })
+        .then(function(allen_user) {
+            allen = allen_user;
+            users.push(allen);
             return createArch();
         })
         .then(function(arch_user) {
             arch = arch_user;
-            return createTask();
+            users.push(arch);
+            return createInProgressTasks();
         })
-        .then(createTaskItems)
-        .then(createTaskInvitation)
+        .then(function(created_tasks) {
+            tasks = created_tasks;
+            return createItemsForTasks();
+        })
+        .then(createPendingTasks)
+        .then(createTaskInvitations)
+        .then(createRequestedTaskUpdates)
         .then(handleSeedSuccess)
         .catch(handleSeedError)
        
@@ -102,15 +118,46 @@ function startSeed() {
         return team.save();
     }
 
-    function createBossMan() {
-        logger.silly('creating boss man user');
+    function createMitchell() {
+        logger.silly('creating mitchell user');
+
+        var user = new User({
+            _id: new mongoose.mongo.ObjectId(dummy_user_mitchell_id),
+            name: 'Mitchell',
+            password: '1234',
+            email_address: 'mitchell@designfirstapps.com',
+            position: 'iOS dev',
+            avatar_url: mitchell_avatar_url,
+            team: design_first_apps_team
+        });
+        return user.save();
+    }
+
+    function createKori() {
+        logger.silly('creating kori user');
+
         var user = new User({
             _id: new mongoose.mongo.ObjectId(dummy_user_kori_id),
-            name: 'John Brown',
+            name: 'Kori',
             password: '1234',
-            email_address: 'jbrown@designfirstapps.com',
-            position: 'CEO',
+            email_address: 'kori@designfirstapps.com',
+            position: 'designer',
             avatar_url: kori_avatar_url,
+            team: design_first_apps_team
+        });
+        return user.save();
+    }
+
+    function createAllen() {
+        logger.silly('creating allen user');
+
+        var user = new User({
+            _id: new mongoose.mongo.ObjectId(dummy_user_allen_id),
+            name: 'Allen',
+            password: '1234',
+            email_address: 'arch@designfirstapps.com',
+            position: 'iOS dev',
+            avatar_url: allen_avatar_url,
             team: design_first_apps_team
         });
         return user.save();
@@ -131,39 +178,191 @@ function startSeed() {
         return user.save();
     }
 
-    function createTask() {
-        var task = new Task({
-            _id: task_id,
-            assigner: boss_man,
-            assignees: arch,
-            title: 'Design the new navigation icons for the mobile app',
-            details: 'description goes here',
-            due_date: randomDueDate(), // optional
+    function createInProgressTasks() {
+        logger.silly('creating in_progress tasks');
+ 
+        var task_id_used = false;
+        var tasks = [];
+        return new Promise(function (resolve, reject) {
+            async.forEachOf(users, function (value, key, callback) {
+                var assigner = value;
+
+                var assignees = Array.from(users);
+                var filtered_assignees = assignees.filter(function(assignee) {
+                    return assignee != assigner
+                }); //  Filter out the assigner
+                
+                var task = new Task({
+                    assigner: assigner,
+                    assignees: filtered_assignees,
+                    title: 'This tasks assigner is ' + assigner.name,
+                    details: 'description goes here',
+                    due_date: randomDueDate(), // optional,
+                    status: 'in_progress'
+                });
+                if (task.assigner != arch && !task_id_used) {
+                    task._id = task_id;
+                    task_id_used = true;
+                }
+                tasks.push(task);
+                callback();
+            }, function (err) {
+                if (err) return reject(err);
+                resolve(Task.create(tasks));
+            });
         });
-        return task.save();
     }
 
-    function createTaskItems(task) {
-        for (var x = 0; x < 5; x++) {
-            var item = new Item({
-                text: 'This is an individual item on the task.',
+    function createPendingTasks() {
+        logger.silly('creating pending tasks');
+
+        var tasks = [];
+        return new Promise(function (resolve, reject) {
+            async.forEachOf(users, function (value, key, callback) {
+                var assigner = value;
+
+                var assignees = Array.from(users);
+                var filtered_assignees = assignees.filter(function(assignee) {
+                    return assignee != assigner
+                }); //  Filter out the assigner
+                
+                var task = new Task({
+                    assigner: assigner,
+                    assignees: filtered_assignees,
+                    title: 'This tasks assigner is ' + assigner.name,
+                    details: 'description goes here',
+                    due_date: randomDueDate()
+                });
+        
+                tasks.push(task);
+                callback();
+            }, function (err) {
+                if (err) return reject(err);
+                resolve(Task.create(tasks));
             });
-            if (task.items.length == 0) item._id = item_id;
-            logger.silly('item: ' + item);
-            task.items.push(item);
-        }
-        task.isNew = false;
-        return task.save();
+        });
     }
 
-    function createTaskInvitation(task) {
-            var task_invitation = new TaskInvitation({
-                _id: task_invitation_id,
-                sender: boss_man,
-                receiver: arch,
-                task: task,
+    function createItemsForTasks() {
+        logger.silly('creating items for tasks');
+
+        return new Promise(function (resolve, reject) {
+            async.forEachOf(tasks, function (value, key, callback) {
+                var task = value;
+
+                    var item1 = new Item({
+                        text: 'This is a task item 1'
+                    });
+                    var item2 = new Item({
+                        text: 'This is a task item 2'
+                    });
+                    var item3 = new Item({
+                        text: 'This is a task item 3'
+                    });
+                    var item4 = new Item({
+                        text: 'This is a task item 4'
+                    });
+                    var item5 = new Item({
+                        text: 'This is a task item 5'
+                    });
+                    task.items.push(item1);
+                    task.items.push(item2);
+                    task.items.push(item3);
+                    task.items.push(item4);
+                    task.items.push(item5);
+
+                    task.isNew = false;
+                    task.save()
+                    .then(function(task) {
+                        callback();
+                    })
+                    .catch(callback)
+                
+            }, function (err) {
+                if (err) return reject(err);
+                resolve();
             });
-        return task_invitation.save();    
+        });
+    }
+
+    function createTaskInvitations(tasks) {
+        logger.silly('creating task invitations');
+        var task_invitation_id_used = false;
+        return new Promise(function (resolve, reject) {
+            async.forEachOf(tasks, function (value, key, callback) {
+                var task = value;
+
+                var task_invitations = [];
+                async.eachOf(task.assignees, function (value, key, callback2) {
+                    var assignee = value;
+                    var task_invitation = new TaskInvitation({
+                        sender: task.assigner,
+                        receiver: assignee,
+                        task: task,
+                    });
+                    // Our hardcoded task is now attached to the hardcoded task invitation
+                    if (task._id == task_id && assignee === arch && !task_invitation_id_used) {
+                        task_invitation._id = '58bf269e9b5a8ff83f9a94e2';
+                        task_invitation_id_used = true;
+                    }
+                    task_invitations.push(task_invitation);
+                    callback2();
+                }, function (err) {
+                    if (err) return reject(err);
+                    TaskInvitation.create(task_invitations)
+                    .then(function(task_invitation) {
+                        callback();
+                    })
+                    .catch(callback);
+                });
+            }, function (err) {
+                if (err) return reject(err);
+                resolve();
+            });
+        });
+    }
+
+    function createRequestedTaskUpdates() {
+        return new Promise(function (resolve, reject) {
+            async.forEachOf(tasks, function (value, key, callback) {
+                var task = value;
+                if (task._id == task_id) {
+                    var update = new Update({
+                        _id: update_id,
+                        task: task,
+                        type: 'requested'
+                    });
+                    update.generateResponses()
+                    .then(function(update) {
+                        update.save()
+                        .then(function (update) {
+                            callback();
+                        })
+                        .catch(callback);
+                    })
+                    .catch(callback);
+                    
+                } else {
+                    var update = new Update({
+                        task: task,
+                        type: 'requested'
+                    });
+
+                    update.generateResponses()
+                    .then(function(update) {
+                        update.save()
+                        .then(function (update) {
+                            callback();
+                        })
+                        .catch(callback);
+                    })
+                    .catch(callback);
+                }
+            }, function (err) {
+                if (err) return reject(err);
+                resolve();
+            });
+        });
     }
 
     function randomDueDate() {

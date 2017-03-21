@@ -1,7 +1,6 @@
 var router = require('express').Router();
 var taskController = require('./taskController');
 var itemController = require('../items/itemController');
-var updateRequestController = require('../update_requests/updateRequestController');
 var auth = require('../auth/auth');
 
 var checkUser = [auth.decodeToken(), auth.getUser];
@@ -17,7 +16,6 @@ router.route('/:id')
 .get(checkUser, taskController.getOne)
 .put(checkUser, taskController.put)
 
-router.use('/:id/update_requests', require('../update_requests/updateRequestRoutes'));
 router.use('/:id/updates', require('../updates/updateRoutes'));
 
 // router.route('/:id/request_updates')

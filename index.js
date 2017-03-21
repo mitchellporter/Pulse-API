@@ -7,7 +7,6 @@ var throng = require('throng');
 var Promise = require('bluebird');
 var mongoose = require('mongoose').connect(config.mongo_url);
 mongoose.Promise = Promise;
-// mongoose.set('debug', true);
 
 var api = require('./app/api/api');
 var bodyParser = require('body-parser');

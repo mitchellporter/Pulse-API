@@ -1,14 +1,13 @@
 var logger = require('../../lib/logger');
 var Task = require('./taskModel');
 var TaskInvitation = require('./taskInvitationModel');
-var UpdateRequest = require('../update_requests/updateRequestModel');
 var Item = require('../items/itemModel');
 var async = require('async');
 var messenger = require('../messenger/messenger');
 
 exports.params = function(req, res, next, taskId) {
 	Task.findById(taskId)
-	.populate('items')
+	.populate('items assigner assignees')
 	.then(function(task) {
 		if(!task) return next(new Error('no task exists with that id'));
 		req.task = task;
@@ -54,6 +53,8 @@ exports.getOne = function(req, res, next) {
 };
 
 exports.put = function(req, res, next) {
+	logger.silly('task put');
+
 	var task = req.task;
 	var status = req.body.status;
 
@@ -61,6 +62,8 @@ exports.put = function(req, res, next) {
 	task.isNew = false;
 	task.save()
 	.then(function(task) {
+
+		logger.silly('updated task');
 		
 		task.populate([{ path: 'assigner' }, { path: 'assignees' }, { path: 'items' }]).execPopulate()
 		.then(function(task) {
@@ -69,10 +72,13 @@ exports.put = function(req, res, next) {
 				task: task
 			});
 
+			logger.silly('task completed? ' + task.status);
 			if (task.status === 'completed') {
+				logger.silly('send message');
+
+				// TODO: Handle success / failure
 				sendMessage();
 			}
-
 		})
 		.catch(next);
 	})
@@ -143,6 +149,8 @@ exports.post = function(req, res, next) {
 			async.forEachOf(task_invitations, function(value, key, callback) {
 				var task_invitation = value;
 				logger.silly('assignee: ' + task_invitation);
+
+				sendMessage
 
 			}, function(err) {
 				if (err) return logger.error(err);
@@ -223,33 +231,6 @@ exports.acceptTask = function(req, res, next) {
 
 exports.declineTask = function(req, res, next) {
 
-};
-
-// TODO: This breaks with multiple assignees
-exports.requestUpdate = function(req, res, next) {
-	logger.silly('About to request task update');
-
-	var sender = req.user;
-	var task = req.task;
-	task.status = 'requires_update';
-
-	// 1. Update task status to requires_update
-	// 2. Populate updated task model's assignees array with id's
-	// 3. Loop through assignee id's and send real-time updates to them
-
-	Task.update(task)
-	.then(function() {
-
-		task.populate('assignees', '_id').execPopulate()
-		.then(function(task) {
-			// TODO: Loop through assignees and send real-time update w/ task + new "requires_update" status
-			res.status(201).json({
-				success: true
-			});
-		})
-		.catch(next);
-	})
-	.catch(next);
 };
 
 exports.sendUpdate = function(req, res, next) {

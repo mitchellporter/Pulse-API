@@ -3,10 +3,21 @@ var Update = require('./updateModel');
 var async = require('async');
 var messenger = require('../messenger/messenger');
 
-exports.get = function(req, res, next) {
-    var update_request = req.update_request;
+exports.params = function(req, res, next, id) {
+    logger.silly('update params');
+    Update.findById(id)
+    .then(function(update) {
+        if (!update) return next(new Error('no update exists with that id'));
+        req.update = update;
+        next();
+    })
+    .catch(next);
+};
 
-    Update.find({ update_request: update_request })
+exports.get = function(req, res, next) {
+    var task = req.task;
+
+    Update.find({ task: task })
     .then(function(updates) {
         res.status(200).json({
             success: true,
@@ -16,7 +27,7 @@ exports.get = function(req, res, next) {
     .catch(next);
 };
 
-exports.respondToUpdateRequest = function (req, res, next) {
+exports.respondToUpdate = function (req, res, next) {
     var update_request = req.update_request;
     var sender = req.user;
     var receiver = update_request.sender;
@@ -78,24 +89,72 @@ exports.respondToUpdateRequest = function (req, res, next) {
     }
 };
 
+exports.put = function(req, res, next) {
+    logger.silly('updates put');
+
+    var assignee_id = req.user._id;
+    logger.silly('assignee id: ' + assignee_id);
+    var update = req.update;
+    var completion_percentage = req.body.completion_percentage;
+    var message = req.body.message;
+
+    //  TODO: I think its broken right now because you're modifying the array while iterating over it
+    async.forEachOf(update.responses, function(value, key, callback) {
+        var response = value;
+        logger.silly('response assignee: ' + response.assignee);
+        if (response.assignee.toString() == assignee_id) {
+            logger.silly('found a match!');
+
+            response.isNew = false;
+            response.message = message;
+            response.completion_percentage = completion_percentage;
+            response.status = 'sent';
+            // TODO: There's a cleaner way to do this
+            // Filter out old response and add updated one
+            var filtered_responses = update.responses.filter(function (response) {
+                return response.assignee.toString() != assignee_id;
+            });
+            filtered_responses.push(response);
+            update.responses = filtered_responses;
+            callback();
+        } else {
+            callback();
+        }
+    }, function(err) {
+        if (err) return next(err);
+        update.isNew = false;
+        update.save()
+        .then(function(update) {
+            res.status(200).json({
+                success: true,
+                update: update
+            });
+        })
+        .catch(next);
+    });
+};
+
 exports.post = function(req, res, next) {
+
     var task = req.task;
-    var sender = req.user;
-    var receiver = task.assigner;
+    var type = req.body.type;
 
     var update = new Update(req.body);
     update.task = task;
-    update.sender = sender;
-    update.receiver = receiver;
+    update.type = type;
+
+    logger.silly('about to save update: ' + update);
     
     update.save()
     .then(function(update) {
+
+        logger.silly('saved update: ' + update);
+
+
         // TODO: Need to use addToSet to prevent duplicates
         task.updates.push(update);
-        task.completion_percentage = update.completion_percentage;
         task.isNew = false;
         return task.save();
-
     })
     .then(function(task) {
         res.status(201).json({

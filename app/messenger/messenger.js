@@ -10,12 +10,12 @@ var pubnub = new PubNub({
 var test_pub_channel = 'nodejs_channel'; // messages sent from me
 var test_sub_channel = 'ios_channel' // messages from iOS client
 
+// TODO: Need to add a flag here to enable/disable
 exports.sendMessage = function(channel, message) {
-    return Promise.resolve();
-    // return pubnub.publish({
-    //     channel: channel,
-    //     message: message
-    // });
+    return pubnub.publish({
+        channel: channel,
+        message: message
+    });
 };
 
 // exports.sendMessage = function(channel, message) {

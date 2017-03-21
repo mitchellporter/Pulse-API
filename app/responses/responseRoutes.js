@@ -1,12 +1,13 @@
 var router = require('express').Router();
-var taskInvitationController = require('./taskInvitationController');
+var responseController = require('./responseController');
 var auth = require('../auth/auth');
 
 var checkUser = [auth.decodeToken(), auth.getUser];
 
-router.param('id', taskInvitationController.params);
+
+router.param('id', responseController.params);
 
 router.route('/:id')
-.put(checkUser, taskInvitationController.put)
+.put(checkUser, responseController.put);
 
 module.exports = router;
