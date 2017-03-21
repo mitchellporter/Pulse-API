@@ -17,10 +17,10 @@ var TeamSchema = new Schema({
 		ref: 'User',
         required: true
     }],
-    domain: {
-        type: String,
-        required: true
-    }
+	name: {
+		type: String,
+		required: true
+	}
 });
 
 TeamSchema.pre('validate', function(next) {
