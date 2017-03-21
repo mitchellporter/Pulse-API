@@ -2,10 +2,11 @@ var logger = require('../../lib/logger');
 var Team = require('../teams/teamModel');
 
 exports.teams = function(req, res, next) {
-    var team_name = req.body.team_name;
+    var team_name = req.query.name;
     Team.findOne({ name: team_name })
     .then(function(team) {
-        if (!team) teamNameIsAvailable();
+        logger.silly('found team: ' + team);
+        if (!team) return teamNameIsAvailable();
         teamNameAlreadyTaken();
     })
     .catch(next);
