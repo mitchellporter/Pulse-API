@@ -112,7 +112,7 @@ function startSeed() {
     function createTeam() {
         logger.silly('creating design first apps team');
         var team = new Team({
-            domain: 'designfirstapps.com'
+            name: 'designfirstapps'
         });
         team._id = team_id;
         return team.save();
