@@ -1,6 +1,7 @@
 var logger = require('../../lib/logger');
 var Team = require('./teamModel');
 var User = require('../users/userModel');
+var signToken = require('../auth/auth').signToken;
 
 exports.params = function(req, res, next, id) {
     Team.findById(id)
@@ -23,10 +24,13 @@ var team = new Team({
 createTeam()
 .then(createUser)
 .then(function(user) {
+
+    var token = signToken(user._id);
     res.status(201).json({
         success: true,
         team: user.team,
-        user: user
+        user: user,
+        token: token
     });
 })
 .catch(next);
