@@ -44,3 +44,13 @@ exports.put = function(req, res, next) {
         })
         .catch(next);
 };
+
+exports.resend = function(req, res, next) {
+    var update = req.update;
+    var response = req.response;
+
+    // TODO: Send notification to response.assignee
+    function sendMessage() {
+        
+    }
+};
