@@ -29,10 +29,9 @@ exports.teams = function(req, res, next) {
 };
 
 exports.usernames = function(req, res, next) {
-    var team = req.team;
     var username = req.query.username;
 
-    User.findOne({ team: team, username: username })
+    User.findOne({ username: username })
     .then(function(user) {
         logger.silly('found user: ' + user);
         if (!user) return usernameIsAvailable();
@@ -57,10 +56,9 @@ exports.usernames = function(req, res, next) {
 };
 
 exports.emails = function(req, res, next) {
-    var team = req.team;
     var email_address = req.query.email_address;
 
-    User.findOne({ team: team, email_address: email_address })
+    User.findOne({ email_address: email_address })
     .then(function(user) {
         logger.silly('found user: ' + user);
         if (!user) return emailAddressIsAvailable();
