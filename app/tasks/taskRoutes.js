@@ -24,7 +24,7 @@ router.use('/:id/updates', require('../updates/updateRoutes'));
 // router.route('/:id/send_update')
 // .post(auth.getUser, updateController.sendUpdate)
 
-router.use('/:id/invitations', require('./taskInvitationRoutes'));
+router.use('/:id/invitations', require('../task_invitations/taskInvitationRoutes'));
 
 router.use('/:id/items', require('../items/itemRoutes'));
 
