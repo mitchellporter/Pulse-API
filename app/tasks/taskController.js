@@ -1,6 +1,6 @@
 var logger = require('../../lib/logger');
 var Task = require('./taskModel');
-var TaskInvitation = require('./taskInvitationModel');
+var TaskInvitation = require('../task_invitations/taskInvitationModel');
 var Item = require('../items/itemModel');
 var async = require('async');
 var messenger = require('../messenger/messenger');
