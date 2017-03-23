@@ -49,6 +49,10 @@ exports.resend = function(req, res, next) {
     var update = req.update;
     var response = req.response;
 
+    res.status(201).json({
+        success: true
+    });
+
     // TODO: Send notification to response.assignee
     function sendMessage() {
         
