@@ -15,3 +15,12 @@ router.route('/:id')
 router.use('/:id/responses', require('../responses/responseRoutes'));
 
 module.exports = router;
+
+
+
+// 1. Request update on task: POST /tasks/:id/updates/
+// 2. Respond to update request: PUT /updates/:id
+// 3. Send random update as assignee: POST /tasks/:id/updates
+
+// Conversation w/ members and messages (chat)
+// Update w/ assignees and responses

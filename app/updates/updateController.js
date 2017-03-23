@@ -144,12 +144,19 @@ exports.post = function(req, res, next) {
     update.type = type;
 
     logger.silly('about to save update: ' + update);
-    
-    update.save()
+
+    var assignee_id;
+    var completion_percentage;
+    if (type == 'random') {
+        logger.silly('random!');
+        assignee_id = req.user._id;
+        completion_percentage = req.body.completion_percentage;
+    }
+    update.generateResponses(assignee_id, completion_percentage)
     .then(function(update) {
-
-        logger.silly('saved update: ' + update);
-
+        return update.save();
+    })
+    .then(function(update) {
 
         // TODO: Need to use addToSet to prevent duplicates
         task.updates.push(update);

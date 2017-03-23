@@ -68,7 +68,7 @@ UpdateSchema.methods = {
 	}
 }
 
-function generateResponses() {
+function generateResponses(assignee_id, completion_percentage) {
 	return new Promise(function (resolve, reject) {
 		var task = this.task;
 		async.forEachOf(task.assignees, function (value, key, callback) {
@@ -77,6 +77,32 @@ function generateResponses() {
 				assignee: assignee,
 				completion_percentage: 0
 			});
+			// logger.silly('type of 1: ' + assignee._id);
+			// logger.silly('type of 2: ' + assignee_id);
+			if (assignee._id.toString() == assignee_id) {
+				logger.silly('assignee hit!');
+				response.completion_percentage = completion_percentage;
+				response.status = 'sent';
+			}
+			this.responses.push(response);
+			callback();
+		}.bind(this), function (err) {
+			if (err) return reject(err);
+			resolve(this);
+		}.bind(this));
+	}.bind(this));
+}
+
+function generateResponsesForRandom(assignee_id, completion_percentage) {
+	return new Promise(function (resolve, reject) {
+		var task = this.task;
+		async.forEachOf(task.assignees, function (value, key, callback) {
+			var assignee = value;
+			var response = new Response({
+				assignee: assignee,
+				completion_percentage: 0
+			});
+			if (assignee._id == assignee_id) response.completion_percentage = completion_percentage;
 			this.responses.push(response);
 			callback();
 		}.bind(this), function (err) {
