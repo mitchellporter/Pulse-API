@@ -21,7 +21,8 @@ var UserSchema = new Schema({
         required: true
     },
     name: {
-        type: String
+        type: String,
+		required: true
     },
 	password: {
 		type: String,
@@ -31,7 +32,8 @@ var UserSchema = new Schema({
         type: String
     },
     position: {
-        type: String
+        type: String,
+		required: true
     },
     team: {
 		type: mongoose.Schema.Types.ObjectId,
