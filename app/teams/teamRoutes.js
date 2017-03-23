@@ -10,6 +10,9 @@ router.param('id', teamController.params);
 router.route('/')
 .post(teamController.post)
 
+router.route('/:id')
+.get(teamController.getOne)
+
 router.route('/:id/members')
 .get(checkUser, teamController.getMembers)
 .post(userController.joinTeam)

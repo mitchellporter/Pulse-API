@@ -13,6 +13,14 @@ exports.params = function(req, res, next, id) {
     .catch(next);
 };
 
+exports.getOne = function(req, res, next) {
+    var team = req.team;
+    res.status(200).json({
+        success: true,
+        team: team
+    });
+};
+
 exports.post = function(req, res, next) {
 
 // Create team, then create user
