@@ -13,6 +13,19 @@ exports.params = function(req, res, next, id) {
     .catch(next);
 };
 
+exports.search = function(req, res, next) {
+    var name = req.query.search;
+    Team.findOne({ name: name })
+    .then(function(team) {
+        if (!team) return next(new Error('no team exists with that name'));
+        res.status(200).json({
+            success: true,
+            team: team
+        });
+    })
+    .catch(next);
+};
+
 exports.getOne = function(req, res, next) {
     var team = req.team;
     res.status(200).json({

@@ -8,6 +8,7 @@ var checkUser = [auth.decodeToken(), auth.getUser];
 router.param('id', teamController.params);
 
 router.route('/')
+.get(teamController.search)
 .post(teamController.post)
 
 router.route('/:id')

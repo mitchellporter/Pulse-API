@@ -20,6 +20,8 @@ exports.teams = function(req, res, next) {
         });
     }
 
+    // NOTE: Not sure if this should be an error or success but then with a message saying team name not available?
+    // Otherwise I have to make an extra search endpoint
     function teamNameAlreadyTaken() {
         res.status(200).json({
             success: false,
