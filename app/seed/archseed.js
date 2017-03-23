@@ -48,6 +48,7 @@ var task_invitation_id = '58bf269e9b5a8ff83f9a94e2';
 var team_id = '58b080b2356e913f3a3af182';
 var item_id = '58b09c7c247aa67459185307';
 var update_id = '58c9d33a1f3ffc0ee7c2c80d';
+var response_id = '58c9d33a1f3ffc0ee7c2c80e';
 
 // Constants
 var update_days = ['monday', 'wednesday', 'friday'];
@@ -327,6 +328,8 @@ function startSeed() {
     }
 
     function createRequestedTaskUpdates() {
+        logger.silly('creating requested task updates');
+
         return new Promise(function (resolve, reject) {
             async.forEachOf(tasks, function (value, key, callback) {
                 var task = value;
@@ -338,11 +341,15 @@ function startSeed() {
                     });
                     update.generateResponses()
                     .then(function(update) {
-                        update.save()
-                        .then(function (update) {
-                            callback();
-                        })
-                        .catch(callback);
+                        update.responses.forEach(function(response) {
+                            if (response.assignee._id == dummy_user_arch_id) {
+                                response._id = response_id;
+                            }
+                        });
+                        return update.save();
+                    })
+                    .then(function(update) {
+                        callback();
                     })
                     .catch(callback);
                     

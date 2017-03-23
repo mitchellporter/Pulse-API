@@ -13,13 +13,6 @@ exports.params = function(req, res, next, id) {
     next();
 };
 
-// exports.put = function(req, res, next) {
-//     var response = req.response;
-//     response.status = req.body.status;
-    
-    
-// }
-
 exports.put = function(req, res, next) {
     var update = req.update;
     var response = req.response;
@@ -43,4 +36,18 @@ exports.put = function(req, res, next) {
             });
         })
         .catch(next);
+};
+
+exports.resend = function(req, res, next) {
+    var update = req.update;
+    var response = req.response;
+
+    res.status(201).json({
+        success: true
+    });
+
+    // TODO: Send notification to response.assignee
+    function sendMessage() {
+        
+    }
 };

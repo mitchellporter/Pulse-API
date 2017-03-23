@@ -38,9 +38,7 @@ UpdateSchema.pre('validate', function(next) {
 // The handlers for Response model wont get called unless they are in the
 // update's responses array BEFORE save is called
 UpdateSchema.pre('save', function(next) {
-	logger.silly('UPDATE PRE SAVE');
 	if (!this.isNew) return next();
-	logger.silly('UPDATE PRE SAVE isNew');
 	next();
 	// TODO: task should never be an id here, we need the real task object
 	// var task = this.task;

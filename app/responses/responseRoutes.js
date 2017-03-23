@@ -10,4 +10,7 @@ router.param('id', responseController.params);
 router.route('/:id')
 .put(checkUser, responseController.put);
 
+router.route('/:id/resend')
+.post(checkUser, responseController.resend);
+
 module.exports = router;
