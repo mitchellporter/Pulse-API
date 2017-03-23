@@ -1,5 +1,6 @@
 var router = require('express').Router();
 var teamController = require('./teamController');
+var userController = require('../users/userController');
 var auth = require('../auth/auth');
 
 var checkUser = [auth.decodeToken(), auth.getUser];
@@ -11,5 +12,6 @@ router.route('/')
 
 router.route('/:id/members')
 .get(checkUser, teamController.getMembers)
+.post(userController.joinTeam)
 
 module.exports = router;
