@@ -26,7 +26,6 @@ var ItemSchema = new Schema({
 });
 
 ItemSchema.pre('validate', function(next) {
-	logger.silly('Item Validation!!!!');
 	if(!this.created_at) this.created_at = new Date();
 	this.updated_at = new Date();
 	next();
