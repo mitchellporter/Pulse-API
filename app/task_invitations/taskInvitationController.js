@@ -31,7 +31,7 @@ exports.put = function(req, res, next) {
         task.save()
             .then(function (task) {
                 logger.silly('saved task status: ' + task.status);
-                task_invitation.populate([{ path: 'sender', select: '_id name username email position avatar_url' }, { path: 'receiver', select: '_id name username email position avatar_url' }]).execPopulate()
+                task_invitation.populate([{ path: 'sender', select: '_id name username email_address position avatar_url' }, { path: 'receiver', select: '_id name username email_address position avatar_url' }]).execPopulate()
                     .then(function (task_invitation) {
                         res.status(201).json({
                             success: true,
