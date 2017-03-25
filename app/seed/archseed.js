@@ -43,7 +43,8 @@ var arch_avatar_url = 'https://d33833kh9ui3rd.cloudfront.net/arch.png'
 // 1 day in ms, 2 days, ... 
 var dummy_task_due_dates = [Date.now() + 86400000, Date.now() + 172800000, Date.now() + 259200000, Date.now() + 345600000];
 
-var task_id = '586ebcae9188e7b6bfdd85c4';
+var pending_task_id = '58d6b31c2d424a133faba773';
+var in_progress_task_id = '586ebcae9188e7b6bfdd85c4';
 var task_invitation_id = '58bf269e9b5a8ff83f9a94e2';
 var team_id = '58b080b2356e913f3a3af182';
 var item_id = '58b09c7c247aa67459185307';
@@ -205,8 +206,9 @@ function startSeed() {
                     due_date: randomDueDate(), // optional,
                     status: 'in_progress'
                 });
+
                 if (task.assigner != arch && !task_id_used) {
-                    task._id = task_id;
+                    task._id = in_progress_task_id;
                     task_id_used = true;
                 }
                 tasks.push(task);
@@ -221,6 +223,7 @@ function startSeed() {
     function createPendingTasks() {
         logger.silly('creating pending tasks');
 
+        var pending_task_id_used = false;
         var tasks = [];
         return new Promise(function (resolve, reject) {
             async.forEachOf(users, function (value, key, callback) {
@@ -238,6 +241,12 @@ function startSeed() {
                     details: 'description goes here',
                     due_date: randomDueDate()
                 });
+
+                if (task.assigner != arch && !pending_task_id_used) {
+                    logger.silly('pending task hit!');
+                    task._id = pending_task_id;
+                    pending_task_id_used = true;
+                }
         
                 tasks.push(task);
                 callback();
@@ -250,7 +259,6 @@ function startSeed() {
 
     function createItemsForTasks() {
         logger.silly('creating items for tasks');
-
         return new Promise(function (resolve, reject) {
             async.forEachOf(tasks, function (value, key, callback) {
                 var task = value;
@@ -292,11 +300,12 @@ function startSeed() {
 
     function createTaskInvitations(tasks) {
         logger.silly('creating task invitations');
+        
         var task_invitation_id_used = false;
         return new Promise(function (resolve, reject) {
             async.forEachOf(tasks, function (value, key, callback) {
                 var task = value;
-
+                logger.silly('task id: ' + task._id);
                 var task_invitations = [];
                 async.eachOf(task.assignees, function (value, key, callback2) {
                     var assignee = value;
@@ -305,9 +314,10 @@ function startSeed() {
                         receiver: assignee,
                         task: task,
                     });
+
                     // Our hardcoded task is now attached to the hardcoded task invitation
-                    if (task._id == task_id && assignee === arch && !task_invitation_id_used) {
-                        task_invitation._id = '58bf269e9b5a8ff83f9a94e2';
+                    if (task._id == pending_task_id && assignee == arch && !task_invitation_id_used) {
+                        task_invitation._id = task_invitation_id;
                         task_invitation_id_used = true;
                     }
                     task_invitations.push(task_invitation);
