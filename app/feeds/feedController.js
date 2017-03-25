@@ -109,7 +109,7 @@ exports.tasksCreated = function (req, res, next) {
 	// 2. Fetch task's where user is an assignee
 
 	var response = {};
-	async.parallel([findTaskInvitationsSentByUser, findTasks], function(err) {
+	async.parallel([findTasks], function(err) {
 		if (err) logger.error(err);
 		if (err) return next(err);
 
@@ -131,7 +131,7 @@ exports.tasksCreated = function (req, res, next) {
 	}
 
 	function findTasks(callback) {
-		Task.find({ $or: [{'status': 'in_progress'}, {'status': 'completed'}], assigner: user })
+		Task.find({ assigner: user })
 			.populate(populate)
 			.then(function (tasks) {
 				logger.silly('found this many tasks: ' + tasks.length);
