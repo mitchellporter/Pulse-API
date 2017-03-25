@@ -259,6 +259,8 @@ function startSeed() {
 
     function createItemsForTasks() {
         logger.silly('creating items for tasks');
+
+        var item_id_used = false;
         return new Promise(function (resolve, reject) {
             async.forEachOf(tasks, function (value, key, callback) {
                 var task = value;
@@ -266,6 +268,12 @@ function startSeed() {
                     var item1 = new Item({
                         text: 'This is a task item 1'
                     });
+
+                    if (task._id == in_progress_task_id && !item_id_used) {
+                        item1._id = item_id;
+                        item_id_used = true;
+                    }
+
                     var item2 = new Item({
                         text: 'This is a task item 2'
                     });
