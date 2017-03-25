@@ -300,12 +300,12 @@ function startSeed() {
 
     function createTaskInvitations(tasks) {
         logger.silly('creating task invitations');
-        
+
         var task_invitation_id_used = false;
         return new Promise(function (resolve, reject) {
             async.forEachOf(tasks, function (value, key, callback) {
                 var task = value;
-                logger.silly('task id: ' + task._id);
+
                 var task_invitations = [];
                 async.eachOf(task.assignees, function (value, key, callback2) {
                     var assignee = value;
@@ -343,7 +343,7 @@ function startSeed() {
         return new Promise(function (resolve, reject) {
             async.forEachOf(tasks, function (value, key, callback) {
                 var task = value;
-                if (task._id == task_id) {
+                if (task._id == in_progress_task_id) {
                     var update = new Update({
                         _id: update_id,
                         task: task,
