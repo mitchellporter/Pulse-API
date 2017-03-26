@@ -107,25 +107,28 @@ exports.post = function(req, res, next) {
             update: update
         });
 
-        sendMessage();
-    })
-    .catch(next);
-
-    function sendMessage() {
-        logger.silly('about to send update notification!!!');
-        var channel = update.receiver;
-        var message = {
-            type: 'update',
-            update: update
-        }
-
-        messenger.sendMessage(channel, message)
-            .then(function (response) {
+        sendMessage()
+        .then(function (response) {
                 logger.silly('successfully sent update notification!');
                 logger.silly('response: ' + response);
             })
             .catch(function (err) {
                 logger.silly('error: ' + err);
             })
+    })
+    .catch(next);
+
+    function sendMessage() {
+        logger.silly('about to send update notification!!!');
+        var channel = update.task.assigner._id;
+        var message = {
+            type: 'update',
+            update: update
+        }
+        logger.silly('channel: ' + channel);
+        logger.silly('message type: ' + message.type);
+        logger.silly('message update: ' + message.update);
+
+        return messenger.sendMessage(channel, message);
     }
 };
