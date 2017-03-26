@@ -6,6 +6,7 @@ var messenger = require('../messenger/messenger');
 exports.params = function(req, res, next, id) {
     logger.silly('update params');
     Update.findById(id)
+    .populate({ path: 'task', populate: [{ path: 'assigner' }, { path: 'assignees' }] })
     .then(function(update) {
         if (!update) return next(new Error('no update exists with that id'));
         req.update = update;
@@ -36,6 +37,8 @@ exports.put = function(req, res, next) {
     var completion_percentage = req.body.completion_percentage;
     var message = req.body.message;
 
+    // TODO: This is annoying, fix later
+
     //  TODO: I think its broken right now because you're modifying the array while iterating over it
     async.forEachOf(update.responses, function(value, key, callback) {
         var response = value;
@@ -60,6 +63,7 @@ exports.put = function(req, res, next) {
         }
     }, function(err) {
         if (err) return next(err);
+
         update.isNew = false;
         update.save()
         .then(function(update) {
@@ -67,9 +71,31 @@ exports.put = function(req, res, next) {
                 success: true,
                 update: update
             });
+
+            sendMessageToTaskAssigner(update)
+            .then(function(response) {
+                logger.silly('successfully sent new update response notification to assigner');
+            })
+            .catch(logger.error);
+
         })
         .catch(next);
     });
+
+    function sendMessageToTaskAssigner(update) {
+         logger.silly('Sending new update response notification to assigner');
+         logger.silly('update: ' + update);
+        var channel = update.task.assigner._id;
+        var message = {
+            type: 'update',
+            update: update
+        }
+        logger.silly('channel: ' + channel);
+        logger.silly('message type: ' + message.type);
+        logger.silly('message update: ' + message.update);
+
+        return messenger.sendMessage(channel, message);
+    }
 };
 
 exports.post = function(req, res, next) {
