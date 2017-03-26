@@ -5,6 +5,7 @@ var Response = require('../responses/responseModel');
 var logger = require('../../lib/logger');
 var Task = require('../tasks/taskModel');
 var logger = require('../../lib/logger');
+
 var types = ['automated', 'requested', 'random'];
 
 var UpdateSchema = new Schema({

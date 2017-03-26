@@ -108,19 +108,51 @@ exports.post = function(req, res, next) {
             update: update
         });
 
-        sendMessage()
-        .then(function (response) {
-                logger.silly('successfully sent update notification!');
-                logger.silly('response: ' + response);
+        // TODO: Handle automated as well
+        if (type == 'requested') {
+            sendMessageToTaskAssignees()
+            .then(function() {
+               logger.silly('successfully sent update request notification to all assignees');
             })
-            .catch(function (err) {
-                logger.silly('error: ' + err);
+            .catch(logger.error)
+        } else {
+            sendMessageToTaskAssigner()
+            .then(function() {
+                logger.silly('successfully sent random update notification to assigner');
             })
+            .catch(logger.error)
+        }
     })
     .catch(next);
 
-    function sendMessage() {
-        logger.silly('about to send update notification!!!');
+    function sendMessageToTaskAssignees() {
+        logger.silly('Sending update request notification to all assignees');
+
+        var channel;
+        var message = {
+            type: 'update_request',
+            update: update
+        }
+        return new Promise(function (resolve, reject) {
+            async.forEachOf(update.responses, function (value, key, callback) {
+                channel = value.assignee._id;
+                logger.silly('channel: ' + channel);
+                messenger.sendMessage(channel, message)
+                    .then(function (response) {
+                        callback();
+                    })
+                    .catch(callback);
+
+            }, function (err) {
+                if (err) return reject(err);
+                resolve();
+            });
+        });
+    }
+
+    function sendMessageToTaskAssigner() {
+        logger.silly('Sending random update notification to assigner');
+
         var channel = update.task.assigner._id;
         var message = {
             type: 'update',
