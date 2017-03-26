@@ -121,14 +121,14 @@ exports.post = function(req, res, next) {
 
 	// Loop through items and create items
 	var items = [];
-	async.forEachOf(items_json, function(value, key, callback) {
+	async.forEachOf(items_json, function(value, key, callback1) {
 		var item_json = value;
 
 		var item = new Item();
 		item.text = item_json;
 		items.push(item);
 
-		callback();
+		callback1();
 	}, function(err) {
 		if (err) logger.error(err);
 
@@ -147,12 +147,22 @@ exports.post = function(req, res, next) {
 				task_invitations: task_invitations
 			});
 
-			logger.silly('About to send task completed notification!!!');
-			async.forEachOf(task_invitations, function(value, key, callback) {
-				var task_invitation = value;
-				logger.silly('assignee: ' + task_invitation);
+			logger.silly('task invitations count: ' + task_invitations.length);
+			logger.silly('About to send new task assigned notification!');
 
-				sendMessage
+			async.forEachOf(task_invitations, function(value, key, callback2) {
+				var task_invitation = value;
+				logger.silly('current task invitation: ' + task_invitation);
+
+				sendMessage(task_invitation)
+					.then(function (response) {
+						logger.silly('response: ' + response);
+						callback2();
+					})
+					.catch(function (err) {
+						logger.silly('error: ' + err);
+						callback2(err);
+					})
 
 			}, function(err) {
 				if (err) return logger.error(err);
@@ -197,22 +207,14 @@ exports.post = function(req, res, next) {
 		});
 	}
 
-	function sendMessage() {
+	function sendMessage(task_invitation) {
 		var channel = task_invitation.receiver._id;
 		var message = {
 			type: 'task_assigned',
 			task_invitation: task_invitation
 		}
 
-		messenger.sendMessage(channel, message)
-			.then(function (response) {
-				logger.silly('response: ' + response);
-				callback();
-			})
-			.catch(function (err) {
-				logger.silly('error: ' + err);
-				callback(err);
-			})
+		return messenger.sendMessage(channel, message);
 	}
 };
 

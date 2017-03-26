@@ -12,11 +12,11 @@ var test_sub_channel = 'ios_channel' // messages from iOS client
 
 // TODO: Need to add a flag here to enable/disable
 exports.sendMessage = function(channel, message) {
-    return Promise.resolve();
-    // return pubnub.publish({
-    //     channel: channel,
-    //     message: message
-    // });
+    // return Promise.resolve();
+    return pubnub.publish({
+        channel: channel,
+        message: message
+    });
 };
 
 // exports.sendMessage = function(channel, message) {
