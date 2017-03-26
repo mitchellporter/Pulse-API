@@ -66,7 +66,7 @@ UpdateSchema.methods = {
 	}
 }
 
-function generateResponses(assignee_id, completion_percentage) {
+function generateResponses(assignee_id, completion_percentage, message) {
 	return new Promise(function (resolve, reject) {
 		var task = this.task;
 		async.forEachOf(task.assignees, function (value, key, callback) {
@@ -80,6 +80,7 @@ function generateResponses(assignee_id, completion_percentage) {
 			if (assignee._id.toString() == assignee_id) {
 				logger.silly('assignee hit!');
 				response.completion_percentage = completion_percentage;
+				response.message = message;
 				response.status = 'sent';
 			}
 			this.responses.push(response);

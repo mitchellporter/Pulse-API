@@ -76,6 +76,7 @@ exports.post = function(req, res, next) {
 
     var task = req.task;
     var type = req.body.type;
+    var message = req.body.message;
 
     var update = new Update(req.body);
     update.task = task;
@@ -90,7 +91,7 @@ exports.post = function(req, res, next) {
         assignee_id = req.user._id;
         completion_percentage = req.body.completion_percentage;
     }
-    update.generateResponses(assignee_id, completion_percentage)
+    update.generateResponses(assignee_id, completion_percentage, message)
     .then(function(update) {
         return update.save();
     })
