@@ -24,7 +24,7 @@ exports.myTasks = function (req, res, next) {
 	});
 
 	function findTaskInvitationsForUser(callback) {
-		TaskInvitation.find({ receiver: user, status: 'pending' })
+		TaskInvitation.find({ receiver: user })
 			.populate([{ path: 'sender' }, { path: 'receiver' }, { path: 'task', populate: [{ path: 'items' }, { path: 'assignees', select: '_id name username email_address position avatar_url' }, { path: 'assigner', select: '_id name username email_address position avatar_url' }] }])
 			.then(function (task_invitations) {
 				logger.silly('found this many task invitations: ' + task_invitations.length);
