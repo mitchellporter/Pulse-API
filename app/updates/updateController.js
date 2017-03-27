@@ -55,6 +55,7 @@ exports.put = function(req, res, next) {
             var filtered_responses = update.responses.filter(function (response) {
                 return response.assignee.toString() != assignee_id;
             });
+            response.assignee = req.user;
             filtered_responses.push(response);
             update.responses = filtered_responses;
             callback();
@@ -83,16 +84,16 @@ exports.put = function(req, res, next) {
     });
 
     function sendMessageToTaskAssigner(update) {
-         logger.silly('Sending new update response notification to assigner');
-         logger.silly('update: ' + update);
+        //  logger.silly('Sending new update response notification to assigner');
+        //  logger.silly('update: ' + update);
         var channel = update.task.assigner._id;
         var message = {
             type: 'update',
             update: update
         }
-        logger.silly('channel: ' + channel);
-        logger.silly('message type: ' + message.type);
-        logger.silly('message update: ' + message.update);
+        // logger.silly('channel: ' + channel);
+        // logger.silly('message type: ' + message.type);
+        // logger.silly('message update: ' + message.update);
 
         return messenger.sendMessage(channel, message);
     }
