@@ -73,7 +73,7 @@ exports.getUpdates = function(req, res, next) {
 		// A. Give me Updates that contain a response with an assignee id equal to mine AND a status of requested aka “updates I haven’t responded to”. This is the first table view section.
 		// B. Give me Updates where the task's assigner id is equal to mine
 
-		Update.find({ $and: [{ 'responses.assignee': user }, { 'responses.status': 'requested' }] })
+		Update.find({ $and: [{ 'responses.assignee': user }] })
 		.populate([{ path: 'task', populate: [{ path: 'assigner', select: '_id name username position email_address avatar_url' }, { path: 'assignees', select: '_id name username position email_address avatar_url' }] }, { path: 'responses.assignee', select: '_id name username position email_address avatar_url' } ]) // task.assigner
 		.then(function(updates) {
 			Array.prototype.push.apply(response.updates, updates);
