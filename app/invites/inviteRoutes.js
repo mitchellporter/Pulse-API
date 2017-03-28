@@ -4,6 +4,11 @@ var inviteController = require('./inviteController');
 
 var checkUser = [auth.decodeToken(), auth.getUser];
 
+router.param('id', inviteController.params);
+
+router.route('/:id')
+.put(inviteController.put);
+
 router.route('/')
 .post(checkUser, inviteController.post);
 

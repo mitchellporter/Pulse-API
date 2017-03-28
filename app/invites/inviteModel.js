@@ -42,6 +42,7 @@ var InviteSchema = new Schema({
     team: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Team',
+        required: true
     },
     task: {
         type: mongoose.Schema.Types.ObjectId,
