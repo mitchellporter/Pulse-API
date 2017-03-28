@@ -55,7 +55,8 @@ InviteSchema.pre('validate', function(next) {
 });
 
 InviteSchema.methods = {
-    toJSON: toJSON
+    toJSON: toJSON,
+    send: send
 }
 
 function toJSON() {
