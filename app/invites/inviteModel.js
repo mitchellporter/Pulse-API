@@ -1,6 +1,8 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
+var types = ['team', 'task'];
+
 var InviteSchema = new Schema({
     created_at: {
         type: Date,
@@ -9,6 +11,11 @@ var InviteSchema = new Schema({
     updated_at: {
         type: Date,
         required: true
+    },
+    type: {
+        type: String,
+        required: true,
+        enum: types
     },
     name: {
         type: String,
