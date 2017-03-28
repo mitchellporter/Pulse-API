@@ -5,6 +5,7 @@ var Invite = require('./inviteModel');
 
 
 exports.post = function(req, res, next) {
+    var sender = req.user;
     var team = req.team; // optional
     var task = req.task; // optional
 
@@ -18,6 +19,7 @@ exports.post = function(req, res, next) {
     async.forEachOf(invitees, function(value, key, callback) {
         var invitee = value;
         var invite = new Invite({
+            sender: sender,
             type: type,
             name: invitee.name,
             email: invitee.email,
