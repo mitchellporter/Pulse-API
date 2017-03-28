@@ -28,4 +28,6 @@ router.use('/:id/invitations', require('../task_invitations/taskInvitationRoutes
 
 router.use('/:id/items', require('../items/itemRoutes'));
 
+router.use('/:id/invites', require('../invites/inviteRoutes'));
+
 module.exports = router;
