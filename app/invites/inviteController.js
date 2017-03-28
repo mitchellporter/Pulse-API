@@ -38,4 +38,18 @@ exports.post = function(req, res, next) {
         })
         .catch(next);
     });
+
+    function sendInvites(invites) {
+        async.forEachOf(invites, function(value, key, callback) {
+            var invite = value;
+            invite.send()
+            .then(function(res) {
+                callback();
+            })
+            .catch(callback);
+        }, function(err) {
+            if (err) return logger.error(err);
+            logger.silly('successfully sent invite emails');
+        });
+    }
 };
