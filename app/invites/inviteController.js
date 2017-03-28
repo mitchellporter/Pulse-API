@@ -38,8 +38,4 @@ exports.post = function(req, res, next) {
         })
         .catch(next);
     });
-
-    function sendInviteEmails() {
-        
-    }
 };

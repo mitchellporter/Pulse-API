@@ -59,5 +59,9 @@ function toJSON() {
 	return obj;
 }
 
+function send() {
+    
+}
+
 
 module.exports = mongoose.model('Invite', InviteSchema);
