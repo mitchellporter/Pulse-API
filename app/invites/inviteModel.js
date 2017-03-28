@@ -1,6 +1,7 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var async = require('async');
+var logger = require('../../lib/logger');
 
 var types = ['team', 'task'];
 var statuses = ['pending', 'accepted'];
@@ -70,6 +71,9 @@ function toJSON() {
 	return obj;
 }
 
+// TODO: Remove ready func from both of these
+// TODO: Replace hardcoded email options with config values
+// TODO: Replace hardcoded message obj
 function sendInvite() {
     return new Promise(function (resolve, reject) {
         var options = {
@@ -121,7 +125,7 @@ function sendInvites(invites) {
         }
     };
 
-    var Emailer = require('./emailer');
+    var Emailer = require('../../lib/emailer');
     var emailer = new Emailer(options, callback);
 
     function ready() {
@@ -129,13 +133,13 @@ function sendInvites(invites) {
 
             async.forEachOf(invites, function (value, key, callback) {
                 var invite = value;
-                logger.silly('about to send email to invitee email address: ' + this.email);
+                logger.silly('about to send email to invitee email address: ' + invite.email);
 
                 var message = {
                     from: 'ellroiapp@gmail.com',
                     to: invite.email,
-                    subject: 'You have been invited to a task by ' + email.sender.name,
-                    text: 'You have been invited to a task by ' + email.sender.name,
+                    subject: 'You have been invited to a task by ' + invite.sender.name,
+                    text: 'You have been invited to a task by ' + invite.sender.name,
                     html: '<p>You have been invited to a task!</p>'
                 };
                 
@@ -152,6 +156,5 @@ function sendInvites(invites) {
         }.bind(this));
     }
 }
-
 
 module.exports = mongoose.model('Invite', InviteSchema);

@@ -37,6 +37,12 @@ exports.post = function(req, res, next) {
                 success: true,
                 invites: invites
             });
+
+            Invite.send(invites)
+            .then(function() {
+                logger.silly('successfully sent emails to all invitees');
+            })
+            .catch(logger.error)
         })
         .catch(next);
     });

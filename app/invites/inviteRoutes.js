@@ -5,6 +5,6 @@ var inviteController = require('./inviteController');
 var checkUser = [auth.decodeToken(), auth.getUser];
 
 router.route('/')
-.post(inviteController.post);
+.post(checkUser, inviteController.post);
 
 module.exports = router;
