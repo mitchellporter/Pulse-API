@@ -2,6 +2,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var types = ['team', 'task'];
+var statuses = ['sent', 'accepted'];
 
 var InviteSchema = new Schema({
     created_at: {
@@ -16,6 +17,12 @@ var InviteSchema = new Schema({
         type: String,
         required: true,
         enum: types
+    },
+    status: {
+        type: String,
+        required: true,
+        default: 'sent',
+        enum: statuses
     },
     name: {
         type: String,
