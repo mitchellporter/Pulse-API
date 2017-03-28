@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
+var async = require('async');
 
 var types = ['team', 'task'];
 var statuses = ['pending', 'accepted'];
@@ -54,9 +55,13 @@ InviteSchema.pre('validate', function(next) {
 	next();
 });
 
+InviteSchema.statics = {
+    send: sendInvites
+}
+
 InviteSchema.methods = {
     toJSON: toJSON,
-    send: send
+    send: sendInvite
 }
 
 function toJSON() {
@@ -65,7 +70,7 @@ function toJSON() {
 	return obj;
 }
 
-function send() {
+function sendInvite() {
     return new Promise(function (resolve, reject) {
         var options = {
             service: 'Gmail',
@@ -99,6 +104,53 @@ function send() {
             .catch(reject);
         }
     }.bind(this));
+}
+
+function sendInvites(invites) {
+    var callback = function (err, success) {
+        if (err) console.log(err);
+        if (success) console.log(success);
+        ready();
+    }
+
+    var options = {
+        service: 'Gmail',
+        auth: {
+            user: 'ellroiapp@gmail.com',
+            pass: 'kirkland1234'
+        }
+    };
+
+    var Emailer = require('./emailer');
+    var emailer = new Emailer(options, callback);
+
+    function ready() {
+        return new Promise(function (resolve, reject) {
+
+            async.forEachOf(invites, function (value, key, callback) {
+                var invite = value;
+                logger.silly('about to send email to invitee email address: ' + this.email);
+
+                var message = {
+                    from: 'ellroiapp@gmail.com',
+                    to: invite.email,
+                    subject: 'You have been invited to a task by ' + email.sender.name,
+                    text: 'You have been invited to a task by ' + email.sender.name,
+                    html: '<p>You have been invited to a task!</p>'
+                };
+                
+                emailer.send(message)
+                .then(function(info) {
+                    callback();
+                })
+                .catch(callback);
+
+            }, function (err) {
+                if (err) return reject(err);
+                resolve();
+            }.bind(this));
+        }.bind(this));
+    }
 }
 
 
