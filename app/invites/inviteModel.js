@@ -140,7 +140,7 @@ function sendInvites(invites) {
                     from: 'ellroiapp@gmail.com',
                     to: invite.email,
                     subject: 'You have been invited to a task by ' + invite.sender.name,
-                    text: 'You have been invited to a task by ' + invite.sender.name + ' link: http://localhost:3000/tasks/' + invite.task._id + '/invites/' + invite._id
+                    text: 'You have been invited to a task by ' + invite.sender.name + ' link: http://localhost:3000/?task=' + invite.task._id + '&invite=' + invite._id
                     // html: '<p>You have been invited to a task!</p>'
                 };
                 
