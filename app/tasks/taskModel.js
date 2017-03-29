@@ -67,7 +67,19 @@ TaskSchema.methods = {
 		var obj = this.toObject();
 		delete obj.__v;
 		return obj;
-	}
+	},
+	updateCompletionPercentageFromNewUpdateResponse: updateCompletionPercentageFromNewUpdateResponse
+}
+
+function updateCompletionPercentageFromNewUpdateResponse(response) {
+	return new Promise(function(resolve, reject) {
+		this.isNew = false;
+		this.completion_percentage = response.completion_percentage;
+		
+		this.save()
+		.then(resolve)
+		.catch(reject);
+	}.bind(this));
 }
 
 module.exports = mongoose.model('Task', TaskSchema);

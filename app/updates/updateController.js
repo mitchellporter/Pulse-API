@@ -101,6 +101,14 @@ exports.put = function(req, res, next) {
             })
             .catch(logger.error);
 
+            // Update task's completion percentage
+            update.task.isNew = false;
+            update.task.completion_percentage = completion_percentage
+            update.task.save()
+            .then(function(task) {
+                logger.silly('successfully updated the tasks completion percentage');
+            })
+            .catch(logger.error);
         })
         .catch(next);
     });
@@ -177,6 +185,15 @@ exports.post = function(req, res, next) {
             })
             .then(function() {
                 logger.silly('successfully set most_recent_update_response on assignee');
+            })
+            .catch(logger.error);
+
+            // Update task's completion percentage
+            update.task.isNew = false;
+            update.task.completion_percentage = completion_percentage
+            update.task.save()
+            .then(function(task) {
+                logger.silly('successfully updated the tasks completion percentage');
             })
             .catch(logger.error);
         }
