@@ -1,4 +1,5 @@
 var logger = require('../../lib/logger');
+var Emailer = require('../../lib/emailer');
 var Update = require('./updateModel');
 var async = require('async');
 var messenger = require('../messenger/messenger');
@@ -137,7 +138,8 @@ exports.post = function(req, res, next) {
 
         // TODO: Handle automated as well
         if (type == 'requested') {
-            sendMessageToTaskAssignees()
+            sendEmailsToTaskAssignees()
+            .then(sendMessageToTaskAssignees)
             .then(function() {
                logger.silly('successfully sent update request notification to all assignees');
             })
@@ -175,6 +177,63 @@ exports.post = function(req, res, next) {
                 resolve();
             });
         });
+    }
+
+    function sendEmailsToTaskAssignees() {
+
+        logger.silly('sending update request emails to all task assignees');
+
+        var callback = function (err, success) {
+            if (err) console.log(err);
+            if (success) console.log(success);
+            ready();
+        }
+
+        var options = {
+            service: 'Gmail',
+            auth: {
+                user: 'ellroiapp@gmail.com',
+                pass: 'kirkland1234'
+            }
+        };
+
+        var emailer = new Emailer(options, callback);
+
+        function ready() {
+        return new Promise(function (resolve, reject) {
+            async.forEachOf(task.assignees, function (value, key, callback) {
+                var assignee = value;
+
+                var message = {
+                    from: 'ellroiapp@gmail.com',
+                    to: 'mitchellporter@gmail.com', // TODO: Remove hardcoded email address
+                    subject: task.assigner.name + ' has requested an update on the task you are working on titled: ' + task.title,
+                    text: task.assigner.name + ' has requested an update on the task you are working on: ' + 'http://localhost:3000/?update=' + update._id
+                };
+                
+                emailer.send(message)
+                .then(function(info) {
+                    callback();
+                })
+                .catch(callback);
+
+            }, function (err) {
+                if (err) return reject(err);
+                resolve();
+            });
+        });
+    }
+
+        // return new Promise(function (resolve, reject) {
+        //     async.forEachOf(task.assignees, function (value, key, callback) {
+        //         var assignee = value;
+               
+
+        //     }, function (err) {
+        //         if (err) return reject(err);
+        //         resolve();
+        //     });
+        // });
     }
 
     function sendMessageToTaskAssigner() {
