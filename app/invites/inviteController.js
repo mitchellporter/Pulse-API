@@ -115,3 +115,14 @@ exports.post = function(req, res, next) {
         });
     }
 };
+
+exports.getOne = function(req, res, next) {
+    var task = req.task;
+    var invite = req.invite;
+
+    res.status(200).json({
+        success: true,
+        task: task,
+        invite: invite
+    });
+};
