@@ -60,6 +60,7 @@ UpdateSchema.pre('save', function(next) {
 UpdateSchema.methods = {
 	// TODO: Remove all responses except for the user's in toJSON - they shouldn't be able to see everyone else's updates
 	generateResponses: generateResponses,
+	responseForAssigneeId: responseForAssigneeId,
 	toJSON: function() {
 		var obj = this.toObject();
 		delete obj.__v;
@@ -109,6 +110,16 @@ function generateResponsesForRandom(assignee_id, completion_percentage) {
 			if (err) return reject(err);
 			resolve(this);
 		}.bind(this));
+	}.bind(this));
+}
+
+function responseForAssigneeId(assigneeId) {
+	return new Promise(function(resolve, reject) {
+		var response = this.responses.find(function(response) {		
+			if (mongoose.Types.ObjectId.isValid(response.assignee._id)) return response.assignee._id.toString() == assigneeId;;
+			return response.assignee._id == assigneeId;
+		})
+		resolve(response);
 	}.bind(this));
 }
 

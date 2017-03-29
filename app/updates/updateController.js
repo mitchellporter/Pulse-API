@@ -40,8 +40,9 @@ exports.getOne = function(req, res, next) {
 exports.put = function(req, res, next) {
     logger.silly('updates put');
 
-    var assignee_id = req.user._id;
-    logger.silly('assignee id: ' + assignee_id);
+    var assignee = req.user;
+    var assignee_id = assignee._id;
+
     var update = req.update;
     var completion_percentage = req.body.completion_percentage;
     var message = req.body.message;
@@ -49,24 +50,29 @@ exports.put = function(req, res, next) {
     // TODO: This is annoying, fix later
 
     //  TODO: I think its broken right now because you're modifying the array while iterating over it
+    var new_response;
     async.forEachOf(update.responses, function(value, key, callback) {
         var response = value;
-        logger.silly('response assignee: ' + response.assignee);
+
         if (response.assignee.toString() == assignee_id) {
-            logger.silly('found a match!');
 
             response.isNew = false;
             response.message = message;
             response.completion_percentage = completion_percentage;
             response.status = 'sent';
+
+            new_response = response;
+
             // TODO: There's a cleaner way to do this
             // Filter out old response and add updated one
             var filtered_responses = update.responses.filter(function (response) {
                 return response.assignee.toString() != assignee_id;
             });
+
             response.assignee = req.user;
             filtered_responses.push(response);
             update.responses = filtered_responses;
+
             callback();
         } else {
             callback();
@@ -85,6 +91,13 @@ exports.put = function(req, res, next) {
             sendMessageToTaskAssigner(update)
             .then(function(response) {
                 logger.silly('successfully sent new update response notification to assigner');
+            })
+            .catch(logger.error);
+
+            // Denormalized most recent update for user
+            assignee.storeMostRecentResponseFromUpdate(update)
+            .then(function(assignee) {
+                logger.silly('successfully stored most recent update for assignee');
             })
             .catch(logger.error);
 
@@ -118,12 +131,11 @@ exports.post = function(req, res, next) {
     update.task = task;
     update.type = type;
 
-    logger.silly('about to save update: ' + update);
-
     var assignee_id;
+    var assignee;
     var completion_percentage;
     if (type == 'random') {
-        logger.silly('random!');
+        assignee = req.user;
         assignee_id = req.user._id;
         completion_percentage = req.body.completion_percentage;
     }
@@ -158,6 +170,15 @@ exports.post = function(req, res, next) {
                 logger.silly('successfully sent random update notification to assigner');
             })
             .catch(logger.error)
+
+            update.responseForAssigneeId(assignee_id)
+            .then(function(response) {
+                return assignee.storeMostRecentUpdateResponse(response);
+            })
+            .then(function() {
+                logger.silly('successfully set most_recent_update_response on assignee');
+            })
+            .catch(logger.error);
         }
     })
     .catch(next);
@@ -231,18 +252,7 @@ exports.post = function(req, res, next) {
             });
         });
     }
-
-        // return new Promise(function (resolve, reject) {
-        //     async.forEachOf(task.assignees, function (value, key, callback) {
-        //         var assignee = value;
-               
-
-        //     }, function (err) {
-        //         if (err) return reject(err);
-        //         resolve();
-        //     });
-        // });
-    }
+}
 
     function sendMessageToTaskAssigner() {
         logger.silly('Sending random update notification to assigner');
@@ -252,10 +262,6 @@ exports.post = function(req, res, next) {
             type: 'update',
             update: update
         }
-        logger.silly('channel: ' + channel);
-        logger.silly('message type: ' + message.type);
-        logger.silly('message update: ' + message.update);
-
         return messenger.sendMessage(channel, message);
     }
 };

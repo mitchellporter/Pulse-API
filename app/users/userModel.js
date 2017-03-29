@@ -2,6 +2,7 @@ var logger = require('../../lib/logger');
 var bcrypt = require('bcrypt');
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
+var Response = require('../responses/responseModel');
 
 var UserSchema = new Schema({
 	created_at: {
@@ -38,7 +39,8 @@ var UserSchema = new Schema({
 	},
     apns_token: {
         type: String
-    }
+    },
+	most_recent_update_response: Response.schema,
 });
 
 UserSchema.pre('validate', function(next) {
@@ -81,7 +83,35 @@ UserSchema.methods = {
 		delete obj.__v;
 		delete obj.password;
 		return obj;
-	}
+	},
+	storeMostRecentUpdateResponse: storeMostRecentUpdateResponse,
+	storeMostRecentResponseFromUpdate: storeMostRecentResponseFromUpdate
+}
+
+function storeMostRecentUpdateResponse(response) {
+	return new Promise(function(resolve, reject) {
+		this.isNew = false;
+		this.most_recent_update_response = response;
+
+		this.save()
+		.then(resolve)
+		.catch(reject);
+	}.bind(this));
+}
+
+function storeMostRecentResponseFromUpdate(update) {
+	return new Promise(function(resolve, reject) {
+		update.responseForAssigneeId(this._id)
+		.then(function(response) {
+			if (!response) return reject(new Error('no response on update belongs to user'));
+
+			this.isNew = false;
+			this.most_recent_update_response = response;
+			return this.save();
+		}.bind(this))
+		.then(resolve)
+		.catch(reject);
+	}.bind(this));
 }
 
 module.exports = mongoose.model('User', UserSchema);
