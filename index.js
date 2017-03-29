@@ -1,5 +1,5 @@
 'use strict';
-
+var path = require('path');
 var config = require('./config/config');
 var logger = require('./lib/logger');
 var errors = require('./lib/errors');
@@ -22,14 +22,18 @@ throng(options, start);
 
 function start() {
 	
-	// middleware
 	app.set('x-powered-by', false);
+
+	// middleware
 	app.use(require('morgan')('dev'));
 	app.use(bodyParser.urlencoded({extended: true}));
 	app.use(bodyParser.json());
 	
 	// routes
 	app.use('/api/' + config.api_version, api);
+
+	// web routes
+	app.use('/', require('./web/routes'));
 	
 	// errors
 	app.use(errors);

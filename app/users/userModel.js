@@ -12,10 +12,6 @@ var UserSchema = new Schema({
 		type: Date,
 		required: true
 	},
-	username: {
-        type: String,
-        required: true
-    },
     email_address: {
         type: String,
         required: true
