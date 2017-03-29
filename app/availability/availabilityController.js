@@ -30,33 +30,6 @@ exports.teams = function(req, res, next) {
     }
 };
 
-exports.usernames = function(req, res, next) {
-    var username = req.query.username;
-
-    User.findOne({ username: username })
-    .then(function(user) {
-        logger.silly('found user: ' + user);
-        if (!user) return usernameIsAvailable();
-        usernameAlreadyTaken();
-    })
-    .catch(next);
-
-    // TODO: Always a successful query regardless of username availability?
-    function usernameIsAvailable() {
-        res.status(200).json({
-            success: true,
-            username: username
-        });
-    }
-
-    function usernameAlreadyTaken() {
-        res.status(200).json({
-            success: false,
-            error: 'someone on this team already has that username'
-        });
-    }
-};
-
 exports.emails = function(req, res, next) {
     var email = req.query.email;
 
@@ -68,7 +41,7 @@ exports.emails = function(req, res, next) {
     })
     .catch(next);
 
-    // TODO: Always a successful query regardless of username availability?
+    // TODO: Always a successful query regardless of email availability?
     function emailAddressIsAvailable() {
         res.status(200).json({
             success: true,

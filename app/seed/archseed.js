@@ -126,7 +126,6 @@ function startSeed() {
         var user = new User({
             _id: new mongoose.mongo.ObjectId(dummy_user_mitchell_id),
             name: 'Mitchell',
-            username: 'mitchell',
             password: '1234',
             email: 'mitchell@designfirstapps.com',
             position: 'iOS dev',
@@ -142,7 +141,6 @@ function startSeed() {
         var user = new User({
             _id: new mongoose.mongo.ObjectId(dummy_user_kori_id),
             name: 'Kori',
-            username: 'kori',
             password: '1234',
             email: 'kori@designfirstapps.com',
             position: 'designer',
@@ -158,7 +156,6 @@ function startSeed() {
         var user = new User({
             _id: new mongoose.mongo.ObjectId(dummy_user_allen_id),
             name: 'Allen',
-            username: 'allen',
             password: '1234',
             email: 'arch@designfirstapps.com',
             position: 'iOS dev',
@@ -174,7 +171,6 @@ function startSeed() {
         var user = new User({
             _id: new mongoose.mongo.ObjectId(dummy_user_arch_id),
             name: 'Arch',
-            username: 'arch',
             password: '1234',
             email: 'arch@designfirstapps.com',
             position: 'web dev',

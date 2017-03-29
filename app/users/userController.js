@@ -15,7 +15,7 @@ exports.params = function(req, res, next, id) {
 	})
 };
 
-// TODO: Make sure email address + username are not already taken on the team
+// TODO: Make sure email address is not already taken on the team
 exports.joinTeam = function(req, res, next) {
 	var team = req.team;
 	var user = new User(req.body);
@@ -35,14 +35,8 @@ exports.joinTeam = function(req, res, next) {
 
 // TODO: This may end up being moved to /teams/:teamId/members
 exports.post = function(req, res, next) {
-	// Signup for existing team:
-// team
-// username
-// email address
-// password
-
-// Just create user
-
+	
+// Signup for existing team:
 // 1. Find team
 // 2. Create user
 	var team_name = req.body.team_name;
