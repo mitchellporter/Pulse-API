@@ -148,7 +148,7 @@ function createDummyKoriUser() {
 			_id: new mongoose.mongo.ObjectId(dummy_user_kori_id),
             name: 'Kori Handy',
             password: '1234',
-            email_address: 'kori@designfirstapps.com',
+            email: 'kori@designfirstapps.com',
             position: 'CEO',
             avatar_url: kori_avatar_url,
             team: design_first_apps_team
@@ -163,7 +163,7 @@ function createDummyKoriUser() {
 			_id: new mongoose.mongo.ObjectId(dummy_user_mitchell_id),
             name: 'Mitchell Porter',
             password: '1234',
-            email_address: 'mitchell@designfirstapps.com',
+            email: 'mitchell@designfirstapps.com',
             position: 'iOS Developer',
             avatar_url: mitchell_avatar_url,
             team: design_first_apps_team
@@ -178,7 +178,7 @@ function createDummyKoriUser() {
 			_id: new mongoose.mongo.ObjectId(dummy_user_allen_id),
             name: 'Allen Hurst',
             password: '1234',
-            email_address: 'allen@designfirstapps.com',
+            email: 'allen@designfirstapps.com',
             position: 'iOS Developer',
             avatar_url: allen_avatar_url,
             team: design_first_apps_team
@@ -193,7 +193,7 @@ function createDummyKoriUser() {
 			_id: new mongoose.mongo.ObjectId(dummy_user_arch_id),
             name: 'Arch',
             password: '1234',
-            email_address: 'arch@designfirstapps.com',
+            email: 'arch@designfirstapps.com',
             position: 'web dev',
             avatar_url: arch_avatar_url,
             team: design_first_apps_team
@@ -208,7 +208,7 @@ function createDummyKoriUser() {
             var user = new User({
                 name: casual.first_name + ' ' + casual.last_name,
                 password: '1234',
-                email_address: casual.email,
+                email: casual.email,
                 avatar_url: randomAvatarURL(),
                 position: randomPosition(),
                 team: design_first_apps_team

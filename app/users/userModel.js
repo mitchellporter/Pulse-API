@@ -12,7 +12,7 @@ var UserSchema = new Schema({
 		type: Date,
 		required: true
 	},
-    email_address: {
+    email: {
         type: String,
         required: true
     },

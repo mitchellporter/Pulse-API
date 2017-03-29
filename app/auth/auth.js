@@ -43,10 +43,10 @@ exports.decodeToken = function() {
 exports.verifyUser = function() {
 return function(req, res, next) {
 
-  var email_address = req.body.email_address;
+  var email = req.body.email;
   var password = req.body.password;
 
-  if (!email_address || !password) {
+  if (!email || !password) {
     res.status(400).json({ 
       error: {
         message: 'You need an email address and password.'
@@ -55,12 +55,12 @@ return function(req, res, next) {
   }
 
   // Find the user
-  User.findOne({ email_address: email_address })
+  User.findOne({ email: email })
   .then(function(user) {
     if (!user) {
       res.status(401).json({
         error: {
-          message: 'No user with email address of ' + email_address
+          message: 'No user with email address of ' + email
         }
       });
     } else {

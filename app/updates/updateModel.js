@@ -117,7 +117,7 @@ UpdateSchema.statics.findByTaskAssigner = function (assigner) {
 		Task.find({ assigner: assigner })
 			.then(function (tasks) {
 				this.find({ task: tasks })
-				.populate([ { path: 'task', populate: [{ path: 'assigner', select: '_id name username position email_address avatar_url' }, { path: 'assignees', select: '_id name username position email_address avatar_url' }] }, { path: 'responses.assignee', select: '_id name username position email_address avatar_url' } ])
+				.populate([ { path: 'task', populate: [{ path: 'assigner', select: '_id name username position email avatar_url' }, { path: 'assignees', select: '_id name username position email avatar_url' }] }, { path: 'responses.assignee', select: '_id name username position email avatar_url' } ])
 				.then(resolve)
 				.catch(reject);
 			}.bind(this))

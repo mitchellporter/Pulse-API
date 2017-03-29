@@ -51,7 +51,7 @@ exports.put = function(req, res, next) {
             var user = new User({
                 name: body.name,
                 password: body.password,
-                email_address: invite.email,
+                email: invite.email,
                 position: body.position,
                 team: invite.team
             });
@@ -65,7 +65,7 @@ exports.put = function(req, res, next) {
     function alreadyAccepted() {
         logger.silly('invite already accepted - just return existing user + fesh token');
         logger.silly('email: ' + invite.email);
-        User.findOne({ email_address: invite.email })
+        User.findOne({ email: invite.email })
             .then(function (user) {
 
                 res.status(200).json({

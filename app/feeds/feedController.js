@@ -25,7 +25,7 @@ exports.myTasks = function (req, res, next) {
 
 	function findTaskInvitationsForUser(callback) {
 		TaskInvitation.find({ receiver: user })
-			.populate([{ path: 'sender' }, { path: 'receiver' }, { path: 'task', populate: [{ path: 'items' }, { path: 'assignees', select: '_id name username email_address position avatar_url' }, { path: 'assigner', select: '_id name username email_address position avatar_url' }] }])
+			.populate([{ path: 'sender' }, { path: 'receiver' }, { path: 'task', populate: [{ path: 'items' }, { path: 'assignees', select: '_id name username email position avatar_url' }, { path: 'assigner', select: '_id name username email position avatar_url' }] }])
 			.then(function (task_invitations) {
 				logger.silly('found this many task invitations: ' + task_invitations.length);
 				response.task_invitations = task_invitations;
@@ -74,7 +74,7 @@ exports.getUpdates = function(req, res, next) {
 		// B. Give me Updates where the task's assigner id is equal to mine
 
 		Update.find({ $and: [{ 'responses.assignee': user }] })
-		.populate([{ path: 'task', populate: [{ path: 'assigner', select: '_id name username position email_address avatar_url' }, { path: 'assignees', select: '_id name username position email_address avatar_url' }] }, { path: 'responses.assignee', select: '_id name username position email_address avatar_url' } ]) // task.assigner
+		.populate([{ path: 'task', populate: [{ path: 'assigner', select: '_id name username position email avatar_url' }, { path: 'assignees', select: '_id name username position email avatar_url' }] }, { path: 'responses.assignee', select: '_id name username position email avatar_url' } ]) // task.assigner
 		.then(function(updates) {
 			Array.prototype.push.apply(response.updates, updates);
 			callback(null, updates);
@@ -119,7 +119,7 @@ exports.tasksCreated = function (req, res, next) {
 
 	function findTaskInvitationsSentByUser(callback) {
 		TaskInvitation.find({ sender: user })
-			.populate([{ path: 'sender' }, { path: 'receiver' }, { path: 'task', populate: [{ path: 'items' }, { path: 'assignees', select: '_id name username email_address position avatar_url' }, { path: 'assigner', select: '_id name username email_address position avatar_url' }] }])
+			.populate([{ path: 'sender' }, { path: 'receiver' }, { path: 'task', populate: [{ path: 'items' }, { path: 'assignees', select: '_id name username email position avatar_url' }, { path: 'assigner', select: '_id name username email position avatar_url' }] }])
 			.then(function (task_invitations) {
 				logger.silly('found this many task invitations: ' + task_invitations.length);
 				response.task_invitations = task_invitations;

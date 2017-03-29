@@ -128,7 +128,7 @@ function startSeed() {
             name: 'Mitchell',
             username: 'mitchell',
             password: '1234',
-            email_address: 'mitchell@designfirstapps.com',
+            email: 'mitchell@designfirstapps.com',
             position: 'iOS dev',
             avatar_url: mitchell_avatar_url,
             team: design_first_apps_team
@@ -144,7 +144,7 @@ function startSeed() {
             name: 'Kori',
             username: 'kori',
             password: '1234',
-            email_address: 'kori@designfirstapps.com',
+            email: 'kori@designfirstapps.com',
             position: 'designer',
             avatar_url: kori_avatar_url,
             team: design_first_apps_team
@@ -160,7 +160,7 @@ function startSeed() {
             name: 'Allen',
             username: 'allen',
             password: '1234',
-            email_address: 'arch@designfirstapps.com',
+            email: 'arch@designfirstapps.com',
             position: 'iOS dev',
             avatar_url: allen_avatar_url,
             team: design_first_apps_team
@@ -176,7 +176,7 @@ function startSeed() {
             name: 'Arch',
             username: 'arch',
             password: '1234',
-            email_address: 'arch@designfirstapps.com',
+            email: 'arch@designfirstapps.com',
             position: 'web dev',
             avatar_url: arch_avatar_url,
             team: design_first_apps_team
