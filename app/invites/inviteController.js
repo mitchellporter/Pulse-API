@@ -21,14 +21,17 @@ exports.params = function(req, res, next, id) {
 
 exports.put = function(req, res, next) {
     logger.silly('status: ' + req.body.status);
-    if (!req.body.status || req.body.status != 'accepted') return next(new Error('Can only accept the invitation'));
 
     var status = req.body.status;
     var task = req.task;
     var invite = req.invite;
     var response = { success: true };
+
+    // TODO: Hack - If already accepted, just fetch their existing user object + return fresh token 
+    // Remove this once we have functioning site login
+    if (invite.status == 'accepted') return alreadyAccepted();
     
-    invite.status = status;
+    invite.status = 'accepted';
     invite.isNew = false;
     invite.save()
     .then(function(invite) {
@@ -57,6 +60,22 @@ exports.put = function(req, res, next) {
             .then(resolve)
             .catch(reject);
         });
+    }
+
+    function alreadyAccepted() {
+        logger.silly('invite already accepted - just return existing user + fesh token');
+        logger.silly('email: ' + invite.email);
+        User.findOne({ email_address: invite.email })
+            .then(function (user) {
+
+                res.status(200).json({
+                    success: true,
+                    invite: invite,
+                    user: user,
+                    token: signToken(user._id)
+                });
+            })
+            .catch(next);
     }
 };  
 
