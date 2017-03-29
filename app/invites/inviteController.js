@@ -9,7 +9,9 @@ exports.params = function(req, res, next, id) {
     Invite.findById(id)
     .then(function(invite) {
         if (!invite) return next(new Error('No invite exists with that id'));
-        if (invite.status == 'accepted') return next(new Error('This invite has already been accepted'));
+
+        // TODO: Uncomment this later on when we have a functioning site
+        // if (invite.status == 'accepted') return next(new Error('This invite has already been accepted'));
 
         req.invite = invite;
         next();
