@@ -10,6 +10,7 @@ router.route('/')
 .post(checkUser, updateController.post)
 
 router.route('/:id')
+.get(checkUser, updateController.getOne)
 .put(checkUser, updateController.put);
 
 router.use('/:id/responses', require('../responses/responseRoutes'));

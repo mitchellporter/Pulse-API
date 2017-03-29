@@ -29,6 +29,14 @@ exports.get = function(req, res, next) {
     .catch(next);
 };
 
+exports.getOne = function(req, res, next) {
+    var update = req.update;
+    res.status(200).json({
+        success: true,
+        update: update
+    });
+};
+
 exports.put = function(req, res, next) {
     logger.silly('updates put');
 
