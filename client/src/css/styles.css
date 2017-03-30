@@ -1,0 +1,1352 @@
+/* Eric Meyer's CSS Reset
+   http://meyerweb.com/eric/tools/css/reset/ 
+   v2.0 | 20110126
+   License: none (public domain)
+   This is a Sass partial
+*/
+@import url(https://fonts.googleapis.com/css?family=Roboto:400,100,300,500);
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+}
+
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section {
+  display: block;
+}
+
+body {
+  line-height: 1;
+}
+
+ol, ul {
+  list-style: none;
+}
+
+blockquote, q {
+  quotes: none;
+}
+
+blockquote:before, blockquote:after,
+q:before, q:after {
+  content: '';
+  content: none;
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+/*! normalize.css v3.0.2 | MIT License | git.io/normalize */
+/**
+ * http://applemusic.tumblr.com/
+ * https://jsfiddle.net/xq56dmrh/
+ */
+/** Ultra Light */
+@font-face {
+  font-family: "San Francisco";
+  font-weight: 100;
+  src: url("https://applesocial.s3.amazonaws.com/assets/styles/fonts/sanfrancisco/sanfranciscodisplay-ultralight-webfont.woff");
+}
+/** Thin */
+@font-face {
+  font-family: "San Francisco";
+  font-weight: 200;
+  src: url("https://applesocial.s3.amazonaws.com/assets/styles/fonts/sanfrancisco/sanfranciscodisplay-thin-webfont.woff");
+}
+/** Regular */
+@font-face {
+  font-family: "San Francisco";
+  font-weight: 400;
+  src: url("https://applesocial.s3.amazonaws.com/assets/styles/fonts/sanfrancisco/sanfranciscodisplay-regular-webfont.woff");
+}
+/** Medium */
+@font-face {
+  font-family: "San Francisco";
+  font-weight: 500;
+  src: url("https://applesocial.s3.amazonaws.com/assets/styles/fonts/sanfrancisco/sanfranciscodisplay-medium-webfont.woff");
+}
+/** Semi Bold */
+@font-face {
+  font-family: "San Francisco";
+  font-weight: 600;
+  src: url("https://applesocial.s3.amazonaws.com/assets/styles/fonts/sanfrancisco/sanfranciscodisplay-semibold-webfont.woff");
+}
+/** Bold */
+@font-face {
+  font-family: "San Francisco Bold";
+  font-weight: 700;
+  src: url("https://applesocial.s3.amazonaws.com/assets/styles/fonts/sanfrancisco/sanfranciscodisplay-bold-webfont.woff");
+}
+h1 {
+  font-size: 18px;
+  font-family: "San Francisco Bold";
+  color: white;
+  line-height: 1.2;
+}
+
+p {
+  color: #000000;
+  line-height: 1.4;
+  margin-bottom: 40px;
+}
+p a {
+  color: #5c6369;
+}
+p.hero__copy {
+  color: white;
+  margin: 0;
+}
+
+a {
+  color: white;
+  text-decoration: underline;
+}
+a:hover {
+  text-decoration: none;
+}
+
+ul {
+  margin-bottom: 40px;
+  color: #5c6369;
+  list-style: circle;
+  padding-left: 30px;
+  line-height: 1.4;
+}
+
+html {
+  height: 100%;
+}
+
+body {
+  transition: transform 0.25s;
+  background-color: white;
+  color: #000000;
+  font-family: "San Francisco", "Arial", "San-Serif";
+  font-size: 16px;
+  height: 100%;
+}
+body.-lock {
+  overflow: hidden;
+}
+@media (max-width: 550px) {
+  body.-lock {
+    position: fixed;
+  }
+}
+
+.throbber-full {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background: white url(../images/ui/ajax-loader.gif) 50% 50% no-repeat;
+  z-index: 100;
+  display: none;
+}
+
+.page-wrap {
+  padding-bottom: 100px;
+  overflow: auto;
+}
+
+.hero-content {
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 54px 20px 0;
+}
+
+.body-content {
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 54px 20px 0;
+}
+
+.body-content_bullet {
+  transition: all 0.25s;
+  margin-bottom: 20px;
+  line-height: 1.4;
+}
+.body-content_bullet.-indent {
+  position: relative;
+  padding-left: 40px;
+}
+.body-content_bullet .radio-button {
+  transition: all 0.25s;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1px solid black;
+  display: none;
+}
+.body-content_bullet .radio-button:before {
+  display: none;
+}
+.body-content_bullet .radio-button.-selected {
+  background-color: #19B17C;
+  border: 1px solid #19B17C;
+}
+.body-content_bullet .radio-button.-selected:before {
+  padding-left: 2px;
+  font-size: 14px;
+  padding-top: 1px;
+  color: white;
+  display: block;
+}
+
+.hero__task-details {
+  font-size: 14px;
+  text-align: center;
+  margin-bottom: 30px;
+  font-weight: bold;
+  color: white;
+}
+
+.hero__task-from {
+  opacity: 0.7;
+}
+
+.-task-pending .-task-accepted {
+  display: none;
+}
+
+.hero__task-details--meter {
+  transition: all 0.25s;
+  display: inline-block;
+  height: 10px;
+  width: 10px;
+  border-radius: 50%;
+  background-color: black;
+  opacity: 0.6;
+}
+.hero__task-details--meter.-filled {
+  background-color: white;
+  opacity: 1;
+}
+
+.main-footer {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background-color: #EFEFEF;
+  height: 66px;
+  display: none;
+}
+.main-footer .main-footer__container {
+  position: relative;
+  text-align: center;
+  padding: 25px;
+  display: none;
+}
+@media (max-width: 764px) {
+  .main-footer .main-footer__container {
+    padding: 25px 0;
+  }
+}
+
+.main-navigation {
+  height: 66px;
+}
+
+.main-navigation__container {
+  padding: 20px;
+}
+
+.main-navigation__logo {
+  position: absolute;
+  left: 20px;
+  top: 20px;
+}
+@media (max-width: 550px) {
+  .main-navigation__logo {
+    display: none;
+  }
+}
+
+.main-navigation__header {
+  text-align: center;
+  padding: 10px 130px;
+}
+@media (max-width: 550px) {
+  .main-navigation__header {
+    padding-left: 0;
+    text-align: left;
+  }
+}
+
+.main-navigation__button {
+  transition: all 0.25s;
+  position: absolute;
+  right: 20px;
+  top: 20px;
+}
+.main-navigation__button:hover {
+  right: 21px;
+  top: 21px;
+}
+
+@media (max-width: 550px) {
+  .main-navigation__button--link {
+    display: none;
+  }
+}
+
+.section-home {
+  max-width: 1015px;
+  margin: 100px auto 120px;
+}
+
+.section-pending, .section-accepted, .section-completed {
+  transition: all 0.25s;
+  background-color: #FF496F;
+  min-height: 416px;
+}
+
+.section-accepted {
+  background-color: #FFBB62;
+}
+
+.section-completed {
+  background-color: #11C194;
+}
+
+input {
+  border: 0;
+  font-size: 14px;
+  padding: 10px;
+  border-radius: 3px;
+  border: 1px solid #979797;
+  border-radius: 5px;
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 10px;
+}
+@media (max-width: 764px) {
+  input {
+    font-size: 16px;
+  }
+}
+
+button, .button {
+  transition: all 0.250s;
+  border: 2px solid #000000;
+  background-color: #EFEFEF;
+  font-size: 14px;
+  font-weight: bold;
+  padding: 4px 30px;
+  text-decoration: none;
+  color: #000000;
+  cursor: pointer;
+  border-radius: 5px;
+  text-transform: uppercase;
+  margin: 0 10px;
+}
+button:hover, .button:hover {
+  background-color: white;
+}
+@media (max-width: 764px) {
+  button, .button {
+    margin: 0 5px;
+    padding: 4px 20px;
+  }
+}
+
+.button--block {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.button--completed {
+  border: 2px solid #11C194;
+  background-color: #11C194;
+  color: white;
+}
+.button--completed:hover {
+  border: 2px solid #11C194;
+  background-color: #11C194;
+  color: white;
+}
+
+.button--join {
+  margin: 0;
+  padding: 10px;
+  border: none;
+  color: white;
+  background-color: #3EAEFF;
+  font-weight: normal;
+  border: 1px solid #3EAEFF;
+}
+.button--join:hover {
+  background-color: white;
+  color: #3EAEFF;
+}
+
+.button--give-update {
+  background-color: #FF496F;
+  border-color: #FF496F;
+  color: white;
+}
+.button--give-update:hover {
+  color: #FF496F;
+}
+
+.button--get-app {
+  position: absolute;
+  right: 10px;
+  top: 22px;
+  background-color: transparent;
+  color: white;
+  border-color: white;
+  padding: 4px 14px;
+}
+.button--get-app:hover {
+  background-color: transparent;
+  color: white;
+  border-color: white;
+}
+@media (min-width: 550px) {
+  .button--get-app {
+    display: none !important;
+  }
+}
+
+.page-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 20;
+  background-color: rgba(0, 0, 0, 0.8);
+  opacity: 0.8;
+}
+
+.page-slider {
+  transition: transform 0.25s;
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 100%;
+  width: 370px;
+  background-color: white;
+  z-index: 21;
+  right: -370px;
+  overflow: auto;
+}
+.page-slider.-is-open {
+  transform: translateX(-370px);
+}
+@media (max-width: 764px) {
+  .page-slider.-is-open {
+    transform: translateX(0px);
+    display: block;
+  }
+}
+@media (max-width: 764px) {
+  .page-slider {
+    right: auto;
+    left: auto;
+    top: 2%;
+    width: 96%;
+    height: 96%;
+    margin-left: 2%;
+    border-radius: 6px;
+    display: none;
+  }
+}
+
+.page-slider_header {
+  width: 100%;
+  background-color: #3eaeff;
+}
+@media (max-width: 375px) {
+  .page-slider_header {
+    position: relative;
+    height: 160px;
+    overflow: hidden;
+  }
+}
+@media (max-width: 320px) {
+  .page-slider_header {
+    position: relative;
+    height: 100px;
+    overflow: hidden;
+  }
+}
+.page-slider_header img {
+  display: block;
+  max-width: 370px;
+  width: 100%;
+}
+@media (max-width: 375px) {
+  .page-slider_header img {
+    position: absolute;
+    top: -23px;
+  }
+}
+@media (max-width: 320px) {
+  .page-slider_header img {
+    position: absolute;
+    top: -53px;
+  }
+}
+
+.page-slider_body {
+  position: absolute;
+  top: 50px;
+  overflow: auto;
+  height: 300px;
+  width: 100%;
+}
+
+.page-slider_content {
+  text-align: center;
+  padding: 0 30px;
+  font-size: 14px;
+}
+
+.page-slider__footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 66px;
+  background-color: #EFEFEF;
+}
+.page-slider__footer .page-slider__footer-container {
+  text-align: center;
+  padding: 25px;
+}
+
+.page-slider_heading {
+  margin: 20px 0;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.page-slider_subheading {
+  margin-bottom: 20px;
+}
+
+.page-slider_instructions {
+  font-size: 12px;
+  color: #a8a8a8;
+  margin-top: 20px;
+}
+
+.page-slider_footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  padding: 0px 30px 30px;
+  text-align: center;
+  font-size: 14px;
+}
+@media (max-width: 764px) {
+  .page-slider_footer {
+    position: relative;
+    padding-top: 30px;
+  }
+}
+@media (max-width: 375px) {
+  .page-slider_footer {
+    display: none;
+  }
+}
+
+.page-slider_footer--text {
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.page-slider--accepted, .page-slider--progress {
+  position: relative;
+  display: none;
+  height: 100%;
+  overflow: hidden;
+}
+.page-slider--accepted h3, .page-slider--progress h3 {
+  font-size: 16px;
+  padding: 17px 40px;
+  font-weight: bold;
+}
+
+.page-slider_close-button {
+  position: absolute;
+  left: 14px;
+  top: 16px;
+  text-decoration: none;
+}
+.page-slider_close-button:hover {
+  text-decoration: none;
+}
+
+.page-slider_nav {
+  position: absolute;
+  top: 0;
+  left: 0;
+  text-align: center;
+  color: white;
+  width: 100%;
+  height: 50px;
+  background-color: #FFBB62;
+}
+
+.page-slider_radial {
+  text-align: center;
+  padding: 100px 20px 40px;
+}
+@media (max-width: 764px) {
+  .page-slider_radial {
+    padding-top: 50px;
+  }
+}
+
+.page-slider_radial-controls {
+  position: relative;
+  padding: 0 60px;
+  height: 64px;
+}
+.page-slider_radial-controls .page-slider_radial-controls_button {
+  transition: all 0.25s;
+  display: block;
+  width: 56px;
+  height: 56px;
+  border: 5px solid #E4E4E4;
+  border-radius: 50%;
+  color: #979797;
+  text-decoration: none;
+  font-size: 20px;
+  font-size: 50px;
+  text-align: center;
+  float: right;
+}
+.page-slider_radial-controls .page-slider_radial-controls_button:first-child {
+  float: left;
+}
+.page-slider_radial-controls .page-slider_radial-controls_button:hover, .page-slider_radial-controls .page-slider_radial-controls_button:active {
+  border: 5px solid #11C194;
+  color: #11C194;
+  text-decoration: none;
+}
+
+.page-slider_comments {
+  padding: 50px 20px;
+}
+
+.page-slider_comments--input {
+  border-top: 1px solid #E0E0E0;
+  border-bottom: 1px solid #E0E0E0;
+  padding: 20px 0px 20px 0px;
+  margin-bottom: 40px;
+}
+
+.page-slider_textarea {
+  font-size: 16px;
+  border: none;
+  min-height: 100px;
+  width: 100%;
+}
+
+.comment-item {
+  margin-bottom: 50px;
+  line-height: 1.4;
+}
+
+.comment-item_heading {
+  color: black;
+  margin-bottom: 0;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.comment-item_text {
+  color: #979797;
+  font-size: 14px;
+}
+
+.progress-radial {
+  background-color: #F2F2F2;
+  width: 260px;
+  height: 260px;
+  border-radius: 50%;
+  transform: rotate(180deg);
+  margin: 0 auto;
+  overflow: hidden;
+}
+
+.circle .mask, .circle .fill {
+  width: 260px;
+  height: 260px;
+  position: absolute;
+  border-radius: 50%;
+  transition: transform 1s;
+  -webkit-backface-visibility: hidden;
+}
+.circle .mask {
+  clip: rect(0px, 260px, 260px, 130px);
+}
+.circle .fill {
+  clip: rect(0px, 130px, 260px, 0px);
+  background-color: #11C194;
+}
+
+.circle .shadow {
+  width: 260px;
+  height: 260px;
+  position: absolute;
+  border-radius: 50%;
+}
+
+.inset {
+  width: 215px;
+  height: 215px;
+  position: absolute;
+  margin-left: 22.5px;
+  margin-top: 22.5px;
+  background-color: white;
+  border-radius: 50%;
+  transform: rotate(180deg);
+}
+.inset .completed {
+  position: absolute;
+  top: 133px;
+  width: 100%;
+  text-align: center;
+  text-transform: uppercase;
+  font-size: 18px;
+  font-weight: bold;
+}
+.inset .percentage {
+  position: absolute;
+  top: 74px;
+  width: 100%;
+  text-align: center;
+  font-size: 58px;
+  font-weight: bold;
+  color: #000000;
+}
+
+.progress-radial[data-progress='1'] .circle .mask.full, .progress-radial[data-progress='1'] .circle .fill {
+  transform: rotate(1.8deg);
+}
+.progress-radial[data-progress='1'] .inset .percentage .numbers {
+  width: 240px;
+}
+.progress-radial[data-progress='2'] .circle .mask.full, .progress-radial[data-progress='2'] .circle .fill {
+  transform: rotate(3.6deg);
+}
+.progress-radial[data-progress='2'] .inset .percentage .numbers {
+  width: 360px;
+}
+.progress-radial[data-progress='3'] .circle .mask.full, .progress-radial[data-progress='3'] .circle .fill {
+  transform: rotate(5.4deg);
+}
+.progress-radial[data-progress='3'] .inset .percentage .numbers {
+  width: 480px;
+}
+.progress-radial[data-progress='4'] .circle .mask.full, .progress-radial[data-progress='4'] .circle .fill {
+  transform: rotate(7.2deg);
+}
+.progress-radial[data-progress='4'] .inset .percentage .numbers {
+  width: 600px;
+}
+.progress-radial[data-progress='5'] .circle .mask.full, .progress-radial[data-progress='5'] .circle .fill {
+  transform: rotate(9deg);
+}
+.progress-radial[data-progress='5'] .inset .percentage .numbers {
+  width: 720px;
+}
+.progress-radial[data-progress='6'] .circle .mask.full, .progress-radial[data-progress='6'] .circle .fill {
+  transform: rotate(10.8deg);
+}
+.progress-radial[data-progress='6'] .inset .percentage .numbers {
+  width: 840px;
+}
+.progress-radial[data-progress='7'] .circle .mask.full, .progress-radial[data-progress='7'] .circle .fill {
+  transform: rotate(12.6deg);
+}
+.progress-radial[data-progress='7'] .inset .percentage .numbers {
+  width: 960px;
+}
+.progress-radial[data-progress='8'] .circle .mask.full, .progress-radial[data-progress='8'] .circle .fill {
+  transform: rotate(14.4deg);
+}
+.progress-radial[data-progress='8'] .inset .percentage .numbers {
+  width: 1080px;
+}
+.progress-radial[data-progress='9'] .circle .mask.full, .progress-radial[data-progress='9'] .circle .fill {
+  transform: rotate(16.2deg);
+}
+.progress-radial[data-progress='9'] .inset .percentage .numbers {
+  width: 1200px;
+}
+.progress-radial[data-progress='10'] .circle .mask.full, .progress-radial[data-progress='10'] .circle .fill {
+  transform: rotate(18deg);
+}
+.progress-radial[data-progress='10'] .inset .percentage .numbers {
+  width: 1320px;
+}
+.progress-radial[data-progress='11'] .circle .mask.full, .progress-radial[data-progress='11'] .circle .fill {
+  transform: rotate(19.8deg);
+}
+.progress-radial[data-progress='11'] .inset .percentage .numbers {
+  width: 1440px;
+}
+.progress-radial[data-progress='12'] .circle .mask.full, .progress-radial[data-progress='12'] .circle .fill {
+  transform: rotate(21.6deg);
+}
+.progress-radial[data-progress='12'] .inset .percentage .numbers {
+  width: 1560px;
+}
+.progress-radial[data-progress='13'] .circle .mask.full, .progress-radial[data-progress='13'] .circle .fill {
+  transform: rotate(23.4deg);
+}
+.progress-radial[data-progress='13'] .inset .percentage .numbers {
+  width: 1680px;
+}
+.progress-radial[data-progress='14'] .circle .mask.full, .progress-radial[data-progress='14'] .circle .fill {
+  transform: rotate(25.2deg);
+}
+.progress-radial[data-progress='14'] .inset .percentage .numbers {
+  width: 1800px;
+}
+.progress-radial[data-progress='15'] .circle .mask.full, .progress-radial[data-progress='15'] .circle .fill {
+  transform: rotate(27deg);
+}
+.progress-radial[data-progress='15'] .inset .percentage .numbers {
+  width: 1920px;
+}
+.progress-radial[data-progress='16'] .circle .mask.full, .progress-radial[data-progress='16'] .circle .fill {
+  transform: rotate(28.8deg);
+}
+.progress-radial[data-progress='16'] .inset .percentage .numbers {
+  width: 2040px;
+}
+.progress-radial[data-progress='17'] .circle .mask.full, .progress-radial[data-progress='17'] .circle .fill {
+  transform: rotate(30.6deg);
+}
+.progress-radial[data-progress='17'] .inset .percentage .numbers {
+  width: 2160px;
+}
+.progress-radial[data-progress='18'] .circle .mask.full, .progress-radial[data-progress='18'] .circle .fill {
+  transform: rotate(32.4deg);
+}
+.progress-radial[data-progress='18'] .inset .percentage .numbers {
+  width: 2280px;
+}
+.progress-radial[data-progress='19'] .circle .mask.full, .progress-radial[data-progress='19'] .circle .fill {
+  transform: rotate(34.2deg);
+}
+.progress-radial[data-progress='19'] .inset .percentage .numbers {
+  width: 2400px;
+}
+.progress-radial[data-progress='20'] .circle .mask.full, .progress-radial[data-progress='20'] .circle .fill {
+  transform: rotate(36deg);
+}
+.progress-radial[data-progress='20'] .inset .percentage .numbers {
+  width: 2520px;
+}
+.progress-radial[data-progress='21'] .circle .mask.full, .progress-radial[data-progress='21'] .circle .fill {
+  transform: rotate(37.8deg);
+}
+.progress-radial[data-progress='21'] .inset .percentage .numbers {
+  width: 2640px;
+}
+.progress-radial[data-progress='22'] .circle .mask.full, .progress-radial[data-progress='22'] .circle .fill {
+  transform: rotate(39.6deg);
+}
+.progress-radial[data-progress='22'] .inset .percentage .numbers {
+  width: 2760px;
+}
+.progress-radial[data-progress='23'] .circle .mask.full, .progress-radial[data-progress='23'] .circle .fill {
+  transform: rotate(41.4deg);
+}
+.progress-radial[data-progress='23'] .inset .percentage .numbers {
+  width: 2880px;
+}
+.progress-radial[data-progress='24'] .circle .mask.full, .progress-radial[data-progress='24'] .circle .fill {
+  transform: rotate(43.2deg);
+}
+.progress-radial[data-progress='24'] .inset .percentage .numbers {
+  width: 3000px;
+}
+.progress-radial[data-progress='25'] .circle .mask.full, .progress-radial[data-progress='25'] .circle .fill {
+  transform: rotate(45deg);
+}
+.progress-radial[data-progress='25'] .inset .percentage .numbers {
+  width: 3120px;
+}
+.progress-radial[data-progress='26'] .circle .mask.full, .progress-radial[data-progress='26'] .circle .fill {
+  transform: rotate(46.8deg);
+}
+.progress-radial[data-progress='26'] .inset .percentage .numbers {
+  width: 3240px;
+}
+.progress-radial[data-progress='27'] .circle .mask.full, .progress-radial[data-progress='27'] .circle .fill {
+  transform: rotate(48.6deg);
+}
+.progress-radial[data-progress='27'] .inset .percentage .numbers {
+  width: 3360px;
+}
+.progress-radial[data-progress='28'] .circle .mask.full, .progress-radial[data-progress='28'] .circle .fill {
+  transform: rotate(50.4deg);
+}
+.progress-radial[data-progress='28'] .inset .percentage .numbers {
+  width: 3480px;
+}
+.progress-radial[data-progress='29'] .circle .mask.full, .progress-radial[data-progress='29'] .circle .fill {
+  transform: rotate(52.2deg);
+}
+.progress-radial[data-progress='29'] .inset .percentage .numbers {
+  width: 3600px;
+}
+.progress-radial[data-progress='30'] .circle .mask.full, .progress-radial[data-progress='30'] .circle .fill {
+  transform: rotate(54deg);
+}
+.progress-radial[data-progress='30'] .inset .percentage .numbers {
+  width: 3720px;
+}
+.progress-radial[data-progress='31'] .circle .mask.full, .progress-radial[data-progress='31'] .circle .fill {
+  transform: rotate(55.8deg);
+}
+.progress-radial[data-progress='31'] .inset .percentage .numbers {
+  width: 3840px;
+}
+.progress-radial[data-progress='32'] .circle .mask.full, .progress-radial[data-progress='32'] .circle .fill {
+  transform: rotate(57.6deg);
+}
+.progress-radial[data-progress='32'] .inset .percentage .numbers {
+  width: 3960px;
+}
+.progress-radial[data-progress='33'] .circle .mask.full, .progress-radial[data-progress='33'] .circle .fill {
+  transform: rotate(59.4deg);
+}
+.progress-radial[data-progress='33'] .inset .percentage .numbers {
+  width: 4080px;
+}
+.progress-radial[data-progress='34'] .circle .mask.full, .progress-radial[data-progress='34'] .circle .fill {
+  transform: rotate(61.2deg);
+}
+.progress-radial[data-progress='34'] .inset .percentage .numbers {
+  width: 4200px;
+}
+.progress-radial[data-progress='35'] .circle .mask.full, .progress-radial[data-progress='35'] .circle .fill {
+  transform: rotate(63deg);
+}
+.progress-radial[data-progress='35'] .inset .percentage .numbers {
+  width: 4320px;
+}
+.progress-radial[data-progress='36'] .circle .mask.full, .progress-radial[data-progress='36'] .circle .fill {
+  transform: rotate(64.8deg);
+}
+.progress-radial[data-progress='36'] .inset .percentage .numbers {
+  width: 4440px;
+}
+.progress-radial[data-progress='37'] .circle .mask.full, .progress-radial[data-progress='37'] .circle .fill {
+  transform: rotate(66.6deg);
+}
+.progress-radial[data-progress='37'] .inset .percentage .numbers {
+  width: 4560px;
+}
+.progress-radial[data-progress='38'] .circle .mask.full, .progress-radial[data-progress='38'] .circle .fill {
+  transform: rotate(68.4deg);
+}
+.progress-radial[data-progress='38'] .inset .percentage .numbers {
+  width: 4680px;
+}
+.progress-radial[data-progress='39'] .circle .mask.full, .progress-radial[data-progress='39'] .circle .fill {
+  transform: rotate(70.2deg);
+}
+.progress-radial[data-progress='39'] .inset .percentage .numbers {
+  width: 4800px;
+}
+.progress-radial[data-progress='40'] .circle .mask.full, .progress-radial[data-progress='40'] .circle .fill {
+  transform: rotate(72deg);
+}
+.progress-radial[data-progress='40'] .inset .percentage .numbers {
+  width: 4920px;
+}
+.progress-radial[data-progress='41'] .circle .mask.full, .progress-radial[data-progress='41'] .circle .fill {
+  transform: rotate(73.8deg);
+}
+.progress-radial[data-progress='41'] .inset .percentage .numbers {
+  width: 5040px;
+}
+.progress-radial[data-progress='42'] .circle .mask.full, .progress-radial[data-progress='42'] .circle .fill {
+  transform: rotate(75.6deg);
+}
+.progress-radial[data-progress='42'] .inset .percentage .numbers {
+  width: 5160px;
+}
+.progress-radial[data-progress='43'] .circle .mask.full, .progress-radial[data-progress='43'] .circle .fill {
+  transform: rotate(77.4deg);
+}
+.progress-radial[data-progress='43'] .inset .percentage .numbers {
+  width: 5280px;
+}
+.progress-radial[data-progress='44'] .circle .mask.full, .progress-radial[data-progress='44'] .circle .fill {
+  transform: rotate(79.2deg);
+}
+.progress-radial[data-progress='44'] .inset .percentage .numbers {
+  width: 5400px;
+}
+.progress-radial[data-progress='45'] .circle .mask.full, .progress-radial[data-progress='45'] .circle .fill {
+  transform: rotate(81deg);
+}
+.progress-radial[data-progress='45'] .inset .percentage .numbers {
+  width: 5520px;
+}
+.progress-radial[data-progress='46'] .circle .mask.full, .progress-radial[data-progress='46'] .circle .fill {
+  transform: rotate(82.8deg);
+}
+.progress-radial[data-progress='46'] .inset .percentage .numbers {
+  width: 5640px;
+}
+.progress-radial[data-progress='47'] .circle .mask.full, .progress-radial[data-progress='47'] .circle .fill {
+  transform: rotate(84.6deg);
+}
+.progress-radial[data-progress='47'] .inset .percentage .numbers {
+  width: 5760px;
+}
+.progress-radial[data-progress='48'] .circle .mask.full, .progress-radial[data-progress='48'] .circle .fill {
+  transform: rotate(86.4deg);
+}
+.progress-radial[data-progress='48'] .inset .percentage .numbers {
+  width: 5880px;
+}
+.progress-radial[data-progress='49'] .circle .mask.full, .progress-radial[data-progress='49'] .circle .fill {
+  transform: rotate(88.2deg);
+}
+.progress-radial[data-progress='49'] .inset .percentage .numbers {
+  width: 6000px;
+}
+.progress-radial[data-progress='50'] .circle .mask.full, .progress-radial[data-progress='50'] .circle .fill {
+  transform: rotate(90deg);
+}
+.progress-radial[data-progress='50'] .inset .percentage .numbers {
+  width: 6120px;
+}
+.progress-radial[data-progress='51'] .circle .mask.full, .progress-radial[data-progress='51'] .circle .fill {
+  transform: rotate(91.8deg);
+}
+.progress-radial[data-progress='51'] .inset .percentage .numbers {
+  width: 6240px;
+}
+.progress-radial[data-progress='52'] .circle .mask.full, .progress-radial[data-progress='52'] .circle .fill {
+  transform: rotate(93.6deg);
+}
+.progress-radial[data-progress='52'] .inset .percentage .numbers {
+  width: 6360px;
+}
+.progress-radial[data-progress='53'] .circle .mask.full, .progress-radial[data-progress='53'] .circle .fill {
+  transform: rotate(95.4deg);
+}
+.progress-radial[data-progress='53'] .inset .percentage .numbers {
+  width: 6480px;
+}
+.progress-radial[data-progress='54'] .circle .mask.full, .progress-radial[data-progress='54'] .circle .fill {
+  transform: rotate(97.2deg);
+}
+.progress-radial[data-progress='54'] .inset .percentage .numbers {
+  width: 6600px;
+}
+.progress-radial[data-progress='55'] .circle .mask.full, .progress-radial[data-progress='55'] .circle .fill {
+  transform: rotate(99deg);
+}
+.progress-radial[data-progress='55'] .inset .percentage .numbers {
+  width: 6720px;
+}
+.progress-radial[data-progress='56'] .circle .mask.full, .progress-radial[data-progress='56'] .circle .fill {
+  transform: rotate(100.8deg);
+}
+.progress-radial[data-progress='56'] .inset .percentage .numbers {
+  width: 6840px;
+}
+.progress-radial[data-progress='57'] .circle .mask.full, .progress-radial[data-progress='57'] .circle .fill {
+  transform: rotate(102.6deg);
+}
+.progress-radial[data-progress='57'] .inset .percentage .numbers {
+  width: 6960px;
+}
+.progress-radial[data-progress='58'] .circle .mask.full, .progress-radial[data-progress='58'] .circle .fill {
+  transform: rotate(104.4deg);
+}
+.progress-radial[data-progress='58'] .inset .percentage .numbers {
+  width: 7080px;
+}
+.progress-radial[data-progress='59'] .circle .mask.full, .progress-radial[data-progress='59'] .circle .fill {
+  transform: rotate(106.2deg);
+}
+.progress-radial[data-progress='59'] .inset .percentage .numbers {
+  width: 7200px;
+}
+.progress-radial[data-progress='60'] .circle .mask.full, .progress-radial[data-progress='60'] .circle .fill {
+  transform: rotate(108deg);
+}
+.progress-radial[data-progress='60'] .inset .percentage .numbers {
+  width: 7320px;
+}
+.progress-radial[data-progress='61'] .circle .mask.full, .progress-radial[data-progress='61'] .circle .fill {
+  transform: rotate(109.8deg);
+}
+.progress-radial[data-progress='61'] .inset .percentage .numbers {
+  width: 7440px;
+}
+.progress-radial[data-progress='62'] .circle .mask.full, .progress-radial[data-progress='62'] .circle .fill {
+  transform: rotate(111.6deg);
+}
+.progress-radial[data-progress='62'] .inset .percentage .numbers {
+  width: 7560px;
+}
+.progress-radial[data-progress='63'] .circle .mask.full, .progress-radial[data-progress='63'] .circle .fill {
+  transform: rotate(113.4deg);
+}
+.progress-radial[data-progress='63'] .inset .percentage .numbers {
+  width: 7680px;
+}
+.progress-radial[data-progress='64'] .circle .mask.full, .progress-radial[data-progress='64'] .circle .fill {
+  transform: rotate(115.2deg);
+}
+.progress-radial[data-progress='64'] .inset .percentage .numbers {
+  width: 7800px;
+}
+.progress-radial[data-progress='65'] .circle .mask.full, .progress-radial[data-progress='65'] .circle .fill {
+  transform: rotate(117deg);
+}
+.progress-radial[data-progress='65'] .inset .percentage .numbers {
+  width: 7920px;
+}
+.progress-radial[data-progress='66'] .circle .mask.full, .progress-radial[data-progress='66'] .circle .fill {
+  transform: rotate(118.8deg);
+}
+.progress-radial[data-progress='66'] .inset .percentage .numbers {
+  width: 8040px;
+}
+.progress-radial[data-progress='67'] .circle .mask.full, .progress-radial[data-progress='67'] .circle .fill {
+  transform: rotate(120.6deg);
+}
+.progress-radial[data-progress='67'] .inset .percentage .numbers {
+  width: 8160px;
+}
+.progress-radial[data-progress='68'] .circle .mask.full, .progress-radial[data-progress='68'] .circle .fill {
+  transform: rotate(122.4deg);
+}
+.progress-radial[data-progress='68'] .inset .percentage .numbers {
+  width: 8280px;
+}
+.progress-radial[data-progress='69'] .circle .mask.full, .progress-radial[data-progress='69'] .circle .fill {
+  transform: rotate(124.2deg);
+}
+.progress-radial[data-progress='69'] .inset .percentage .numbers {
+  width: 8400px;
+}
+.progress-radial[data-progress='70'] .circle .mask.full, .progress-radial[data-progress='70'] .circle .fill {
+  transform: rotate(126deg);
+}
+.progress-radial[data-progress='70'] .inset .percentage .numbers {
+  width: 8520px;
+}
+.progress-radial[data-progress='71'] .circle .mask.full, .progress-radial[data-progress='71'] .circle .fill {
+  transform: rotate(127.8deg);
+}
+.progress-radial[data-progress='71'] .inset .percentage .numbers {
+  width: 8640px;
+}
+.progress-radial[data-progress='72'] .circle .mask.full, .progress-radial[data-progress='72'] .circle .fill {
+  transform: rotate(129.6deg);
+}
+.progress-radial[data-progress='72'] .inset .percentage .numbers {
+  width: 8760px;
+}
+.progress-radial[data-progress='73'] .circle .mask.full, .progress-radial[data-progress='73'] .circle .fill {
+  transform: rotate(131.4deg);
+}
+.progress-radial[data-progress='73'] .inset .percentage .numbers {
+  width: 8880px;
+}
+.progress-radial[data-progress='74'] .circle .mask.full, .progress-radial[data-progress='74'] .circle .fill {
+  transform: rotate(133.2deg);
+}
+.progress-radial[data-progress='74'] .inset .percentage .numbers {
+  width: 9000px;
+}
+.progress-radial[data-progress='75'] .circle .mask.full, .progress-radial[data-progress='75'] .circle .fill {
+  transform: rotate(135deg);
+}
+.progress-radial[data-progress='75'] .inset .percentage .numbers {
+  width: 9120px;
+}
+.progress-radial[data-progress='76'] .circle .mask.full, .progress-radial[data-progress='76'] .circle .fill {
+  transform: rotate(136.8deg);
+}
+.progress-radial[data-progress='76'] .inset .percentage .numbers {
+  width: 9240px;
+}
+.progress-radial[data-progress='77'] .circle .mask.full, .progress-radial[data-progress='77'] .circle .fill {
+  transform: rotate(138.6deg);
+}
+.progress-radial[data-progress='77'] .inset .percentage .numbers {
+  width: 9360px;
+}
+.progress-radial[data-progress='78'] .circle .mask.full, .progress-radial[data-progress='78'] .circle .fill {
+  transform: rotate(140.4deg);
+}
+.progress-radial[data-progress='78'] .inset .percentage .numbers {
+  width: 9480px;
+}
+.progress-radial[data-progress='79'] .circle .mask.full, .progress-radial[data-progress='79'] .circle .fill {
+  transform: rotate(142.2deg);
+}
+.progress-radial[data-progress='79'] .inset .percentage .numbers {
+  width: 9600px;
+}
+.progress-radial[data-progress='80'] .circle .mask.full, .progress-radial[data-progress='80'] .circle .fill {
+  transform: rotate(144deg);
+}
+.progress-radial[data-progress='80'] .inset .percentage .numbers {
+  width: 9720px;
+}
+.progress-radial[data-progress='81'] .circle .mask.full, .progress-radial[data-progress='81'] .circle .fill {
+  transform: rotate(145.8deg);
+}
+.progress-radial[data-progress='81'] .inset .percentage .numbers {
+  width: 9840px;
+}
+.progress-radial[data-progress='82'] .circle .mask.full, .progress-radial[data-progress='82'] .circle .fill {
+  transform: rotate(147.6deg);
+}
+.progress-radial[data-progress='82'] .inset .percentage .numbers {
+  width: 9960px;
+}
+.progress-radial[data-progress='83'] .circle .mask.full, .progress-radial[data-progress='83'] .circle .fill {
+  transform: rotate(149.4deg);
+}
+.progress-radial[data-progress='83'] .inset .percentage .numbers {
+  width: 10080px;
+}
+.progress-radial[data-progress='84'] .circle .mask.full, .progress-radial[data-progress='84'] .circle .fill {
+  transform: rotate(151.2deg);
+}
+.progress-radial[data-progress='84'] .inset .percentage .numbers {
+  width: 10200px;
+}
+.progress-radial[data-progress='85'] .circle .mask.full, .progress-radial[data-progress='85'] .circle .fill {
+  transform: rotate(153deg);
+}
+.progress-radial[data-progress='85'] .inset .percentage .numbers {
+  width: 10320px;
+}
+.progress-radial[data-progress='86'] .circle .mask.full, .progress-radial[data-progress='86'] .circle .fill {
+  transform: rotate(154.8deg);
+}
+.progress-radial[data-progress='86'] .inset .percentage .numbers {
+  width: 10440px;
+}
+.progress-radial[data-progress='87'] .circle .mask.full, .progress-radial[data-progress='87'] .circle .fill {
+  transform: rotate(156.6deg);
+}
+.progress-radial[data-progress='87'] .inset .percentage .numbers {
+  width: 10560px;
+}
+.progress-radial[data-progress='88'] .circle .mask.full, .progress-radial[data-progress='88'] .circle .fill {
+  transform: rotate(158.4deg);
+}
+.progress-radial[data-progress='88'] .inset .percentage .numbers {
+  width: 10680px;
+}
+.progress-radial[data-progress='89'] .circle .mask.full, .progress-radial[data-progress='89'] .circle .fill {
+  transform: rotate(160.2deg);
+}
+.progress-radial[data-progress='89'] .inset .percentage .numbers {
+  width: 10800px;
+}
+.progress-radial[data-progress='90'] .circle .mask.full, .progress-radial[data-progress='90'] .circle .fill {
+  transform: rotate(162deg);
+}
+.progress-radial[data-progress='90'] .inset .percentage .numbers {
+  width: 10920px;
+}
+.progress-radial[data-progress='91'] .circle .mask.full, .progress-radial[data-progress='91'] .circle .fill {
+  transform: rotate(163.8deg);
+}
+.progress-radial[data-progress='91'] .inset .percentage .numbers {
+  width: 11040px;
+}
+.progress-radial[data-progress='92'] .circle .mask.full, .progress-radial[data-progress='92'] .circle .fill {
+  transform: rotate(165.6deg);
+}
+.progress-radial[data-progress='92'] .inset .percentage .numbers {
+  width: 11160px;
+}
+.progress-radial[data-progress='93'] .circle .mask.full, .progress-radial[data-progress='93'] .circle .fill {
+  transform: rotate(167.4deg);
+}
+.progress-radial[data-progress='93'] .inset .percentage .numbers {
+  width: 11280px;
+}
+.progress-radial[data-progress='94'] .circle .mask.full, .progress-radial[data-progress='94'] .circle .fill {
+  transform: rotate(169.2deg);
+}
+.progress-radial[data-progress='94'] .inset .percentage .numbers {
+  width: 11400px;
+}
+.progress-radial[data-progress='95'] .circle .mask.full, .progress-radial[data-progress='95'] .circle .fill {
+  transform: rotate(171deg);
+}
+.progress-radial[data-progress='95'] .inset .percentage .numbers {
+  width: 11520px;
+}
+.progress-radial[data-progress='96'] .circle .mask.full, .progress-radial[data-progress='96'] .circle .fill {
+  transform: rotate(172.8deg);
+}
+.progress-radial[data-progress='96'] .inset .percentage .numbers {
+  width: 11640px;
+}
+.progress-radial[data-progress='97'] .circle .mask.full, .progress-radial[data-progress='97'] .circle .fill {
+  transform: rotate(174.6deg);
+}
+.progress-radial[data-progress='97'] .inset .percentage .numbers {
+  width: 11760px;
+}
+.progress-radial[data-progress='98'] .circle .mask.full, .progress-radial[data-progress='98'] .circle .fill {
+  transform: rotate(176.4deg);
+}
+.progress-radial[data-progress='98'] .inset .percentage .numbers {
+  width: 11880px;
+}
+.progress-radial[data-progress='99'] .circle .mask.full, .progress-radial[data-progress='99'] .circle .fill {
+  transform: rotate(178.2deg);
+}
+.progress-radial[data-progress='99'] .inset .percentage .numbers {
+  width: 12000px;
+}
+.progress-radial[data-progress='100'] .circle .mask.full, .progress-radial[data-progress='100'] .circle .fill {
+  transform: rotate(180deg);
+}
+.progress-radial[data-progress='100'] .inset .percentage .numbers {
+  width: 12120px;
+}

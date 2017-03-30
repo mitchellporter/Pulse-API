@@ -1,0 +1,15 @@
+{
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aarchbold/task-manager"
+  },
+  "devDependencies": {
+    "grunt-contrib-uglify": "^2.0.0",
+    "gulp": "^3.9.1",
+    "gulp-autoprefixer": "^2.3.1",
+    "gulp-cli": "^1.2.2",
+    "gulp-concat": "^2.6.0",
+    "gulp-ruby-sass": "^1.0.5",
+    "gulp-uglify": "^2.0.0"
+  }
+}

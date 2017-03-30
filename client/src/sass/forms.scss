@@ -1,0 +1,104 @@
+// forms styles
+
+input {
+    // background-color: $color-main-font;
+    // color: $color-form-input;
+    border: 0;
+    font-size: 14px;
+    padding: 10px;
+    border-radius: 3px;
+    border: 1px solid $color-input;
+    border-radius: 5px;
+    width: 100%;
+    box-sizing : border-box;
+    margin-bottom: 10px;
+    &:focus {
+        // outline-color: $color-form-highlight;
+    }
+    @media (max-width: $breakpoint-slider) {
+        font-size: 16px;
+    }
+}
+
+// buttons
+button, .button {
+    transition: all 0.250s;
+    border: 2px solid $color-button;
+    background-color: $color-button-background;
+    font-size: 14px;
+    font-weight: bold;
+    padding: 4px 30px;
+    text-decoration: none;
+    color: $color-button;
+    cursor: pointer;
+    border-radius: 5px;
+    text-transform: uppercase;
+    margin: 0 10px;
+    &:hover {
+        background-color: $color-button-hover;
+        // color: $color-button;
+    }
+    &:focus {
+        // outline-color: $color-form-highlight;
+    }
+    @media (max-width: $breakpoint-slider) {
+        margin: 0 5px;
+        padding: 4px 20px;
+    }
+}
+
+.button--block {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.button--completed {
+    border: 2px solid $color-completed-background;
+    background-color: $color-completed-background;
+    color: white;
+    &:hover {
+        border: 2px solid $color-completed-background;
+        background-color: $color-completed-background;
+        color: white;  
+    }
+}
+
+.button--join {
+    margin: 0;
+    padding: 10px;
+    border: none;
+    color: white;
+    background-color: $color-slider-header;
+    font-weight: normal;
+    border: 1px solid $color-slider-header;
+    &:hover {
+        background-color: white;
+        color: $color-slider-header;
+    }
+}
+.button--give-update {
+    background-color: $color-pending-background;
+    border-color: $color-pending-background;
+    color: white;
+    &:hover {
+        color: $color-pending-background;
+    }
+}
+.button--get-app {
+    position: absolute;
+    right: 10px;
+    top: 22px;
+    background-color: transparent;
+    color: white;
+    border-color: white;
+    padding: 4px 14px;
+    &:hover {
+        background-color: transparent;
+        color: white;
+        border-color: white;
+    }
+    @media (min-width: $breakpoint-tablet) {
+        display: none !important;
+    }
+}

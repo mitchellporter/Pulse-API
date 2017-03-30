@@ -1,0 +1,27 @@
+// home styles
+
+.section-home {
+    max-width: 1015px;
+    margin: 100px auto 120px;
+    // @media (max-width: $breakpoint-big-tablet) {
+    //     margin: 100px 40px;
+    // }
+    // @media (max-width: $breakpoint-phone) {
+    //     margin: 60px 20px;
+    // } 
+}
+.section-pending, .section-accepted, .section-completed {
+    transition: all 0.25s;
+    background-color: $color-pending-background; 
+    min-height: 416px;
+    // border-bottom-left-radius: 50% 40px;
+    // border-bottom-right-radius: 50% 40px;
+}
+.section-accepted {
+    background-color: $color-accepted-background; 
+}
+.section-completed {
+    background-color: $color-completed-background; 
+}
+
+

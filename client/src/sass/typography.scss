@@ -1,0 +1,37 @@
+// common typography styles
+
+h1 {
+    font-size: 18px;
+    font-family: "San Francisco Bold";
+    color: $color-hero-font;
+    line-height: 1.2;
+}
+
+p {
+    color: $color-body-font;
+    line-height: 1.4;
+    margin-bottom: 40px;
+    a {
+        color: #5c6369;
+    }
+    &.hero__copy {
+        color: $color-hero-font;
+        margin: 0;
+    }
+}
+
+a {
+    color: white;
+    text-decoration: underline;
+    &:hover {
+        text-decoration: none;
+    }
+}
+
+ul {
+    margin-bottom: 40px;
+    color: #5c6369;
+    list-style: circle;
+    padding-left: 30px;
+    line-height: 1.4;
+}

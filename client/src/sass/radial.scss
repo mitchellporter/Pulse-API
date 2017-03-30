@@ -1,0 +1,124 @@
+// @import url(http://fonts.googleapis.com/css?family=Lato:100,300,400,700,900,100italic,300italic,400italic,700italic,900italic)
+
+$circle-bg: #F2F2F2;
+$circle-color: #11C194;
+$circle-size: 260px;
+$transition-length: 1s;
+$inset-size: 215px;
+$inset-color: white;
+$increment: 180deg/100;
+$percentage-color: #000000;
+$percentage-font-size: 44px;
+$percentage-text-width: 120px;
+
+.progress-radial {
+    background-color: $circle-bg;
+    width: $circle-size;
+    height: $circle-size;
+    border-radius: 50%;
+    transform: rotate(180deg);
+    margin: 0 auto;
+    overflow: hidden;
+}
+
+.circle {
+    .mask, .fill {
+        width: $circle-size;
+        height: $circle-size;
+        position: absolute;
+        border-radius: 50%;
+        transition: transform $transition-length;
+        -webkit-backface-visibility: hidden;
+    }
+    .mask {
+        clip: rect(0px, $circle-size, $circle-size, $circle-size/2);
+    }
+    .fill {
+        clip: rect(0px, $circle-size/2, $circle-size, 0px);
+        background-color: $circle-color;
+    }
+}
+
+.circle {
+    .shadow {
+        width: $circle-size;
+        height: $circle-size;
+        position: absolute;
+        border-radius: 50%;
+    }
+}
+
+      
+.inset {
+    width: $inset-size;
+    height: $inset-size;
+    position: absolute;
+    margin-left: ($circle-size - $inset-size)/2;
+    margin-top: ($circle-size - $inset-size)/2;
+    background-color: $inset-color;
+    border-radius: 50%;
+    transform: rotate(180deg);
+    .completed {
+        position: absolute;
+        top: 133px;
+        width: 100%;
+        text-align: center;
+        text-transform: uppercase;
+        font-size: 18px;
+        font-weight: bold;
+    }
+    .percentage {
+        position: absolute;
+        top: 74px;
+        width: 100%;
+        text-align: center;
+        font-size: 58px;
+        font-weight: bold;
+        color: $percentage-color;
+    //     width: $percentage-text-width;
+    //     height: $percentage-font-size;
+    //     position: absolute;
+    //     top: ($inset-size - ($percentage-font-size + 15)) / 2;
+    //     left: ($inset-size - $percentage-text-width) / 2;
+    //     line-height: 1;
+    //     transition: width $transition-length;
+    //     overflow: hidden;
+    //     .numbers {
+    //         margin-top: -$percentage-font-size;
+    //         transition: width $transition-length;
+    //         span {
+    //             width: $percentage-text-width;
+    //             display: inline-block;
+    //             vertical-align: top;
+    //             text-align: center;
+    //             font-weight: 800;
+    //             font-size: $percentage-font-size;
+    //             font-family: "Lato", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    //             color: $percentage-color;
+    //         }
+    //     }
+    }
+}
+
+.progress-radial {
+    @for $i from 1 through 100 {
+        &[data-progress='#{$i}'] {
+            .circle {
+                .mask.full, .fill {
+                    transform: rotate($increment * $i);
+                }
+            }
+            .inset .percentage .numbers {
+                width: $i*$percentage-text-width + $percentage-text-width;
+            }
+        }
+    }
+}
+
+    
+        
+
+
+    
+
+  

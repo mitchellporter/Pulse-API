@@ -1,0 +1,174 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>Ellroi - Stop. Collaborate. Listen.</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no, minimal-ui">
+        <meta property="og:image" content=>
+        <meta property="og:description" content="">
+
+        <link rel="apple-touch-icon" href="apple-touch-icon.png">
+        <!-- Place favicon.ico in the root directory -->
+<!--         <link rel="shortcut icon" href="" type="image/x-icon">
+        <link rel="icon" href="" type="image/x-icon"> -->
+        <link rel="stylesheet" href="static/css/styles.css">
+        <script src="static/js/vendor/vendors.js"></script>
+        <script src="https://use.fontawesome.com/677ce2c38f.js"></script>
+    </head>
+    <body id="pending-page" class="-lock">
+        <!--[if lt IE 8]>
+            <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+        <div class="page-overlay">
+        </div>
+        <div class="page-slider -is-open">
+            <div class="throbber-full"></div>
+            <div class="page-slider--pin">
+                <div class="page-slider_header">
+                    <img src="static/images/ui/slider-enter-pin.png" />
+                </div>
+                <div class="page-slider_content">
+                    <h2 class="page-slider_heading">Welcome to Ellroi... Huuzzzaa!</h2>
+                    <p class="page-slider_subheading ">You've been sent a new task!! Enter your info and get started.</p>
+                    <div class="page-slider_form" id="pin-entry">
+                        <input id="ellroiFullName" class="page-slider_input" type="text" placeholder="Full Name" max-length="256" autocomplete="false" />
+                        <input id="ellroiJobTitle" class="page-slider_input" type="text" placeholder="Job Title" max-length="256" autocomplete="false" />
+                        <input id="ellroiPassword" class="page-slider_input" type="password" placeholder="Password" max-length="256" autocomplete="false" />
+                        <button id="joinEllroi" class="button button--join button--block" type="button">Join Ellroi</button>
+                    </div>
+                </div>
+                <div class="page-slider_footer">
+                    <p class="page-slider_footer--text">We have an iPhone app too if you want to unlock the best way to get work done for free.</p>
+                    <a href="#"><img class="page-slider__button" src="static/images/logos/logo-appstore.png" title="Download on the App Store" width="110" /></a>
+                </div>
+            </div>
+            <div class="page-slider--accepted">
+                <div class="page-slider_header">
+                    <img src="static/images/ui/slider-accepted.png" />
+                </div>
+                <div class="page-slider_content">
+                    <h2 class="page-slider_heading">Favorite this page!</h2>
+                    <p class="page-slider_subheading ">Add this page as a favorite so you can easily find it when you need to reference or check off completed tasks. (You can also give updates any time too)</p>
+                    <a href="#" id="taskAccepted" class="button button--join button--block">Thanks, close this now</a>
+                </div>
+                <div class="page-slider_footer">
+                    <p class="page-slider_footer--text">We have an iPhone app too if you want to unlock the best way to get work done for free.</p>
+                    <a href="#"><img class="page-slider__button" src="static/images/logos/logo-appstore.png" title="Download on the App Store" width="110" /></a>
+                </div>
+            </div>
+            <div class="page-slider--progress">
+                <div class="page-slider_nav">
+                    <a class="page-slider_close-button fa fa-times" href="#"></a>
+                    <h3>TASK IN PROGRESS</h3>
+                </div>
+                <div class="page-slider_body">
+                    <div id="radialProgress">
+                        <div class="page-slider_radial">
+                            <!-- testing radial progress -->
+                            <div class="progress-radial" data-progress="25">
+                              <div class="circle">
+                                <div class="mask half">
+                                  <div class="fill"></div>
+                                </div>
+                                <div class="mask full">
+                                  <div class="fill"></div>
+                                </div>
+                                <div class=”shadow”></div>
+                              </div>
+                              <div class="inset">
+                                <div class="percentage">
+                                    25%
+                                </div>
+                                <div class="completed">Completed</div>
+                              </div>
+                            </div>
+
+                        </div>
+
+                        <div class="page-slider_radial-controls">
+                            <a href="#" class="page-slider_radial-controls_button -decrease">-</a>
+                            <a href="#" class="page-slider_radial-controls_button -increase">+</a>
+                        </div>
+                    </div>
+
+                    <div id="sliderComments" class="page-slider_comments">
+                        <div class="page-slider_comments--input">
+                            <textarea class="page-slider_textarea" id="commentBox" placeholder="Leave a message here"></textarea>
+                        </div>
+                        <div class="comment-item_list">
+                            <div class="comment-item">
+                                <div class="comment-item_heading">
+                                    Sent: 3 days ago
+                                </div>
+                                <div class="comment-item_text">
+                                    Archived messages will go here, that look like this bla bla bla…
+                                </div>
+                            </div>
+                            <div class="comment-item">
+                                <div class="comment-item_heading">
+                                    Sent: 3 days ago
+                                </div>
+                                <div class="comment-item_text">
+                                    Archived messages will go here, that look like this bla bla bla…
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="page-slider__footer">
+                    <div class="page-slider__footer-container">
+                        <a id="submitButton" class="button" href="#">Submit</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="page-wrap">
+            <section id="mainSection" class="section-pending">
+                <nav class="main-navigation">
+                    <div class="main-navigation__container">
+                        <img class="main-navigation__logo" src="static/images/logos/logo-ellroi.png" title="Ellroi" width="120" />
+                        <h1 class="main-navigation__header">NEW TASK PENDING</h1>
+                        <a href="#" class="button button--get-app">Get App</a>
+                        <a href="#" class="main-navigation__button--link"><img class="main-navigation__button" src="static/images/logos/logo-appstore.png" title="Download on the App Store" width="110" /></a>
+                    </div>
+                </nav>
+                <div class="hero-content">
+                    <div class="hero__task-details">
+                        <img width="50" class="hero__task-profile" id="taskAvatar" src="static/images/profile/casey-jones.png" />
+                        <p class="hero__copy hero__task-from">From: <span id="taskOwner">Task Owner</span></p>
+                        <div class="hero__copy -task-pending">PENDING TASK | Due <span id="taskDueDate"></span></div>
+                        <div class="hero__copy -task-accepted">
+                            Due Mar 29 | <span class="hero__task-details--progress">25%</span> Done &nbsp;&nbsp;
+                            <span class="hero__task-details--meter -filled"></span>
+                            <span class="hero__task-details--meter"></span>
+                            <span class="hero__task-details--meter"></span>
+                            <span class="hero__task-details--meter"></span>
+                        </div>
+                    </div>
+                    <p class="hero__copy" id="taskDescription"></p>
+                </div>
+            </section>
+            <div class="body-content" id="taskContent">
+                <!-- <div class="body-content_bullet">
+                    <div class="radio-button -selected fa fa-check"></div>
+                    &nbsp;
+                </div> -->
+            </div>
+        </div>
+
+        <footer class="main-footer" data-role="footer" data-position="fixed">
+            <div class="main-footer__container -pending">
+                <a id="declineTask" class="button" href="#">Decline</a> <a id="acceptTask" class="button" href="#">Accept</a>
+            </div>
+            <div class="main-footer__container -accepted">
+                <a id="updateTask" class="button button--give-update" href="#">Give Update</a> <a id="finishTask" class="button" href="#">Task is Done</a>
+            </div>
+        </footer>
+
+
+        <script src="static/js/app.js"></script>
+    </body>
+</html>

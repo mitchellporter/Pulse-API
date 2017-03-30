@@ -1,0 +1,20 @@
+// footer styles
+
+.main-footer {
+    position: fixed;
+    bottom: 0;
+    // position: relative;
+    width: 100%;
+    background-color: $color-footer-background;
+    height: 66px;
+    display: none;
+    .main-footer__container {
+        position: relative;
+        text-align: center;
+        padding: 25px;
+        display: none;
+        @media (max-width: $breakpoint-slider) {
+            padding: 25px 0;
+        }
+    }
+}
