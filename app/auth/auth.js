@@ -43,44 +43,45 @@ exports.decodeToken = function() {
 exports.verifyUser = function() {
 return function(req, res, next) {
 
+  logger.silly('about to verify user');
+
+  var team = req.body.team;
   var email = req.body.email;
   var password = req.body.password;
 
-  if (!email || !password) {
+  if (!email || !password || !team) {
     res.status(400).json({ 
       error: {
-        message: 'You need an email address and password.'
+        message: 'You need a team, email address, and password to signin'
     }});
     return;
   }
 
-  // Find the user
-  User.findOne({ email: email })
-  .then(function(user) {
-    if (!user) {
-      res.status(401).json({
-        error: {
-          message: 'No user with email address of ' + email
-        }
-      });
-    } else {
-      // We found a user, so let's check the password now
-      user.authenticate(password, function(err, result) {
-        if (err) return next(err);
-        if (!result) return res.status(401).json({
+  logger.silly('about to find user');
+  User.findOne({ team: team, email: email })
+    .then(function (user) {
+      if (!user) return res.status(401).json({
+          error: {
+            message: 'No user with email address of ' + email
+          }
+        });
+
+        user.authenticate(password)
+          .then(function (result) {
+            if (!result) return res.status(401).json({
               error: {
-                  message: 'The password you entered was incorrect.'
+                message: 'The password you entered was incorrect.'
               }
-          });
-          
-          // Password was correct
-          req.user = user;
-          next();
-      });
-    }
-  }), function(err) {
-    next(err);
-  };
+            });
+
+            // Password was correct
+            logger.silly('password was correct');
+            req.user = user;
+            next();
+          })
+          .catch(next);
+    })
+    .catch(next);
 };
 };
 

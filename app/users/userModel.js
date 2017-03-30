@@ -64,10 +64,13 @@ UserSchema.pre('save', function(next) {
 
 // TODO: Replace callbacks with Promises
 UserSchema.methods = {
-	authenticate: function(password, callback) {
-		bcrypt.compare(password, this.password, function(err, res) {
-			callback(err, res);
-		});
+	authenticate: function(password) {
+		return new Promise(function(resolve, reject) {
+			bcrypt.compare(password, this.password, function (err, result) {
+				if (err) return reject(err);
+				return resolve(result);
+			}.bind(this));
+		}.bind(this));
 	},
 	encryptPassword: function(password, callback) {
 		if (!password) {
