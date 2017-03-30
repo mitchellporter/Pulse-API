@@ -30,9 +30,13 @@ exports.get = function(req, res, next) {
 		query.assignees = req.query.assignee;
 	};
 
+	if (req.query.status) {
+		query.status = req.query.status;
+	}
+
 	var populate = [{ path: 'assigner' }, { path: 'assignees' }, { path: 'items' }];
 	
-	Task.find(req.query)
+	Task.find(query)
 	.populate(populate)
 	.then(function(tasks) {
 		logger.silly('found this many tasks: ' + tasks.length);
