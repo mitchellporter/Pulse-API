@@ -154,7 +154,7 @@ body.-lock {
   }
 }
 
-.throbber-full {
+.throbber-full, .throbber-full--main {
   position: absolute;
   top: 0;
   left: 0;
@@ -443,6 +443,7 @@ button:hover, .button:hover {
   z-index: 20;
   background-color: rgba(0, 0, 0, 0.8);
   opacity: 0.8;
+  display: none;
 }
 
 .page-slider {

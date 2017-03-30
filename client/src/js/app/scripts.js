@@ -4,6 +4,7 @@ window.workbert = {
   taskState: 'pending',
   tasksDone: 1,
   tasksTotal: 4,
+  complete: 10,
   progress: '25%',
   taskId: null,
   inviteId: null
@@ -53,6 +54,27 @@ function handleTaskProgress() {
   }
 }
 
+// updates the task info in the DOM
+function updateTaskDom(taskDetails) {
+  console.log('--- updating task in DOM ---');
+  console.log(taskDetails);
+  // set avatar
+  $('#taskAvatar').attr('src',taskDetails.assigner.avatar_url);
+  // set name
+  $('#taskOwner').html(taskDetails.assigner.name);
+  // set due date
+  $('#taskDueDate').html(taskDetails.due_date);
+  // set description
+  $('#taskDescription').html(taskDetails.title);
+  // set tasks
+  $.each(taskDetails.items, function(index,item) {
+    console.log(item);
+    // check if item is in_progress. if it's done make sure that -selected is set
+    // $('#taskContent').append('<div class="body-content_bullet"><div class="radio-button -selected fa fa-check"></div></div>');
+    $('#taskContent').append('<div class="body-content_bullet"><div class="radio-button fa fa-check"></div>' + item.text + '</div>');
+  });
+}
+
 // Handle the modal states
 $.fn.handleModal = function() {
   var context = $(this),
@@ -75,7 +97,8 @@ $.fn.handleModal = function() {
     //$todos = $('.body-content_bullet', context),
     $mainFooter = $('footer', context),
     $footerPending = $('.main-footer__container.-pending', context),
-    $footerAccepted = $('.main-footer__container.-accepted', context);
+    $footerAccepted = $('.main-footer__container.-accepted', context),
+    $throbberFull = $('.throbber-full--main', context),
     $throbber = $('.throbber-full', context)
 
     function setState(state) {
@@ -104,55 +127,95 @@ $.fn.handleModal = function() {
       }
     }
 
-    function loadTask(taskDetails) {
-      console.log(taskDetails);
-      // set avatar
-      $('#taskAvatar').attr('src',taskDetails.assigner.avatar_url);
-      // set name
-      $('#taskOwner').html(taskDetails.assigner.name);
-      // set due date
-      $('#taskDueDate').html(taskDetails.due_date);
-      // set description
-      $('#taskDescription').html(taskDetails.title);
-      // set tasks
-      $.each(taskDetails.items, function(index,item) {
-        console.log(item);
-        // check if item is in_progress. if it's done make sure that -selected is set
-        // $('#taskContent').append('<div class="body-content_bullet"><div class="radio-button -selected fa fa-check"></div></div>');
-        $('#taskContent').append('<div class="body-content_bullet"><div class="radio-button fa fa-check"></div>' + item.text + '</div>');
+    function getTaskFromServer() {
+      $.ajax({
+        url: '/api/v1/tasks/'+window.workbert.taskId,
+        headers: {'Authorization': 'bearer ' + localStorage.getItem('ellroiAuth')},
+        success: function (result) {
+          console.log('--- getting task from server ---');
+          console.log(result);
+          updateTaskDom(result.task);
+          $throbberFull.fadeOut();
+        },
+        error: function (error) {
+          alert('Sorry. Something went wrong');
+          $throbberFull.fadeOut();
+        }
       });
-      // set % complete
-
-      // once all the data is loaded, do this stuff
-      $throbber.fadeOut();
-      $slider.removeClass('-is-open');
-      $overlay.fadeOut();
-      $mainFooter.show();
-      $footerPending.fadeIn();
-      context.removeClass('-lock');
     }
 
-    $joinButton.click(function(e) {
-      e.preventDefault();
-      // TODO: make call to endpoint
-      $throbber.fadeIn();
-      // when successfull, clear fields and close slider
-      localStorage.setItem('ellroiAuth', 'bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ODgxMTMwYTM4N2U5ODBmNDhjNzQzZjcifQ.PPFE_iGoi_UGKdETnOv6teeOPmJeUsGWK0lK_fwIPSg');
-      
+    function doSignUp() {
+      if (!$inputName.val() || !$inputJob.val() || !$inputPassword.val()) {
+        alert('please make sure all fields are filled');
+        return false;
+      }
+
+      var postData = {
+        status: 'accepted',
+        name: $inputName.val(),
+        position: $inputJob.val(),
+        password: $inputPassword.val()
+      }
+
       $.ajax({
-        url: 'http://localhost:3000/api/v1/tasks/'+window.workbert.taskId,
-        headers: {'Authorization': localStorage.getItem('ellroiAuth')},
+        url: '/api/v1/tasks/'+window.workbert.taskId+'/invites/'+window.workbert.inviteId,
+        type: 'PUT',
+        data: postData,
+        // headers: {'Authorization': localStorage.getItem('ellroiAuth')},
         success: function (result) {
+          if (result.token) {
+            localStorage.setItem('ellroiAuth', result.token);
+          }
+          getTaskFromServer();
           $inputName.val('');
           $inputJob.val('');
           $inputPassword.val('');
-          loadTask(result.task);
+          $throbber.fadeOut();
+          $slider.removeClass('-is-open');
+          $overlay.fadeOut();
+          $mainFooter.show();
+          $footerPending.fadeIn();
+          context.removeClass('-lock');
+
         },
         error: function (error) {
           alert('Sorry. Something went wrong');
           $throbber.fadeOut();
         }
       });
+
+    }
+
+    $joinButton.click(function(e) {
+      e.preventDefault();
+      // sign up
+      doSignUp();
+
+      // TODO: make call to endpoint
+      // $throbber.fadeIn();
+      // // when successfull, clear fields and close slider
+      // localStorage.setItem('ellroiAuth', 'bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ODgxMTMwYTM4N2U5ODBmNDhjNzQzZjcifQ.PPFE_iGoi_UGKdETnOv6teeOPmJeUsGWK0lK_fwIPSg');
+      
+      // $.ajax({
+      //   url: '/api/v1/tasks/'+window.workbert.taskId,
+      //   headers: {'Authorization': localStorage.getItem('ellroiAuth')},
+      //   success: function (result) {
+      //     $inputName.val('');
+      //     $inputJob.val('');
+      //     $inputPassword.val('');
+      //     updateTaskDom(result.task);
+      //     $throbber.fadeOut();
+      //     $slider.removeClass('-is-open');
+      //     $overlay.fadeOut();
+      //     $mainFooter.show();
+      //     $footerPending.fadeIn();
+      //     context.removeClass('-lock');
+      //   },
+      //   error: function (error) {
+      //     alert('Sorry. Something went wrong');
+      //     $throbber.fadeOut();
+      //   }
+      // });
 
     })
 
@@ -208,6 +271,21 @@ $.fn.handleModal = function() {
 
     // show pending footer
     // $footerPending.fadeIn();
+
+    // check original state
+    // if Auth token exists, don't show slider.
+    if (!localStorage.getItem('ellroiAuth')) {
+      $slider.addClass('-is-open');
+      $overlay.fadeIn();
+      context.addClass('-lock');
+    } else {
+      // get the task details
+      $throbberFull.show();
+      $mainFooter.show();
+      $footerPending.fadeIn();
+      getTaskFromServer();
+    }
+
 }
 
 $.fn.handleSliderProgress = function() {

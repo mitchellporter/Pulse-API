@@ -56,7 +56,7 @@ gulp.task('autoprefixer', function () {
     gulp.watch(config.cssPath + '/*.css', ['autoprefixer']);
     gulp.watch(config.vendorsPath + '/*.js', ['vendors']);
     gulp.watch(config.jsPath + '/*.js', ['js']);
-    gulp.watch(config.jsDest + '/app.js', ['compress']);
+    // gulp.watch(config.jsDest + '/app.js', ['compress']);
 });
 
   gulp.task('default', ['sass', 'autoprefixer', 'vendors', 'js']);
