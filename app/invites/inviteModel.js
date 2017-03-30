@@ -112,26 +112,26 @@ function sendInvite() {
 }
 
 function sendInvites(invites) {
-    var callback = function (err, success) {
-        if (err) console.log(err);
-        if (success) console.log(success);
-        ready();
-    }
-
-    var options = {
-        service: 'Gmail',
-        auth: {
-            user: 'ellroiapp@gmail.com',
-            pass: 'kirkland1234'
+    return new Promise(function (resolve, reject) {
+        
+        var callback = function (err, success) {
+            if (err) console.log(err);
+            if (success) console.log(success);
+            ready();
         }
-    };
 
-    var Emailer = require('../../lib/emailer');
-    var emailer = new Emailer(options, callback);
+        var options = {
+            service: 'Gmail',
+            auth: {
+                user: 'ellroiapp@gmail.com',
+                pass: 'kirkland1234'
+            }
+        };
 
-    function ready() {
-        return new Promise(function (resolve, reject) {
+        var Emailer = require('../../lib/emailer');
+        var emailer = new Emailer(options, callback);
 
+        function ready() {
             async.forEachOf(invites, function (value, key, callback) {
                 var invite = value;
                 logger.silly('about to send email to invitee email address: ' + invite.email);
@@ -143,19 +143,19 @@ function sendInvites(invites) {
                     text: 'You have been invited to a task by ' + invite.sender.name + ' link: http://localhost:3000/?task=' + invite.task._id + '&invite=' + invite._id
                     // html: '<p>You have been invited to a task!</p>'
                 };
-                
+
                 emailer.send(message)
-                .then(function(info) {
-                    callback();
-                })
-                .catch(callback);
+                    .then(function (info) {
+                        callback();
+                    })
+                    .catch(callback);
 
             }, function (err) {
                 if (err) return reject(err);
                 resolve();
             }.bind(this));
-        }.bind(this));
-    }
+        }
+    }.bind(this));
 }
 
 module.exports = mongoose.model('Invite', InviteSchema);
