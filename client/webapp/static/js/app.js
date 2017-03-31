@@ -6,6 +6,7 @@ window.workbert = {
   tasksTotal: 4,
   complete: 10,
   progress: '25%',
+  taskInvitationId: null,
   taskId: null,
   inviteId: null
 };
@@ -54,24 +55,72 @@ function handleTaskProgress() {
   }
 }
 
+function updateTaskOnSetver(task) {
+  var postData = {};
+  var taskId = $(task).attr('data-id');
+
+  if ($('.radio-button',$(task)).hasClass('-selected')) {
+    $('.radio-button',$(task)).removeClass('-selected');
+    postData = {
+      status: 'in_progress'
+    }
+  } else {
+    $('.radio-button',$(task)).addClass('-selected');
+    postData = {
+      status: 'completed'
+    }
+  }
+  console.log(task);
+  console.log(taskId);
+  $.ajax({
+    url: '/api/v1/tasks/'+window.workbert.taskId+'/items/'+taskId,
+    type: 'PUT',
+    headers: {'Authorization': 'bearer ' + localStorage.getItem('ellroiAuth')},
+    data: postData,
+    success: function (result) {
+
+    },
+    error: function (error) {
+
+    }
+  });
+
+}
+
 // updates the task info in the DOM
 function updateTaskDom(taskDetails) {
   console.log('--- updating task in DOM ---');
   console.log(taskDetails);
+
   // set avatar
   $('#taskAvatar').attr('src',taskDetails.assigner.avatar_url);
   // set name
   $('#taskOwner').html(taskDetails.assigner.name);
   // set due date
   $('#taskDueDate').html(moment(taskDetails.due_date).format('MMM DD, YYYY'));
+  $('#taskDueDateAccepted').html(moment(taskDetails.due_date).format('MMM DD, YYYY'));
   // set description
   $('#taskDescription').html(taskDetails.title);
   // set tasks
+  $('#taskContent').empty();
   $.each(taskDetails.items, function(index,item) {
-    console.log(item);
+    if (window.workbert.taskState === 'accepted') {
+      if (item.status === 'completed') {
+        var el = $('<div class="body-content_bullet -indent" data-id="' + item._id + '"><div style="display:block;" class="radio-button -selected fa fa-check"></div>' + item.text + '</div>');
+      } else {
+        var el = $('<div class="body-content_bullet -indent" data-id="' + item._id + '"><div style="display:block;" class="radio-button fa fa-check"></div>' + item.text + '</div>');
+      }
+    } else {
+      var el = $('<div class="body-content_bullet" data-id="' + item._id + '"><div class="radio-button fa fa-check"></div>' + item.text + '</div>');
+    }
+    
+    console.log(el);
     // check if item is in_progress. if it's done make sure that -selected is set
     // $('#taskContent').append('<div class="body-content_bullet"><div class="radio-button -selected fa fa-check"></div></div>');
-    $('#taskContent').append('<div class="body-content_bullet" data-id="' + item._id + '"><div class="radio-button fa fa-check"></div>' + item.text + '</div>');
+    $('#taskContent').append(el);
+    el.on('click', function(){
+      updateTaskOnSetver(this);
+    });
   });
 }
 
@@ -107,11 +156,12 @@ $.fn.handleModal = function() {
         handleTaskProgress();
         $mainSection.addClass('section-accepted');
         $mainSection.removeClass('section-pending');
-        $('.body-content_bullet', context).each(function(i,e){
-          console.log(e);
-          $(this).addClass('-indent');
-          $('.radio-button', $(this)).fadeIn();
-        });
+        // TODO: refactor this
+        // $('.body-content_bullet').each(function(i,e){
+        //   console.log(e);
+        //   $(this).addClass('-indent');
+        //   $('.radio-button', $(this)).fadeIn();
+        // });
         $footerPending.hide();
         $footerAccepted.show();
         $taskHeading.html('TASK IN PROGRESS');
@@ -263,15 +313,11 @@ $.fn.handleModal = function() {
       // TODO: make call to endpoint
       $throbber.fadeIn();
       $.ajax({
-        url: '/api/v1/task_invitations/'+window.workbert.inviteId,
+        url: '/api/v1/task_invitations/'+window.workbert.taskInvitationId,
         type: 'PUT',
         headers: {'Authorization': 'bearer ' + localStorage.getItem('ellroiAuth')},
         data: postData,
-        // headers: {'Authorization': localStorage.getItem('ellroiAuth')},
         success: function (result) {
-          if (result.token) {
-            localStorage.setItem('ellroiAuth', result.token);
-          }
           getTaskFromServer();
           setState('accepted');
           $slider.removeClass('-is-open');
@@ -294,19 +340,55 @@ $.fn.handleModal = function() {
     // show pending footer
     // $footerPending.fadeIn();
 
+    // first things first. Get the invite details
+    $throbberFull.show()
+    $.ajax({
+      url: '/api/v1/invites/'+window.workbert.inviteId,
+      headers: {'Authorization': 'bearer ' + localStorage.getItem('ellroiAuth')},
+      success: function (result) {
+        console.log(result);
+        // set taskId
+        window.workbert.taskId = result.invite.task._id;
+        // set taskInvitationId
+        window.workbert.taskInvitationId = result.invite.task_invitation;
+        console.log(window.workbert);
+        // if Auth token exists, don't show slider.
+        if (!localStorage.getItem('ellroiAuth')) {
+          $slider.addClass('-is-open');
+          $overlay.fadeIn();
+          context.addClass('-lock');
+          $throbberFull.fadeOut();
+        } else {
+          // get the task details
+          $mainFooter.show();
+          if (result.invite.status === 'accepted') {
+            setState('accepted');
+          } else {
+            $footerPending.fadeIn();
+          }
+          
+          getTaskFromServer();
+        }
+      },
+      error: function (error) {
+        alert('Sorry. Something went wrong');
+        $throbberFull.fadeOut();
+      }
+    });
+
     // check original state
     // if Auth token exists, don't show slider.
-    if (!localStorage.getItem('ellroiAuth')) {
-      $slider.addClass('-is-open');
-      $overlay.fadeIn();
-      context.addClass('-lock');
-    } else {
-      // get the task details
-      $throbberFull.show();
-      $mainFooter.show();
-      $footerPending.fadeIn();
-      getTaskFromServer();
-    }
+    // if (!localStorage.getItem('ellroiAuth')) {
+    //   $slider.addClass('-is-open');
+    //   $overlay.fadeIn();
+    //   context.addClass('-lock');
+    // } else {
+    //   // get the task details
+    //   $throbberFull.show();
+    //   $mainFooter.show();
+    //   $footerPending.fadeIn();
+    //   getTaskFromServer();
+    // }
 
 }
 
@@ -374,7 +456,6 @@ $.fn.handleComments = function() {
 }
 
 $(function(){
-  getQueryParams('task');
   getQueryParams('invite');
   $('#pending-page').handleModal();
   $('#radialProgress').handleSliderProgress();
