@@ -226,50 +226,50 @@ exports.post = function(req, res, next) {
     }
 
     function sendEmailsToTaskAssignees() {
-
         logger.silly('sending update request emails to all task assignees');
 
-        var callback = function (err, success) {
-            if (err) console.log(err);
-            if (success) console.log(success);
-            ready();
-        }
-
-        var options = {
-            service: 'Gmail',
-            auth: {
-                user: 'ellroiapp@gmail.com',
-                pass: 'kirkland1234'
-            }
-        };
-
-        var emailer = new Emailer(options, callback);
-
-        function ready() {
         return new Promise(function (resolve, reject) {
-            async.forEachOf(task.assignees, function (value, key, callback) {
-                var assignee = value;
+            var callback = function (err, success) {
+                if (err) console.log(err);
+                if (success) console.log(success);
+                ready();
+            }
 
-                var message = {
-                    from: 'ellroiapp@gmail.com',
-                    to: 'mitchellporter@gmail.com', // TODO: Remove hardcoded email address
-                    subject: task.assigner.name + ' has requested an update on the task you are working on titled: ' + task.title,
-                    text: task.assigner.name + ' has requested an update on the task you are working on: ' + 'http://localhost:3000/?update=' + update._id
-                };
-                
-                emailer.send(message)
-                .then(function(info) {
-                    callback();
-                })
-                .catch(callback);
+            var options = {
+                service: 'Gmail',
+                auth: {
+                    user: 'ellroiapp@gmail.com',
+                    pass: 'kirkland1234'
+                }
+            };
 
-            }, function (err) {
-                if (err) return reject(err);
-                resolve();
-            });
+            var emailer = new Emailer(options, callback);
+
+            function ready() {
+                async.forEachOf(task.assignees, function (value, key, callback) {
+                    var assignee = value;
+                    logger.silly('assignee email: ' + assignee.email);
+
+                    var message = {
+                        from: 'ellroiapp@gmail.com',
+                        to: assignee.email, // TODO: Remove hardcoded email address
+                        subject: task.assigner.name + ' has requested an update on the task you are working on titled: ' + task.title,
+                        text: task.assigner.name + ' has requested an update on the task you are working on: ' + 'http://localhost:3000/?update=' + update._id
+                    };
+
+                    emailer.send(message)
+                        .then(function (info) {
+                            callback();
+                        })
+                        .catch(callback);
+
+                }, function (err) {
+                    if (err) return reject(err);
+                    resolve();
+                });
+            }
         });
     }
-}
 
     function sendMessageToTaskAssigner() {
         logger.silly('Sending random update notification to assigner');

@@ -142,7 +142,7 @@ function startSeed() {
             _id: new mongoose.mongo.ObjectId(dummy_user_kori_id),
             name: 'Kori',
             password: '1234',
-            email: 'kori@designfirstapps.com',
+            email: 'mitchell@founderfox.io',
             position: 'designer',
             avatar_url: kori_avatar_url,
             team: design_first_apps_team
@@ -172,7 +172,7 @@ function startSeed() {
             _id: new mongoose.mongo.ObjectId(dummy_user_arch_id),
             name: 'Arch',
             password: '1234',
-            email: 'arch@designfirstapps.com',
+            email: 'pulsegrenade@gmail.com',
             position: 'web dev',
             avatar_url: arch_avatar_url,
             team: design_first_apps_team
