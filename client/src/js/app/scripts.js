@@ -56,8 +56,35 @@ function handleTaskProgress() {
 }
 
 function updateTaskOnSetver(task) {
+  var postData = {};
+  var taskId = $(task).attr('data-id');
+
+  if ($('.radio-button',$(task)).hasClass('-selected')) {
+    $('.radio-button',$(task)).removeClass('-selected');
+    postData = {
+      status: 'in_progress'
+    }
+  } else {
+    $('.radio-button',$(task)).addClass('-selected');
+    postData = {
+      status: 'completed'
+    }
+  }
   console.log(task);
-  console.log($(task));
+  console.log(taskId);
+  $.ajax({
+    url: '/api/v1/tasks/'+window.workbert.taskId+'/items/'+taskId,
+    type: 'PUT',
+    headers: {'Authorization': 'bearer ' + localStorage.getItem('ellroiAuth')},
+    data: postData,
+    success: function (result) {
+
+    },
+    error: function (error) {
+
+    }
+  });
+
 }
 
 // updates the task info in the DOM
@@ -71,13 +98,18 @@ function updateTaskDom(taskDetails) {
   $('#taskOwner').html(taskDetails.assigner.name);
   // set due date
   $('#taskDueDate').html(moment(taskDetails.due_date).format('MMM DD, YYYY'));
+  $('#taskDueDateAccepted').html(moment(taskDetails.due_date).format('MMM DD, YYYY'));
   // set description
   $('#taskDescription').html(taskDetails.title);
   // set tasks
   $('#taskContent').empty();
   $.each(taskDetails.items, function(index,item) {
     if (window.workbert.taskState === 'accepted') {
-      var el = $('<div class="body-content_bullet -indent" data-id="' + item._id + '"><div style="display:block;" class="radio-button fa fa-check"></div>' + item.text + '</div>');
+      if (item.status === 'completed') {
+        var el = $('<div class="body-content_bullet -indent" data-id="' + item._id + '"><div style="display:block;" class="radio-button -selected fa fa-check"></div>' + item.text + '</div>');
+      } else {
+        var el = $('<div class="body-content_bullet -indent" data-id="' + item._id + '"><div style="display:block;" class="radio-button fa fa-check"></div>' + item.text + '</div>');
+      }
     } else {
       var el = $('<div class="body-content_bullet" data-id="' + item._id + '"><div class="radio-button fa fa-check"></div>' + item.text + '</div>');
     }
@@ -285,7 +317,6 @@ $.fn.handleModal = function() {
         type: 'PUT',
         headers: {'Authorization': 'bearer ' + localStorage.getItem('ellroiAuth')},
         data: postData,
-        // headers: {'Authorization': localStorage.getItem('ellroiAuth')},
         success: function (result) {
           getTaskFromServer();
           setState('accepted');
