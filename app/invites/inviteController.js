@@ -3,10 +3,12 @@ var async = require('async');
 var _ = require('lodash');
 var Invite = require('./inviteModel');
 var User = require('../users/userModel');
+var TaskInvitation = require('../task_invitations/taskInvitationModel');
 var signToken = require('../auth/auth').signToken;
 
 exports.params = function(req, res, next, id) {
     Invite.findById(id)
+	.populate({ path: 'task', populate: { path: 'assigner', select: '_id name position email avatar_url' }}) // task.assigner
     .then(function(invite) {
         if (!invite) return next(new Error('No invite exists with that id'));
 
@@ -79,7 +81,14 @@ exports.put = function(req, res, next) {
     }
 };  
 
+// Create task_invitations
+// Create app invites which can have a task_invitation property
+// Now the user has a task_invitation property that they can reference
+
 exports.post = function(req, res, next) {
+
+    logger.silly('about to create invites');
+
     var sender = req.user;
     var team = sender.team; // optional
     var task = req.task; // optional
@@ -90,51 +99,70 @@ exports.post = function(req, res, next) {
 
     var invitees = req.body.invitees;
 
-    var invites = [];
-    async.forEachOf(invitees, function(value, key, callback) {
-        var invitee = value;
-        var invite = new Invite({
-            sender: sender,
-            type: type,
-            name: invitee.name,
-            email: invitee.email,
-            team: team,
-            task: task
-        });
-        invites.push(invite);
-        callback();
-    }, function(err) {
-        if (err) return next(err);
-        
-        Invite.create(invites)
-        .then(function(invites) {
+    createTaskInvitations()
+    .then(createInvites)
+    .then(function(invites) {
             res.status(201).json({
                 success: true,
                 invites: invites
             });
 
+            // Send invites
             Invite.send(invites)
-            .then(function() {
-                logger.silly('successfully sent emails to all invitees');
+            .then(function () {
+                    logger.silly('successfully sent emails to all invitees');
             })
             .catch(logger.error)
-        })
-        .catch(next);
-    });
+    })
+    .catch(next);
 
-    function sendInvites(invites) {
-        async.forEachOf(invites, function(value, key, callback) {
-            var invite = value;
-            invite.send()
-            .then(function(res) {
+    function createInvites(task_invitations) {
+        var invites = [];
+        return new Promise(function (resolve, reject) {
+            async.forEachOf(invitees, function (value, key, callback) {
+
+                var invitee = value;
+                var invite = new Invite({
+                    sender: sender,
+                    type: type,
+                    name: invitee.name,
+                    email: invitee.email,
+                    team: team,
+                    task: task,
+                    task_invitation: task_invitations[key]
+                });
+                invites.push(invite);
                 callback();
-            })
-            .catch(callback);
-        }, function(err) {
-            if (err) return logger.error(err);
-            logger.silly('successfully sent invite emails');
+            }, function (err) {
+                if (err) return reject(err);
+
+                Invite.create(invites)
+                .then(resolve)
+                .catch(reject);
+            });
         });
     }
+
+    function createTaskInvitations() {
+        var task_invitations = [];
+        return new Promise(function (resolve, reject) {
+            async.forEachOf(invitees, function (value, key, callback) {
+                var invitee = value;
+                var task_invitation = new TaskInvitation({
+                    sender: sender,
+                    task: task
+                });
+                task_invitations.push(task_invitation);
+                callback();
+            }, function (err) {
+                if (err) return reject(err);
+
+                TaskInvitation.create(task_invitations)
+                    .then(resolve)
+                    .catch(reject);
+            });
+        })
+    };
 };
 
 exports.getOne = function(req, res, next) {

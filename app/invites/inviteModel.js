@@ -48,6 +48,10 @@ var InviteSchema = new Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Task',
         required: true
+    },
+    task_invitation: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'TaskInvitation'
     }
 });
 
@@ -140,7 +144,7 @@ function sendInvites(invites) {
                     from: 'ellroiapp@gmail.com',
                     to: invite.email,
                     subject: 'You have been invited to a task by ' + invite.sender.name,
-                    text: 'You have been invited to a task by ' + invite.sender.name + ' link: http://localhost:3000/?task=' + invite.task._id + '&invite=' + invite._id
+                    text: 'You have been invited to a task by ' + invite.sender.name + ' link: http://localhost:3000/?invite=' + invite._id
                     // html: '<p>You have been invited to a task!</p>'
                 };
 

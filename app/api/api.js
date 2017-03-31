@@ -8,5 +8,5 @@ router.use('/updates', require('../updates/updateRoutes'));
 router.use('/teams', require('../teams/teamRoutes'));
 router.use('/feeds', require('../feeds/feedRoutes'));
 router.use('/availability', require('../availability/availabilityRoutes'));
-
+router.use('/invites', require('../invites/inviteRoutes'));
 module.exports = router;

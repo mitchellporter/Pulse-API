@@ -15,6 +15,14 @@ exports.params = function(req, res, next, id) {
 	})
 };
 
+exports.getOne = function(req, res, next) {
+    var task_invitation = req.task_invitation;
+    res.status(200).json({
+        success: true,
+        task_invitation: task_invitation
+    });
+};
+
 // TODO: Populate
 exports.put = function(req, res, next) {
     var status = req.body.status;
