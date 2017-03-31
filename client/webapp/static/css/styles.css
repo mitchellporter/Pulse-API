@@ -144,6 +144,7 @@ body {
   font-family: "San Francisco", "Arial", "San-Serif";
   font-size: 16px;
   height: 100%;
+  overflow-x: hidden;
 }
 body.-lock {
   overflow: hidden;
