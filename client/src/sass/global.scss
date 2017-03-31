@@ -11,7 +11,7 @@ body {
     font-family: "San Francisco", "Arial", "San-Serif";
     font-size: 16px;
     height: 100%;
-    // overflow-x: hidden;
+    overflow-x: hidden;
     &.-lock {
         overflow: hidden;
         @media (max-width: $breakpoint-tablet) {

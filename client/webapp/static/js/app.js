@@ -63,7 +63,7 @@ function updateTaskDom(taskDetails) {
   // set name
   $('#taskOwner').html(taskDetails.assigner.name);
   // set due date
-  $('#taskDueDate').html(taskDetails.due_date);
+  $('#taskDueDate').html(moment(taskDetails.due_date).format('MMM DD, YYYY'));
   // set description
   $('#taskDescription').html(taskDetails.title);
   // set tasks
@@ -71,7 +71,7 @@ function updateTaskDom(taskDetails) {
     console.log(item);
     // check if item is in_progress. if it's done make sure that -selected is set
     // $('#taskContent').append('<div class="body-content_bullet"><div class="radio-button -selected fa fa-check"></div></div>');
-    $('#taskContent').append('<div class="body-content_bullet"><div class="radio-button fa fa-check"></div>' + item.text + '</div>');
+    $('#taskContent').append('<div class="body-content_bullet" data-id="' + item._id + '"><div class="radio-button fa fa-check"></div>' + item.text + '</div>');
   });
 }
 
@@ -255,13 +255,35 @@ $.fn.handleModal = function() {
     })
 
     $acceptedButton.click(function(e) {
+      var postData = {
+        status: 'accepted'
+      }
       e.preventDefault();
       $mainFooter.show();
       // TODO: make call to endpoint
-      setState('accepted');
-      $slider.removeClass('-is-open');
-      $overlay.fadeOut();
-      context.removeClass('-lock');
+      $throbber.fadeIn();
+      $.ajax({
+        url: '/api/v1/task_invitations/'+window.workbert.inviteId,
+        type: 'PUT',
+        headers: {'Authorization': 'bearer ' + localStorage.getItem('ellroiAuth')},
+        data: postData,
+        // headers: {'Authorization': localStorage.getItem('ellroiAuth')},
+        success: function (result) {
+          if (result.token) {
+            localStorage.setItem('ellroiAuth', result.token);
+          }
+          getTaskFromServer();
+          setState('accepted');
+          $slider.removeClass('-is-open');
+          $overlay.fadeOut();
+          context.removeClass('-lock');
+          $throbber.fadeOut();
+        },
+        error: function (error) {
+          alert('Sorry. Something went wrong');
+          $throbber.fadeOut();
+        }
+      })
     })
 
     $doneButton.click(function(e) {
@@ -295,12 +317,6 @@ $.fn.handleSliderProgress = function() {
     $decrease = $('.page-slider_radial-controls_button.-decrease',context),
     $progress = $('.progress-radial', context),
     multiplier = 25;
-
-  console.log(context);
-  console.log($percentage);
-  console.log($increase);
-  console.log($decrease);
-  console.log($progress);
 
   $increase.click(function(e) {
     e.preventDefault();
