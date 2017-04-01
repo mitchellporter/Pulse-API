@@ -121,10 +121,8 @@ function updateTaskDom(taskDetails) {
       var el = $('<div class="body-content_bullet" data-id="' + item._id + '"><div class="radio-button fa fa-check"></div>' + item.text + '</div>');
     }
     
-    console.log(el);
-    // check if item is in_progress. if it's done make sure that -selected is set
-    // $('#taskContent').append('<div class="body-content_bullet"><div class="radio-button -selected fa fa-check"></div></div>');
     $('#taskContent').append(el);
+
     el.on('click', function(){
       updateTaskOnSetver(this);
     });
@@ -186,12 +184,6 @@ $.fn.handleModal = function() {
         handleTaskProgress();
         $mainSection.addClass('section-accepted');
         $mainSection.removeClass('section-pending');
-        // TODO: refactor this
-        // $('.body-content_bullet').each(function(i,e){
-        //   console.log(e);
-        //   $(this).addClass('-indent');
-        //   $('.radio-button', $(this)).fadeIn();
-        // });
         $footerPending.hide();
         $footerAccepted.show();
         $taskHeading.html('TASK IN PROGRESS');
@@ -215,7 +207,13 @@ $.fn.handleModal = function() {
         success: function (result) {
           console.log('--- getting task from server ---');
           console.log(result);
-          updateTaskDom(result.task);
+          if (result.task.status === 'completed') {
+            setState('accepted'); // force the icons to be there
+            updateTaskDom(result.task);
+            setState('completed');
+          } else {
+            updateTaskDom(result.task);
+          }
           $throbberFull.fadeOut();
         },
         error: function (error) {
@@ -294,6 +292,10 @@ $.fn.handleModal = function() {
 
     $updateButton.click(function(e) {
       e.preventDefault();
+      if (window.workbert.taskState === 'completed') {
+        alert('This task has already been completed');
+        return false;
+      }
       // scroll to the top to avoid scrolly issues
       window.scrollTo(0,0);
       // Task: Set up the update slider depending on whether there is an UPDATE_ID
@@ -360,6 +362,8 @@ $.fn.handleModal = function() {
 
       e.preventDefault();
       $throbber.fadeIn();
+      console.log('--- send a message ---');
+      console.log(window.workbert.updateId);
       if (window.workbert.updateId) {
         // respond to update request
         postType = 'PUT';
@@ -414,7 +418,27 @@ $.fn.handleModal = function() {
 
     $doneButton.click(function(e) {
       e.preventDefault();
-      setState('completed');
+      if (window.workbert.taskState === 'completed') {
+        alert('This task has already been completed');
+        return false;
+      }
+      var postData = {
+        status: 'completed'
+      }
+      // call endpoint to mark task as complete
+      // tasks/{{IN_PROGRESS_TASK_ID}}
+      $.ajax({
+        url: '/api/v1/tasks/'+window.workbert.taskId,
+        type: 'PUT',
+        headers: {'Authorization': 'bearer ' + localStorage.getItem('ellroiAuth')},
+        data: postData,
+        success: function (result) {
+          setState('completed');
+        },
+        error: function (error) {
+
+        }
+      });
     })
 
     // show pending footer
@@ -442,12 +466,20 @@ $.fn.handleModal = function() {
           } else {
             // get the task details
             $mainFooter.show();
-            setState('accepted');
-            // set the comments to the window object for now
-            window.workbert.taskComments = result.update.responses;
-            // should probably hit them with the update slider here
-            $updateButton.click();
-            $throbberFull.fadeOut();
+            if (result.update.task.status === 'completed') {
+              updateTaskDom(result.update.task);
+              setState('completed');
+              // set the comments to the window object for now
+              window.workbert.taskComments = result.update.responses;
+              $throbberFull.fadeOut();
+            } else {
+              setState('accepted');
+              // set the comments to the window object for now
+              window.workbert.taskComments = result.update.responses;
+              // should probably hit them with the update slider here
+              $updateButton.click();
+              $throbberFull.fadeOut();
+            }
             updateTaskDom(result.update.task);
           }
         },
@@ -549,12 +581,6 @@ $.fn.handleComments = function() {
     $comments.prepend('<div class="comment-item"><div class="comment-item_heading">Sent: Just now</div><div class="comment-item_text">' + comment + '</div></div>');
     $commentBox.val('');
   }
-
-  // $commentBox.keyup(function(e) {
-  //   if ((e.keyCode || e.which) === 13) {
-  //     submitComment();
-  //   }
-  // })
 
 }
 
