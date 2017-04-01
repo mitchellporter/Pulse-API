@@ -7,6 +7,7 @@ window.workbert = {
   taskId: null,
   inviteId: null,
   updateId: null,
+  taskComments: []
 };
 
 // gets query string params and stores them in window obj
@@ -22,6 +23,8 @@ function getQueryParams(param) {
       window.workbert.taskId = decodeURIComponent(results[2].replace(/\+/g, " "));
     } else if (param === 'invite') {
       window.workbert.inviteId = decodeURIComponent(results[2].replace(/\+/g, " "));
+    } else if (param === 'update') {
+      window.workbert.updateId = decodeURIComponent(results[2].replace(/\+/g, " "));
     }
 }
 
@@ -129,10 +132,22 @@ function updateTaskDom(taskDetails) {
 }
 
 // sets up the GIVE UPDATE slider
-function setUpUpdateSlider(type, comments) {
+function setUpUpdateSlider(type) {
+  var el;
   if (type === 'random') {
     $('#sliderComments').hide();
   } else {
+    if (window.workbert.taskComments.length) {
+      $('.comment-item_list').empty();
+      $.each(window.workbert.taskComments, function(index,comment) {
+        console.log(comment);
+        if (comment.message) {
+          el = $('<div class="comment-item"><div class="comment-item_heading">Sent: '+ moment(comment.created_at).fromNow() +'</div><div class="comment-item_text">'+ comment.message +'</div></div>');
+          console.log(el);
+          $('.comment-item_list').append(el);
+        };
+      });
+    }
 
   }
 }
@@ -162,7 +177,8 @@ $.fn.handleModal = function() {
     $footerPending = $('.main-footer__container.-pending', context),
     $footerAccepted = $('.main-footer__container.-accepted', context),
     $throbberFull = $('.throbber-full--main', context),
-    $throbber = $('.throbber-full', context)
+    $throbber = $('.throbber-full', context),
+    $commentBox = $('#commentBox', context);
 
     function setState(state) {
       if (state === 'accepted') {
@@ -185,6 +201,7 @@ $.fn.handleModal = function() {
         $mainSection.addClass('section-completed');
         $mainSection.removeClass('section-accepted');
         $doneButton.addClass('button--completed');
+        $taskHeading.html('TASK IS COMPLETE!');
         $('.body-content_bullet', context).each(function(i,e){
           $('.radio-button', $(this)).addClass('-selected');
         });
@@ -261,33 +278,6 @@ $.fn.handleModal = function() {
       e.preventDefault();
       // sign up
       doSignUp();
-
-      // TODO: make call to endpoint
-      // $throbber.fadeIn();
-      // // when successfull, clear fields and close slider
-      // localStorage.setItem('ellroiAuth', 'bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ODgxMTMwYTM4N2U5ODBmNDhjNzQzZjcifQ.PPFE_iGoi_UGKdETnOv6teeOPmJeUsGWK0lK_fwIPSg');
-      
-      // $.ajax({
-      //   url: '/api/v1/tasks/'+window.workbert.taskId,
-      //   headers: {'Authorization': localStorage.getItem('ellroiAuth')},
-      //   success: function (result) {
-      //     $inputName.val('');
-      //     $inputJob.val('');
-      //     $inputPassword.val('');
-      //     updateTaskDom(result.task);
-      //     $throbber.fadeOut();
-      //     $slider.removeClass('-is-open');
-      //     $overlay.fadeOut();
-      //     $mainFooter.show();
-      //     $footerPending.fadeIn();
-      //     context.removeClass('-lock');
-      //   },
-      //   error: function (error) {
-      //     alert('Sorry. Something went wrong');
-      //     $throbber.fadeOut();
-      //   }
-      // });
-
     })
 
     $acceptButton.click(function(e) {
@@ -307,7 +297,11 @@ $.fn.handleModal = function() {
       // scroll to the top to avoid scrolly issues
       window.scrollTo(0,0);
       // Task: Set up the update slider depending on whether there is an UPDATE_ID
-      setUpUpdateSlider('random');
+      if (window.workbert.updateId) {
+        setUpUpdateSlider('update');
+      } else {
+        setUpUpdateSlider('random');
+      }
 
       $mainFooter.hide();
       $sliderPin.hide();
@@ -359,41 +353,63 @@ $.fn.handleModal = function() {
     // submit update button
     $submitUpateButton.click(function(e) {
       var completionPercentage = $('.page-slider_radial .progress-radial').attr('data-progress'),
-        postData = {};
+        postData = {},
+        postUrl = '',
+        postType = 'POST',
+        commentDetails = {};
+
       e.preventDefault();
       $throbber.fadeIn();
       if (window.workbert.updateId) {
         // respond to update request
+        postType = 'PUT';
+        postUrl = '/api/v1/updates/'+window.workbert.updateId;
+        postData = {
+          completion_percentage: completionPercentage
+        }
+        // if there is content in the text area, send it with the update.
+        if ($commentBox.val()) {
+          postData.message = $commentBox.val();
+          commentDetails.message = postData.message;
+          commentDetails.created_at = new Date();
+          window.workbert.taskComments.unshift(commentDetails);
+          commentDetails = {};
+          $commentBox.val('');
+          setUpUpdateSlider();
+        }
+        // push it in to the window.workbert.taskComments
+
       } else {
         // random update
+        postUrl = '/api/v1/tasks/'+window.workbert.taskId+'/updates';
         postData = {
           type: 'random',
           completion_percentage: completionPercentage
         }
-        $.ajax({
-          url: '/api/v1/tasks/'+window.workbert.taskId+'/updates',
-          type: 'POST',
-          headers: {'Authorization': 'bearer ' + localStorage.getItem('ellroiAuth')},
-          data: postData,
-          success: function (result) {
-            var updatedTask = {}
-            updatedTask = result.update.task;
-            updatedTask.completion_percentage = completionPercentage;
-            updateTaskDom(updatedTask);
-            console.log(updatedTask);
-            $throbber.fadeOut();
-            $mainFooter.show();
-            $slider.removeClass('-is-open');
-            $sliderUpdate.hide();
-            $overlay.fadeOut();
-            context.removeClass('-lock');
-          },
-          error: function (error) {
-            alert('Error sending progress report');
-            $throbber.fadeOut();
-          }
-        });
       }
+      $.ajax({
+        url: postUrl,
+        type: postType,
+        headers: {'Authorization': 'bearer ' + localStorage.getItem('ellroiAuth')},
+        data: postData,
+        success: function (result) {
+          var updatedTask = {}
+          updatedTask = result.update.task;
+          updatedTask.completion_percentage = completionPercentage;
+          updateTaskDom(updatedTask);
+          console.log(updatedTask);
+          $throbber.fadeOut();
+          $mainFooter.show();
+          $slider.removeClass('-is-open');
+          $sliderUpdate.hide();
+          $overlay.fadeOut();
+          context.removeClass('-lock');
+        },
+        error: function (error) {
+          alert('Error sending progress report');
+          $throbber.fadeOut();
+        }
+      });
     })
 
     $doneButton.click(function(e) {
@@ -406,53 +422,75 @@ $.fn.handleModal = function() {
 
     // first things first. Get the invite details
     $throbberFull.show()
-    $.ajax({
-      url: '/api/v1/invites/'+window.workbert.inviteId,
-      headers: {'Authorization': 'bearer ' + localStorage.getItem('ellroiAuth')},
-      success: function (result) {
-        console.log(result);
-        // set taskId
-        window.workbert.taskId = result.invite.task._id;
-        // set taskInvitationId
-        window.workbert.taskInvitationId = result.invite.task_invitation;
-        console.log(window.workbert);
-        // if Auth token exists, don't show slider.
-        if (!localStorage.getItem('ellroiAuth')) {
-          $slider.addClass('-is-open');
-          $overlay.fadeIn();
-          context.addClass('-lock');
-          $throbberFull.fadeOut();
-        } else {
-          // get the task details
-          $mainFooter.show();
-          if (result.invite.status === 'accepted') {
-            setState('accepted');
+    if (window.workbert.updateId) {
+      // Get task update!!! 
+      $.ajax({
+        url: '/api/v1/updates/'+window.workbert.updateId,
+        headers: {'Authorization': 'bearer ' + localStorage.getItem('ellroiAuth')},
+        success: function (result) {
+          console.log(result);
+          // set taskId
+          window.workbert.taskId = result.update.task._id;
+          // set taskInvitationId
+          // window.workbert.taskInvitationId = result.invite.task_invitation;
+          // if Auth token exists, don't show slider.
+          if (!localStorage.getItem('ellroiAuth')) {
+            $slider.addClass('-is-open');
+            $overlay.fadeIn();
+            context.addClass('-lock');
+            $throbberFull.fadeOut();
           } else {
-            $footerPending.fadeIn();
+            // get the task details
+            $mainFooter.show();
+            setState('accepted');
+            // set the comments to the window object for now
+            window.workbert.taskComments = result.update.responses;
+            // should probably hit them with the update slider here
+            $updateButton.click();
+            $throbberFull.fadeOut();
+            updateTaskDom(result.update.task);
           }
-          
-          getTaskFromServer();
+        },
+        error: function (error) {
+          alert('Sorry. Something went wrong');
+          $throbberFull.fadeOut();
         }
-      },
-      error: function (error) {
-        alert('Sorry. Something went wrong');
-        $throbberFull.fadeOut();
-      }
-    });
-
-    // check original state
-    // if Auth token exists, don't show slider.
-    // if (!localStorage.getItem('ellroiAuth')) {
-    //   $slider.addClass('-is-open');
-    //   $overlay.fadeIn();
-    //   context.addClass('-lock');
-    // } else {
-    //   // get the task details
-    //   $throbberFull.show();
-    //   $mainFooter.show();
-    //   $footerPending.fadeIn();
-    //   getTaskFromServer();
-    // }
+      });
+    } else {
+      $.ajax({
+        url: '/api/v1/invites/'+window.workbert.inviteId,
+        headers: {'Authorization': 'bearer ' + localStorage.getItem('ellroiAuth')},
+        success: function (result) {
+          console.log(result);
+          // set taskId
+          window.workbert.taskId = result.invite.task._id;
+          // set taskInvitationId
+          window.workbert.taskInvitationId = result.invite.task_invitation;
+          console.log(window.workbert);
+          // if Auth token exists, don't show slider.
+          if (!localStorage.getItem('ellroiAuth')) {
+            $slider.addClass('-is-open');
+            $overlay.fadeIn();
+            context.addClass('-lock');
+            $throbberFull.fadeOut();
+          } else {
+            // get the task details
+            $mainFooter.show();
+            if (result.invite.status === 'accepted') {
+              setState('accepted');
+            } else {
+              $footerPending.fadeIn();
+            }
+            
+            getTaskFromServer();
+          }
+        },
+        error: function (error) {
+          alert('Sorry. Something went wrong');
+          $throbberFull.fadeOut();
+        }
+      });
+    }
 
 }
 
@@ -495,6 +533,7 @@ $.fn.handleSliderProgress = function() {
 
 }
 
+// TODO: may not be needed afterall
 $.fn.handleComments = function() {
   var context = $(this),
     $commentBox = $('.page-slider_textarea', context),
@@ -511,16 +550,17 @@ $.fn.handleComments = function() {
     $commentBox.val('');
   }
 
-  $commentBox.keyup(function(e) {
-    if ((e.keyCode || e.which) === 13) {
-      submitComment();
-    }
-  })
+  // $commentBox.keyup(function(e) {
+  //   if ((e.keyCode || e.which) === 13) {
+  //     submitComment();
+  //   }
+  // })
 
 }
 
 $(function(){
   getQueryParams('invite');
+  getQueryParams('update');
   $('#pending-page').handleModal();
   $('#radialProgress').handleSliderProgress();
   $('#sliderComments').handleComments();
