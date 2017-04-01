@@ -43,6 +43,9 @@ exports.put = function(req, res, next) {
     .then(function(user) {
         response.user = user;
         response.token = signToken(user._id);
+        return addUserToTaskAssignees();
+    })
+    .then(function(task) {
         res.status(200).json(response);
     })
     .catch(next);
@@ -62,6 +65,14 @@ exports.put = function(req, res, next) {
             .then(resolve)
             .catch(reject);
         });
+    }
+
+    function addUserToTaskAssignees() {
+
+        task.isNew = false;
+        task.assignees.push(response.user);
+        return task.save();
+
     }
 
     function alreadyAccepted() {
