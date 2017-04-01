@@ -25,6 +25,7 @@ exports.teams = function(req, res, next) {
     function teamNameAlreadyTaken() {
         res.status(200).json({
             success: false,
+            team_name: team_name,
             error: 'team name not available'
         });
     }
@@ -52,6 +53,7 @@ exports.emails = function(req, res, next) {
     function emailAddressAlreadyTaken() {
         res.status(200).json({
             success: false,
+            email: email,
             error: 'someone on this team already has that email address'
         });
     }
