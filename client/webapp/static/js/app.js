@@ -2,13 +2,11 @@
 // globes
 window.workbert = {
   taskState: 'pending',
-  tasksDone: 1,
-  tasksTotal: 4,
-  complete: 10,
-  progress: '25%',
   taskInvitationId: null,
+  completion_percentage: 0,
   taskId: null,
-  inviteId: null
+  inviteId: null,
+  updateId: null,
 };
 
 // gets query string params and stores them in window obj
@@ -91,7 +89,13 @@ function updateTaskOnSetver(task) {
 function updateTaskDom(taskDetails) {
   console.log('--- updating task in DOM ---');
   console.log(taskDetails);
-
+  // set percentage complete
+  window.workbert.completion_percentage = taskDetails.completion_percentage;
+  // in hero
+  $('.hero__task-details--progress').html(taskDetails.completion_percentage + '%');
+  // in slider
+  $('.page-slider_radial .progress-radial').attr('data-progress',taskDetails.completion_percentage);
+  $('.page-slider_radial .progress-radial .percentage').html(taskDetails.completion_percentage + '%');
   // set avatar
   $('#taskAvatar').attr('src',taskDetails.assigner.avatar_url);
   // set name
@@ -124,6 +128,15 @@ function updateTaskDom(taskDetails) {
   });
 }
 
+// sets up the GIVE UPDATE slider
+function setUpUpdateSlider(type, comments) {
+  if (type === 'random') {
+    $('#sliderComments').hide();
+  } else {
+
+  }
+}
+
 // Handle the modal states
 $.fn.handleModal = function() {
   var context = $(this),
@@ -137,6 +150,7 @@ $.fn.handleModal = function() {
     $acceptedButton = $('#taskAccepted', context),
     $acceptButton = $('#acceptTask', context),
     $doneButton = $('#finishTask', context),
+    $submitUpateButton = $('#submitButton', context),
     $closeButton = $('.page-slider_close-button', context),
     $updateButton = $('#updateTask', context),
     $overlay = $('.page-overlay', context),
@@ -188,7 +202,14 @@ $.fn.handleModal = function() {
           $throbberFull.fadeOut();
         },
         error: function (error) {
-          alert('Sorry. Something went wrong');
+          if (error.responseJSON) {
+            alert(error.responseJSON.error);
+            // TODO: This may be buggy. removing cookie if user not found.
+            localStorage.removeItem('ellroiAuth')
+          } else {
+            alert('Sorry. Something went wrong');
+          }
+          console.log(error.responseJSON);
           $throbberFull.fadeOut();
         }
       });
@@ -285,6 +306,9 @@ $.fn.handleModal = function() {
       e.preventDefault();
       // scroll to the top to avoid scrolly issues
       window.scrollTo(0,0);
+      // Task: Set up the update slider depending on whether there is an UPDATE_ID
+      setUpUpdateSlider('random');
+
       $mainFooter.hide();
       $sliderPin.hide();
       $sliderAccepted.hide();
@@ -330,6 +354,46 @@ $.fn.handleModal = function() {
           $throbber.fadeOut();
         }
       })
+    })
+
+    // submit update button
+    $submitUpateButton.click(function(e) {
+      var completionPercentage = $('.page-slider_radial .progress-radial').attr('data-progress'),
+        postData = {};
+      e.preventDefault();
+      $throbber.fadeIn();
+      if (window.workbert.updateId) {
+        // respond to update request
+      } else {
+        // random update
+        postData = {
+          type: 'random',
+          completion_percentage: completionPercentage
+        }
+        $.ajax({
+          url: '/api/v1/tasks/'+window.workbert.taskId+'/updates',
+          type: 'POST',
+          headers: {'Authorization': 'bearer ' + localStorage.getItem('ellroiAuth')},
+          data: postData,
+          success: function (result) {
+            var updatedTask = {}
+            updatedTask = result.update.task;
+            updatedTask.completion_percentage = completionPercentage;
+            updateTaskDom(updatedTask);
+            console.log(updatedTask);
+            $throbber.fadeOut();
+            $mainFooter.show();
+            $slider.removeClass('-is-open');
+            $sliderUpdate.hide();
+            $overlay.fadeOut();
+            context.removeClass('-lock');
+          },
+          error: function (error) {
+            alert('Error sending progress report');
+            $throbber.fadeOut();
+          }
+        });
+      }
     })
 
     $doneButton.click(function(e) {
@@ -398,7 +462,7 @@ $.fn.handleSliderProgress = function() {
     $increase = $('.page-slider_radial-controls_button.-increase',context),
     $decrease = $('.page-slider_radial-controls_button.-decrease',context),
     $progress = $('.progress-radial', context),
-    multiplier = 25;
+    multiplier = 5;
 
   $increase.click(function(e) {
     e.preventDefault();
