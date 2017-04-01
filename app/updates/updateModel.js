@@ -69,6 +69,8 @@ UpdateSchema.methods = {
 }
 
 function generateResponses(assignee_id, completion_percentage, message) {
+	logger.silly('responses 1');
+
 	return new Promise(function (resolve, reject) {
 		var task = this.task;
 		async.forEachOf(task.assignees, function (value, key, callback) {
@@ -77,9 +79,8 @@ function generateResponses(assignee_id, completion_percentage, message) {
 				assignee: assignee,
 				completion_percentage: 0
 			});
-			// logger.silly('type of 1: ' + assignee._id);
-			// logger.silly('type of 2: ' + assignee_id);
-			if (assignee._id.toString() == assignee_id) {
+			
+			if (assignee._id.toString() == assignee_id || response.assignee._id == assignee_id) {
 				logger.silly('assignee hit!');
 				response.completion_percentage = completion_percentage;
 				response.message = message;
@@ -95,6 +96,8 @@ function generateResponses(assignee_id, completion_percentage, message) {
 }
 
 function generateResponsesForRandom(assignee_id, completion_percentage) {
+		logger.silly('responses 2');
+
 	return new Promise(function (resolve, reject) {
 		var task = this.task;
 		async.forEachOf(task.assignees, function (value, key, callback) {
