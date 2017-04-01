@@ -5,6 +5,12 @@ module.exports = {
 	// Logging
 	console_logging_enabled: true,
 	winston_log_level: 'silly',
+
+	// URL
+	base_url: 'http://localhost:3000/',
+
+	// Email
+	from_email: 'ellroiapp@gmail.com',
 	
 	// Services
 	mongo_url: 'mongodb://localhost/pulse',
@@ -14,5 +20,5 @@ module.exports = {
 
 	secrets: {
 		jwt: process.env.JWT_KEY || 'TL9rQ9VSxG4MGk+FleLXrcT6r6819YwuxIhCF+On2pE='
-	}
+	},
 }
