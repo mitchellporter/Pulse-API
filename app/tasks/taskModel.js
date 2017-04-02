@@ -1,4 +1,5 @@
 var logger = require('../../lib/logger');
+var _ = require('lodash');
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var Item = require('../items/itemModel').schema;
@@ -68,7 +69,8 @@ TaskSchema.methods = {
 		delete obj.__v;
 		return obj;
 	},
-	updateCompletionPercentageFromNewUpdateResponse: updateCompletionPercentageFromNewUpdateResponse
+	updateCompletionPercentageFromNewUpdateResponse: updateCompletionPercentageFromNewUpdateResponse,
+	editAssignees: editAssignees
 }
 
 function updateCompletionPercentageFromNewUpdateResponse(response) {
@@ -76,6 +78,17 @@ function updateCompletionPercentageFromNewUpdateResponse(response) {
 		this.isNew = false;
 		this.completion_percentage = response.completion_percentage;
 		
+		this.save()
+		.then(resolve)
+		.catch(reject);
+	}.bind(this));
+}
+
+function editAssignees(assignees) {
+	return new Promise(function(resolve, reject) {
+		_.union(this.assignees, assignees);
+
+		this.isNew = false;
 		this.save()
 		.then(resolve)
 		.catch(reject);
