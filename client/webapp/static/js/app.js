@@ -459,6 +459,7 @@ $.fn.handleModal = function() {
           // window.workbert.taskInvitationId = result.invite.task_invitation;
           // if Auth token exists, don't show slider.
           if (!localStorage.getItem('ellroiAuth')) {
+            updateTaskDom(result.update.task);
             $slider.addClass('-is-open');
             $overlay.fadeIn();
             context.addClass('-lock');
@@ -506,6 +507,7 @@ $.fn.handleModal = function() {
           console.log(window.workbert);
           // if Auth token exists, don't show slider.
           if (!localStorage.getItem('ellroiAuth')) {
+            updateTaskDom(result.invite.task);
             $slider.addClass('-is-open');
             $overlay.fadeIn();
             context.addClass('-lock');
