@@ -11,6 +11,7 @@ module.exports = {
 
 	// Email
 	from_email: 'ellroiapp@gmail.com',
+	formatted_from_email: 'Ellroi <ellroiapp@gmail.com>',
 	gmail_password: 'kirkland1234',
 	
 	// Services
