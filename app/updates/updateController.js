@@ -252,7 +252,7 @@ exports.post = function(req, res, next) {
                     logger.silly('assignee email: ' + assignee.email);
 
                     var message = {
-                        from: config.from_email,
+                        from: config.formatted_from_email,
                         to: assignee.email, // TODO: Remove hardcoded email address
                         subject: task.assigner.name + ' has requested an update on the task you are working on titled: ' + task.title,
                         text: task.assigner.name + ' has requested an update on the task you are working on: ' + config.base_url  + '?update=' + update._id
