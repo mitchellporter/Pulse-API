@@ -25,6 +25,8 @@ function getQueryParams(param) {
       window.workbert.inviteId = decodeURIComponent(results[2].replace(/\+/g, " "));
     } else if (param === 'update') {
       window.workbert.updateId = decodeURIComponent(results[2].replace(/\+/g, " "));
+    } else if (param === 'clearcookies') {
+      return true;
     }
 }
 
@@ -592,6 +594,12 @@ $.fn.handleComments = function() {
 }
 
 $(function(){
+  // some debug code to easily clear auth token on mobile devices
+  // just add param &clearcookies=true and reload page
+  if (getQueryParams('clearcookies')) {
+    localStorage.removeItem('ellroiAuth');
+    return false;
+  }
   getQueryParams('invite');
   getQueryParams('update');
   $('#pending-page').handleModal();

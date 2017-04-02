@@ -151,6 +151,7 @@ body.-lock {
 @media (max-width: 550px) {
   body.-lock {
     position: fixed;
+    width: 100%;
   }
 }
 
