@@ -2,6 +2,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var async = require('async');
 var logger = require('../../lib/logger');
+var config = require('../../config/config');
 
 var types = ['team', 'task'];
 var statuses = ['pending', 'accepted'];
@@ -84,8 +85,8 @@ function sendInvite() {
         var options = {
             service: 'Gmail',
             auth: {
-                user: 'ellroiapp@gmail.com',
-                pass: 'kirkland1234'
+                user: config.from_email,
+                pass: config.gmail_password
             }
         };
 
@@ -101,7 +102,7 @@ function sendInvite() {
         function ready() {
             logger.silly('about to send email to invitee email address: ' + this.email);
             var message = {
-                from: 'ellroiapp@gmail.com',
+                from: config.formatted_from_email,
                 to: this.email,
                 subject: 'You have been invited to a task!',
                 text: 'You have been invited to a task!',
@@ -127,8 +128,8 @@ function sendInvites(invites) {
         var options = {
             service: 'Gmail',
             auth: {
-                user: 'ellroiapp@gmail.com',
-                pass: 'kirkland1234'
+                user: config.from_email,
+                pass: config.gmail_password
             }
         };
 
@@ -141,10 +142,10 @@ function sendInvites(invites) {
                 logger.silly('about to send email to invitee email address: ' + invite.email);
 
                 var message = {
-                    from: 'ellroiapp@gmail.com',
+                    from: config.formatted_from_email,
                     to: invite.email,
                     subject: 'You have been invited to a task by ' + invite.sender.name,
-                    text: 'You have been invited to a task by ' + invite.sender.name + ' link: http://localhost:3000/?invite=' + invite._id
+                    text: 'You have been invited to a task by ' + invite.sender.name + ' link: ' + config.base_url + '?invite=' + invite._id
                     // html: '<p>You have been invited to a task!</p>'
                 };
 

@@ -1,4 +1,5 @@
 var logger = require('../../lib/logger');
+var config = require('../../config/config');
 var Emailer = require('../../lib/emailer');
 var Update = require('./updateModel');
 var async = require('async');
@@ -238,8 +239,8 @@ exports.post = function(req, res, next) {
             var options = {
                 service: 'Gmail',
                 auth: {
-                    user: 'ellroiapp@gmail.com',
-                    pass: 'kirkland1234'
+                    user: config.from_email,
+                    pass: config.gmail_password
                 }
             };
 
@@ -251,10 +252,10 @@ exports.post = function(req, res, next) {
                     logger.silly('assignee email: ' + assignee.email);
 
                     var message = {
-                        from: 'ellroiapp@gmail.com',
+                        from: config.formatted_from_email,
                         to: assignee.email, // TODO: Remove hardcoded email address
                         subject: task.assigner.name + ' has requested an update on the task you are working on titled: ' + task.title,
-                        text: task.assigner.name + ' has requested an update on the task you are working on: ' + 'http://localhost:3000/?update=' + update._id
+                        text: task.assigner.name + ' has requested an update on the task you are working on: ' + config.base_url  + '?update=' + update._id
                     };
 
                     emailer.send(message)
