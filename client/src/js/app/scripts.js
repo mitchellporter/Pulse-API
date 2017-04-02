@@ -467,8 +467,13 @@ $.fn.handleModal = function() {
             // get the task details
             $mainFooter.show();
             if (result.update.task.status === 'completed') {
+              setState('accepted');
               updateTaskDom(result.update.task);
-              setState('completed');
+              // force the dom to render the tasks as complete
+              setTimeout(function(){
+                setState('completed');
+              },100);
+              
               // set the comments to the window object for now
               window.workbert.taskComments = result.update.responses;
               $throbberFull.fadeOut();
