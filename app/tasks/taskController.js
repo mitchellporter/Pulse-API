@@ -272,15 +272,20 @@ exports.addAssignees = function(req, res, next) {
 
 	var task = req.task;
 	var assignees = req.body.assignees;
+	var task_with_assignees;
 
 	task.addAssignees(assignees)
 	.then(function(task) {
-		return TaskInvitation.createTaskInvitationsForAssignees(task, assignees);
+		return task.populate('assignees', '_id name position email avatar_url').execPopulate();
+	})
+	.then(function(populated_task) {
+		task_with_assignees = populated_task;
+		return TaskInvitation.createTaskInvitationsForAssignees(populated_task, assignees);
 	})
 	.then(function(task_invitations) {
 		res.status(201).json({
 			success: true,
-			task: task
+			task: task_with_assignees
 		});
 	})
 	.catch(next);
