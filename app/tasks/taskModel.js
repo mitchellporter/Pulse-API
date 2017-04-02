@@ -86,8 +86,9 @@ function updateCompletionPercentageFromNewUpdateResponse(response) {
 
 function addAssignees(assignees) {
 	return new Promise(function(resolve, reject) {
-		_.union(this.assignees, assignees);
 
+		this.assignees = _.union(this.assignees, assignees);
+		
 		this.isNew = false;
 		this.save()
 		.then(resolve)
