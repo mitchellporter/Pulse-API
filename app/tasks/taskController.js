@@ -264,21 +264,20 @@ exports.sendUpdate = function(req, res, next) {
 	.catch(next);
 };
 
-exports.editAssignees = function(req, res, next) {
+// TODO: Check for duplicate and prevent re-adding existing assignees
+// Also, only send task invitations to new assignees
+exports.addAssignees = function(req, res, next) {
 	logger.silly('adding assignees to task');
 
 	var task = req.task;
 	var assignees = req.body.assignees;
 
-	task.editAssignees(assignees)
+	task.addAssignees(assignees)
 	.then(function(task) {
 		return TaskInvitation.createTaskInvitationsForAssignees(task, assignees);
 	})
 	.then(function(task_invitations) {
-
-		logger.silly('created task invitations? ' + task_invitations);
-
-		res.status(200).json({
+		res.status(201).json({
 			success: true,
 			task: task
 		});
