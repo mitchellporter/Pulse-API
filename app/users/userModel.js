@@ -52,7 +52,9 @@ UserSchema.pre('validate', function(next) {
 // TODO: Try using hard bind and making this work
 UserSchema.pre('save', function(next) {
 	var user = this;
-	if (!user.isModified('password')) return next(); 
+	if (!user.isModified('password')) return next();
+
+	if(user.isNew && !user.avatar_url) user.setRandomAvatarURL(); 
 
 	// Encrypt password
 	user.encryptPassword(user.password, function(err, hash) {
@@ -61,6 +63,14 @@ UserSchema.pre('save', function(next) {
 		next();
 	});
 });
+
+var cdn_url = 'https://d33833kh9ui3rd.cloudfront.net/';
+var asset_file_format = '.png';
+var avatar_asset_names = ['ellroi1', 'ellroi2', 'ellroi3', 'ellroi4', 'ellroi5', 'ellroi6'];
+
+function randomAvatarURL() {
+    return cdn_url + avatar_asset_names[Math.floor(Math.random() * avatar_asset_names.length)] + asset_file_format;
+}
 
 // TODO: Replace callbacks with Promises
 UserSchema.methods = {
@@ -88,7 +98,12 @@ UserSchema.methods = {
 		return obj;
 	},
 	storeMostRecentUpdateResponse: storeMostRecentUpdateResponse,
-	storeMostRecentResponseFromUpdate: storeMostRecentResponseFromUpdate
+	storeMostRecentResponseFromUpdate: storeMostRecentResponseFromUpdate,
+	setRandomAvatarURL: setRandomAvatarURL
+}
+
+function setRandomAvatarURL() {
+	this.avatar_url = randomAvatarURL();
 }
 
 function storeMostRecentUpdateResponse(response) {
