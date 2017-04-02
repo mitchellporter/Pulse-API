@@ -8,7 +8,7 @@ exports.teams = function(req, res, next) {
     .then(function(team) {
         logger.silly('found team: ' + team);
         if (!team) return teamNameIsAvailable();
-        teamNameAlreadyTaken();
+        teamNameAlreadyTaken(team);
     })
     .catch(next);
 
@@ -22,10 +22,11 @@ exports.teams = function(req, res, next) {
 
     // NOTE: Not sure if this should be an error or success but then with a message saying team name not available?
     // Otherwise I have to make an extra search endpoint
-    function teamNameAlreadyTaken() {
+    function teamNameAlreadyTaken(team) {
         res.status(200).json({
             success: false,
             team_name: team_name,
+            team: team._id,
             error: 'team name not available'
         });
     }
