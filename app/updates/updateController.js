@@ -240,7 +240,7 @@ exports.post = function(req, res, next) {
                 service: 'Gmail',
                 auth: {
                     user: config.from_email,
-                    pass: 'kirkland1234'
+                    pass: config.gmail_password
                 }
             };
 

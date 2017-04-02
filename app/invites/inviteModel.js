@@ -86,7 +86,7 @@ function sendInvite() {
             service: 'Gmail',
             auth: {
                 user: config.from_email,
-                pass: 'kirkland1234'
+                pass: config.gmail_password
             }
         };
 
@@ -129,7 +129,7 @@ function sendInvites(invites) {
             service: 'Gmail',
             auth: {
                 user: config.from_email,
-                pass: 'kirkland1234'
+                pass: config.gmail_password
             }
         };
 

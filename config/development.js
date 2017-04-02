@@ -11,6 +11,7 @@ module.exports = {
 
 	// Email
 	from_email: 'ellroiapp@gmail.com',
+	gmail_password: 'kirkland1234',
 	
 	// Services
 	mongo_url: 'mongodb://localhost/pulse',
