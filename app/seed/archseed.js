@@ -70,9 +70,10 @@ function startSeed() {
     var design_first_apps_team;
     logger.silly('starting arch seed process...');
     dropDb()
-        .then(createTeam)
-        .then(function (team) {
-            design_first_apps_team = team;
+        .then(createTeams)
+        .then(function (teams) {
+            design_first_apps_team = teams[0];
+            logger.silly('design first team name? ' + design_first_apps_team.name);
             return createMitchell();
         })
         .then(function (mitchell_user) {
@@ -111,13 +112,19 @@ function startSeed() {
         return mongoose.connection.db.dropDatabase();
     }
 
-    function createTeam() {
+    function createTeams() {
         logger.silly('creating design first apps team');
-        var team = new Team({
+        var design_first_apps_team = new Team({
             name: 'designfirstapps'
         });
-        team._id = team_id;
-        return team.save();
+        design_first_apps_team._id = team_id;
+
+        var airship_team = new Team({
+            name: 'airship'
+        });
+        airship_team._id = '58e2a64932666152d98cd7c7';
+
+        return Team.create([design_first_apps_team, airship_team]);
     }
 
     function createMitchell() {
