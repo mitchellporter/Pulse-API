@@ -46,7 +46,7 @@ exports.verifyUser = function () {
 
     logger.silly('about to verify user');
 
-    var team = req.body.team;
+    var team_id = req.body.team_id;
     var team_name = req.body.team_name;
     var email = req.body.email;
     var password = req.body.password;
@@ -79,7 +79,7 @@ exports.verifyUser = function () {
         .catch(next);
     } else {
 
-      if (!email || !password || !team) {
+      if (!email || !password || !team_id) {
         res.status(400).json({
           error: {
             message: 'You need a team, email address, and password to signin'
@@ -89,7 +89,7 @@ exports.verifyUser = function () {
       }
 
       logger.silly('about to find user');
-      User.findOne({ team: team, email: email })
+      User.findOne({ team: team_id, email: email })
         .then(function (user) {
           if (!user) return res.status(401).json({
             error: {
