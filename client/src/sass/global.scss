@@ -16,6 +16,7 @@ body {
         overflow: hidden;
         @media (max-width: $breakpoint-tablet) {
             position: fixed;
+            width: 100%;
         }
     }
 }
