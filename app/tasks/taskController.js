@@ -117,6 +117,7 @@ exports.post = function(req, res, next) {
 
 	var task = new Task(req.body);
 	task.assigner = assigner;
+
 	// TODO: Set real due_date
 	var due_date_interval = req.body.due_date;
 	var due_date = new Date(1970, 0, 1);
@@ -144,15 +145,15 @@ exports.post = function(req, res, next) {
 		.then(populateAssignees)
 		.then(createTaskInvitations)
 		.then(function(task_invitations) {
-			var task = task_invitations[0].task;
+
+
 			res.status(201).json({
 				success: true,
 				task: task,
 				task_invitations: task_invitations
 			});
 
-			logger.silly('task invitations count: ' + task_invitations.length);
-			logger.silly('About to send new task assigned notification!');
+			if (!task_invitations) return;
 
 			async.forEachOf(task_invitations, function(value, key, callback2) {
 				var task_invitation = value;
@@ -260,6 +261,32 @@ exports.sendUpdate = function(req, res, next) {
 			});
 		})
 		.catch(next);
+	})
+	.catch(next);
+};
+
+// TODO: Check for duplicate and prevent re-adding existing assignees
+// Also, only send task invitations to new assignees
+exports.addAssignees = function(req, res, next) {
+	logger.silly('adding assignees to task');
+
+	var task = req.task;
+	var assignees = req.body.assignees;
+	var task_with_assignees;
+
+	task.addAssignees(assignees)
+	.then(function(task) {
+		return task.populate('assignees', '_id name position email avatar_url').execPopulate();
+	})
+	.then(function(populated_task) {
+		task_with_assignees = populated_task;
+		return TaskInvitation.createTaskInvitationsForAssignees(populated_task, assignees);
+	})
+	.then(function(task_invitations) {
+		res.status(201).json({
+			success: true,
+			task: task_with_assignees
+		});
 	})
 	.catch(next);
 };
