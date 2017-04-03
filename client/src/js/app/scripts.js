@@ -134,21 +134,16 @@ function updateTaskDom(taskDetails) {
 // sets up the GIVE UPDATE slider
 function setUpUpdateSlider(type) {
   var el;
-  if (type === 'random') {
-    $('#sliderComments').hide();
-  } else {
-    if (window.workbert.taskComments.length) {
-      $('.comment-item_list').empty();
-      $.each(window.workbert.taskComments, function(index,comment) {
-        console.log(comment);
-        if (comment.message) {
-          el = $('<div class="comment-item"><div class="comment-item_heading">Sent: '+ moment(comment.created_at).fromNow() +'</div><div class="comment-item_text">'+ comment.message +'</div></div>');
-          console.log(el);
-          $('.comment-item_list').append(el);
-        };
-      });
-    }
-
+  if (window.workbert.taskComments.length) {
+    $('.comment-item_list').empty();
+    $.each(window.workbert.taskComments, function(index,comment) {
+      console.log(comment);
+      if (comment.message) {
+        el = $('<div class="comment-item"><div class="comment-item_heading">Sent: '+ moment(comment.created_at).fromNow() +'</div><div class="comment-item_text">'+ comment.message +'</div></div>');
+        console.log(el);
+        $('.comment-item_list').append(el);
+      };
+    });
   }
 }
 
@@ -366,6 +361,7 @@ $.fn.handleModal = function() {
       $throbber.fadeIn();
       console.log('--- send a message ---');
       console.log(window.workbert.updateId);
+
       if (window.workbert.updateId) {
         // respond to update request
         postType = 'PUT';
@@ -373,18 +369,6 @@ $.fn.handleModal = function() {
         postData = {
           completion_percentage: completionPercentage
         }
-        // if there is content in the text area, send it with the update.
-        if ($commentBox.val()) {
-          postData.message = $commentBox.val();
-          commentDetails.message = postData.message;
-          commentDetails.created_at = new Date();
-          window.workbert.taskComments.unshift(commentDetails);
-          commentDetails = {};
-          $commentBox.val('');
-          setUpUpdateSlider();
-        }
-        // push it in to the window.workbert.taskComments
-
       } else {
         // random update
         postUrl = '/api/v1/tasks/'+window.workbert.taskId+'/updates';
@@ -392,6 +376,16 @@ $.fn.handleModal = function() {
           type: 'random',
           completion_percentage: completionPercentage
         }
+      }
+      // if there is content in the text area, send it with the update.
+      if ($commentBox.val()) {
+        postData.message = $commentBox.val();
+        commentDetails.message = postData.message;
+        commentDetails.created_at = new Date();
+        window.workbert.taskComments.unshift(commentDetails);
+        commentDetails = {};
+        $commentBox.val('');
+        setUpUpdateSlider();
       }
       $.ajax({
         url: postUrl,
