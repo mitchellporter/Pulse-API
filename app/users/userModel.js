@@ -65,7 +65,7 @@ UserSchema.pre('save', function(next) {
 });
 
 var cdn_url = 'https://d33833kh9ui3rd.cloudfront.net/';
-var asset_file_format = '.png';
+var asset_file_format = '@2x.png';
 var avatar_asset_names = ['ellroi1', 'ellroi2', 'ellroi3', 'ellroi4', 'ellroi5', 'ellroi6'];
 
 function randomAvatarURL() {
