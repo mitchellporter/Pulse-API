@@ -2,6 +2,7 @@ var Promise = require('bluebird');
 var jwt = require('jsonwebtoken');
 var expressJwt = require('express-jwt');
 var User = require('../users/userModel');
+var Team = require('../teams/teamModel');
 var logger = require('../../lib/logger');
 var config = require('../../config/config');
 var checkToken = expressJwt({ secret: config.secrets.jwt });
@@ -40,49 +41,81 @@ exports.decodeToken = function() {
 
 // 1. Checks if user even exists
 // 2. Checks if req.body.password matches the pw for user in the DB
-exports.verifyUser = function() {
-return function(req, res, next) {
+exports.verifyUser = function () {
+  return function (req, res, next) {
 
-  logger.silly('about to verify user');
+    logger.silly('about to verify user');
 
-  var team = req.body.team;
-  var email = req.body.email;
-  var password = req.body.password;
+    var team = req.body.team;
+    var team_name = req.body.team_name;
+    var email = req.body.email;
+    var password = req.body.password;
 
-  if (!email || !password || !team) {
-    res.status(400).json({ 
-      error: {
-        message: 'You need a team, email address, and password to signin'
-    }});
-    return;
-  }
 
-  logger.silly('about to find user');
-  User.findOne({ team: team, email: email })
-    .then(function (user) {
-      if (!user) return res.status(401).json({
+    if (team_name) {
+      var team_name = req.body.team_name;
+      Team.findOne({ name: team_name })
+        .then(function (team) {
+          if (!team) return next(new Error('No team found with that team name'));
+          return User.findOne({ team: team, email: email });
+        })
+        .then(function (user) {
+          if (!user) return next(new Error('No user found'));
+          user.authenticate(password)
+            .then(function (result) {
+              if (!result) return res.status(401).json({
+                error: {
+                  message: 'The password you entered was incorrect.'
+                }
+              });
+
+              // Password was correct
+              logger.silly('password was correct');
+              req.user = user;
+              next();
+            })
+            .catch(next);
+        })
+        .catch(next);
+    } else {
+
+      if (!email || !password || !team) {
+        res.status(400).json({
           error: {
-            message: 'No user with email address of ' + email
+            message: 'You need a team, email address, and password to signin'
           }
         });
+        return;
+      }
 
-        user.authenticate(password)
-          .then(function (result) {
-            if (!result) return res.status(401).json({
-              error: {
-                message: 'The password you entered was incorrect.'
-              }
-            });
+      logger.silly('about to find user');
+      User.findOne({ team: team, email: email })
+        .then(function (user) {
+          if (!user) return res.status(401).json({
+            error: {
+              message: 'No user with email address of ' + email
+            }
+          });
 
-            // Password was correct
-            logger.silly('password was correct');
-            req.user = user;
-            next();
-          })
-          .catch(next);
-    })
-    .catch(next);
-};
+          user.authenticate(password)
+            .then(function (result) {
+              if (!result) return res.status(401).json({
+                error: {
+                  message: 'The password you entered was incorrect.'
+                }
+              });
+
+              // Password was correct
+              logger.silly('password was correct');
+              req.user = user;
+              next();
+            })
+            .catch(next);
+        })
+        .catch(next);
+
+    }
+  };
 };
 
 // util method to sign tokens on signup
