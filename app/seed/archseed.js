@@ -157,7 +157,7 @@ function startSeed() {
             _id: new mongoose.mongo.ObjectId(dummy_user_allen_id),
             name: 'Allen',
             password: '1234',
-            email: 'arch@designfirstapps.com',
+            email: 'allen@designfirstapps.com',
             position: 'iOS dev',
             avatar_url: allen_avatar_url,
             team: design_first_apps_team
