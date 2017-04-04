@@ -173,7 +173,12 @@ $.fn.handleModal = function() {
     $footerAccepted = $('.main-footer__container.-accepted', context),
     $throbberFull = $('.throbber-full--main', context),
     $throbber = $('.throbber-full', context),
-    $commentBox = $('#commentBox', context);
+    $commentBox = $('#commentBox', context),
+    // for loggin in
+    $loginTeamId = $('#loginTeamId', context),
+    $loginEmail = $('#loginEmail', context),
+    $loginPassword = $('#loginPassword', context),
+    $loginButton = $('#loginEllroi', context);
 
     function setState(state) {
       if (state === 'accepted') {
@@ -227,6 +232,47 @@ $.fn.handleModal = function() {
       });
     }
 
+    function doLogIn() {
+      if (!$loginTeamId.val() || !$loginEmail.val() || !$loginPassword.val()) {
+        alert('please make sure all fields are filled');
+        return false;
+      }
+
+      var postData = {
+        team_id: $loginTeamId.val(),
+        email: $loginEmail.val(),
+        password: $loginPassword.val()
+      }
+
+      $.ajax({
+        url: '/api/v1/auth/signin',
+        type: 'POST',
+        data: postData,
+        // headers: {'Authorization': localStorage.getItem('ellroiAuth')},
+        success: function (result) {
+          if (result.token) {
+            localStorage.setItem('ellroiAuth', result.token);
+          }
+          getTaskFromServer();
+          $loginTeamId.val('');
+          $loginEmail.val('');
+          $loginPassword.val('');
+          $throbber.fadeOut();
+          $slider.removeClass('-is-open');
+          $overlay.fadeOut();
+          $mainFooter.show();
+          $footerPending.fadeIn();
+          context.removeClass('-lock');
+        },
+        error: function (error) {
+          alert('Invalid login credentials');
+          $throbber.fadeOut();
+        }
+      });
+
+      console.log(postData);
+    }
+
     function doSignUp() {
       if (!$inputName.val() || !$inputJob.val() || !$inputPassword.val()) {
         alert('please make sure all fields are filled');
@@ -273,6 +319,11 @@ $.fn.handleModal = function() {
       e.preventDefault();
       // sign up
       doSignUp();
+    })
+
+    $loginButton.click(function(e) {
+      e.preventDefault();
+      doLogIn();
     })
 
     $acceptButton.click(function(e) {
