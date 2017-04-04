@@ -94,6 +94,9 @@ function startSeed() {
         .then(function(arch_user) {
             arch = arch_user;
             users.push(arch);
+            return createItunesConnectUser();
+        })
+        .then(function(itunes_connect) {
             return createInProgressTasks();
         })
         .then(function(created_tasks) {
@@ -182,6 +185,21 @@ function startSeed() {
             email: 'pulsegrenade@gmail.com',
             position: 'web dev',
             avatar_url: arch_avatar_url,
+            team: design_first_apps_team
+        });
+        return user.save();
+    }
+
+    function createItunesConnectUser() {
+        logger.silly('creating itunes connect user');
+
+        var user = new User({
+            _id: new mongoose.mongo.ObjectId('58e2f0105ada64faf597857a'),
+            name: 'iTunes Connect',
+            password: '1234',
+            email: 'itunesconnect@designfirstapps.com',
+            position: 'App Reviewer',
+            avatar_url: randomAvatarURL(),
             team: design_first_apps_team
         });
         return user.save();
