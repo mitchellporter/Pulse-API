@@ -239,7 +239,7 @@ $.fn.handleModal = function() {
       }
 
       var postData = {
-        team_id: $loginTeamId.val(),
+        team_name: $loginTeamId.val(),
         email: $loginEmail.val(),
         password: $loginPassword.val()
       }
