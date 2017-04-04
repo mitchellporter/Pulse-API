@@ -33,11 +33,21 @@
                 <div class="page-slider_content">
                     <h2 class="page-slider_heading">Welcome to Ellroi... Huuzzzaa!</h2>
                     <p class="page-slider_subheading ">You've been sent a new task!! Enter your info and get started.</p>
-                    <div class="page-slider_form" id="pin-entry">
-                        <input id="ellroiFullName" class="page-slider_input" type="text" placeholder="Full Name" max-length="256" autocomplete="false" />
-                        <input id="ellroiJobTitle" class="page-slider_input" type="text" placeholder="Job Title" max-length="256" autocomplete="false" />
-                        <input id="ellroiPassword" class="page-slider_input" type="password" placeholder="Password" max-length="256" autocomplete="false" />
-                        <button id="joinEllroi" class="button button--join button--block" type="button">Join Ellroi</button>
+                    <div class="page-slider__switcher">
+                        <div class="page-slider_form" id="pin-entry">
+                            <input id="ellroiFullName" class="page-slider_input" type="text" placeholder="Full Name" max-length="256" autocomplete="false" />
+                            <input id="ellroiJobTitle" class="page-slider_input" type="text" placeholder="Job Title" max-length="256" autocomplete="false" />
+                            <input id="ellroiPassword" class="page-slider_input" type="password" placeholder="Password" max-length="256" autocomplete="false" />
+                            <button id="joinEllroi" class="button button--join button--block" type="button">Join Ellroi</button>
+                            <p class="page-slider_form--toggle">Already a member? <a href="#" class="go-to-login">Log in now</a></p>
+                        </div>
+                        <div class="page-slider_form" id="slider-login">
+                            <input id="loginTeamId" class="page-slider_input" type="text" placeholder="Team ID" max-length="256" autocomplete="false" />
+                            <input id="loginEmail" class="page-slider_input" type="text" placeholder="Email" max-length="256" autocomplete="false" />
+                            <input id="loginPassword" class="page-slider_input" type="password" placeholder="Password" max-length="256" autocomplete="false" />
+                            <button id="loginEllroi" class="button button--join button--block" type="button">LOGIN</button>
+                            <p class="page-slider_form--toggle">Not a member? <a href="#" class="go-to-signup">Sign up now</a></p>
+                        </div>
                     </div>
                 </div>
                 <div class="page-slider_footer">

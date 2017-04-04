@@ -83,6 +83,7 @@
     text-align: center;
     padding: 0 30px;
     font-size: 14px;
+    overflow: hidden;
 }
 
 .page-slider__footer {
@@ -239,6 +240,23 @@
 .comment-item_text {
     color: $color-comment-text;
     font-size: 14px;
+}
+
+// sign up / log in toggle styles
+.page-slider_form--toggle {
+    padding-top: 10px;
+}
+
+.page-slider__switcher {
+    position: relative;
+}
+
+#pin-entry {
+    display: block;
+}
+
+#slider-login {
+    display: none;
 }
 
 

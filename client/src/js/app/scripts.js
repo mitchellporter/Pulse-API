@@ -568,6 +568,29 @@ $.fn.handleSliderProgress = function() {
 
 }
 
+$.fn.signupSwitcher = function() {
+  var context = $(this),
+    $signUp = $('#pin-entry',context),
+    $logIn = $('#slider-login',context),
+    $toggleLogin = $('.go-to-login',context),
+    $toggleSignup = $('.go-to-signup',context);
+
+    console.log('lol wut?');
+    console.log($toggleLogin);
+
+    $toggleLogin.click(function(e) {
+      e.preventDefault();
+      $signUp.hide();
+      $logIn.fadeIn();
+    });
+
+    $toggleSignup.click(function(e) {
+      e.preventDefault();
+      $logIn.hide();
+      $signUp.fadeIn();
+    });
+}
+
 // TODO: may not be needed afterall
 $.fn.handleComments = function() {
   var context = $(this),
@@ -601,6 +624,7 @@ $(function(){
   $('#sliderComments').handleComments();
   resizeSlider();
   handleTaskProgress();
+  $('.page-slider__switcher').signupSwitcher();
 });
 
 

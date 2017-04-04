@@ -535,6 +535,7 @@ button:hover, .button:hover {
   text-align: center;
   padding: 0 30px;
   font-size: 14px;
+  overflow: hidden;
 }
 
 .page-slider__footer {
@@ -695,6 +696,22 @@ button:hover, .button:hover {
 .comment-item_text {
   color: #979797;
   font-size: 14px;
+}
+
+.page-slider_form--toggle {
+  padding-top: 10px;
+}
+
+.page-slider__switcher {
+  position: relative;
+}
+
+#pin-entry {
+  display: block;
+}
+
+#slider-login {
+  display: none;
 }
 
 .progress-radial {
