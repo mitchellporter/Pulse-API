@@ -15,6 +15,7 @@ router.route('/')
 router.route('/:id')
 .get(checkUser, taskController.getOne)
 .put(checkUser, taskController.put)
+.delete(checkUser, taskController.delete)
 
 router.use('/:id/updates', require('../updates/updateRoutes'));
 

@@ -290,3 +290,15 @@ exports.addAssignees = function(req, res, next) {
 	})
 	.catch(next);
 };
+
+exports.delete = function(req, res, next) {
+	var task_id = req.task._id;
+	Task.remove({ _id: task_id })
+	.then(function(removed) {
+		logger.silly('removed: ' + removed);
+		res.status(200).json({
+			success: true
+		});
+	})
+	.catch(next);
+};
