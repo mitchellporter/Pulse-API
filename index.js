@@ -37,6 +37,14 @@ function start() {
 	app.set('trust proxy', true);
 	app.use(wwwRedirect);
 
+	// source: http://stackoverflow.com/a/36316721/3344977
+	app.get('*', function (req, res, next) {
+		if (req.headers['x-forwarded-proto'] != 'https' && process.env.NODE_ENV === 'production')
+			res.redirect('https://' + req.hostname + req.url)
+		else
+			next() /* Continue to other routes if we're not redirecting */
+	});
+
 	// middleware
 	app.use(require('morgan')('dev'));
 	app.use(bodyParser.urlencoded({extended: true}));
