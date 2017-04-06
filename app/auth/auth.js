@@ -23,7 +23,7 @@ exports.getUser = function(req, res, next) {
 
 exports.decodeToken = function() {
   return function(req, res, next) {
-    logger.silly('decoding JWT');
+    logger.silly('decoding JWT: ' + req.headers.authorization);
     // make it optional to place token on query string
     // if it is, place it on the headers where it should be
     // so checkToken can see it. See follow the 'Bearer 034930493' format
