@@ -102,3 +102,18 @@ button, .button {
         display: none !important;
     }
 }
+
+.button--home-page {
+    display: block;
+    text-align: center;
+    background-color: transparent;
+    color: white;
+    border-color: white;
+    padding: 20px 40px;
+    font-size: 16px;
+    &:hover {
+        background-color: white;
+        color: #3eaeff;
+        border-color: white;
+    }
+}

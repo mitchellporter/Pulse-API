@@ -19,6 +19,10 @@ body {
             width: 100%;
         }
     }
+    &.-home {
+        background-color: #3eaeff;
+        height: 100%;
+    }
 }
 
 .throbber-full, .throbber-full--main {
@@ -37,6 +41,7 @@ body {
     // margin-bottom: -66px;
     padding-bottom: 100px;
     overflow: auto;
+    display: none;
 }
 
 .hero-content {

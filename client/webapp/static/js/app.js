@@ -494,6 +494,7 @@ $.fn.handleModal = function() {
     // first things first. Get the invite details
     $throbberFull.show()
     if (window.workbert.updateId) {
+      $('.page-wrap').show();
       // Get task update!!! 
       $.ajax({
         url: '/api/v1/updates/'+window.workbert.updateId,
@@ -541,7 +542,8 @@ $.fn.handleModal = function() {
           $throbberFull.fadeOut();
         }
       });
-    } else {
+    } else if (window.workbert.inviteId) {
+      $('.page-wrap').show();
       $.ajax({
         url: '/api/v1/invites/'+window.workbert.inviteId,
         headers: {'Authorization': 'bearer ' + localStorage.getItem('ellroiAuth')},
@@ -576,6 +578,11 @@ $.fn.handleModal = function() {
           $throbberFull.fadeOut();
         }
       });
+    } else {
+      // show the teaser homepage if this is not a task update
+      $('body').addClass('-home');
+      $('.home-page').fadeIn();
+      $throbberFull.fadeOut();
     }
 
 }

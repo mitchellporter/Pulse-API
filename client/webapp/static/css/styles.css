@@ -155,6 +155,10 @@ body.-lock {
     width: 100%;
   }
 }
+body.-home {
+  background-color: #3eaeff;
+  height: 100%;
+}
 
 .throbber-full, .throbber-full--main {
   position: absolute;
@@ -170,6 +174,7 @@ body.-lock {
 .page-wrap {
   padding-bottom: 100px;
   overflow: auto;
+  display: none;
 }
 
 .hero-content {
@@ -316,6 +321,36 @@ body.-lock {
   }
 }
 
+.home-page {
+  position: relative;
+  width: 300px;
+  min-height: 300px;
+  margin: 0 auto;
+  display: none;
+  top: 50%;
+  -webkit-transform: translateY(-50%);
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+}
+
+.home-page__heading {
+  padding: 46px 28px 40px;
+  color: white;
+  font-size: 31px;
+  font-weight: bold;
+  letter-spacing: 2px;
+  text-align: center;
+}
+@media (max-width: 550px) {
+  .home-page__heading {
+    padding: 30px 28px 30px;
+  }
+}
+
+.home-page__cta {
+  padding: 0 28px;
+}
+
 .section-home {
   max-width: 1015px;
   margin: 100px auto 120px;
@@ -434,6 +469,21 @@ button:hover, .button:hover {
   .button--get-app {
     display: none !important;
   }
+}
+
+.button--home-page {
+  display: block;
+  text-align: center;
+  background-color: transparent;
+  color: white;
+  border-color: white;
+  padding: 20px 40px;
+  font-size: 16px;
+}
+.button--home-page:hover {
+  background-color: white;
+  color: #3eaeff;
+  border-color: white;
 }
 
 .page-overlay {
