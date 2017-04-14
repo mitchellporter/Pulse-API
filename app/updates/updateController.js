@@ -41,14 +41,12 @@ exports.getOne = function(req, res, next) {
 exports.put = function(req, res, next) {
     logger.silly('updates put');
 
+    const { message, completion_percentage } = req.body;
+
     var assignee = req.user;
     var assignee_id = assignee._id;
 
     var update = req.update;
-    var completion_percentage = req.body.completion_percentage;
-    var message = req.body.message;
-
-    // TODO: This is annoying, fix later
 
     //  TODO: I think its broken right now because you're modifying the array while iterating over it
     var new_response;
@@ -132,8 +130,8 @@ exports.put = function(req, res, next) {
 exports.post = function(req, res, next) {
 
     var task = req.task;
-    var type = req.body.type;
-    var message = req.body.message;
+
+    const { type, message } = req.body;
 
     var update = new Update(req.body);
     update.task = task;

@@ -46,14 +46,9 @@ exports.verifyUser = function () {
 
     logger.silly('about to verify user');
 
-    var team_id = req.body.team_id;
-    var team_name = req.body.team_name;
-    var email = req.body.email;
-    var password = req.body.password;
-
+    const { team_id, team_name, email, password } = req.body;
 
     if (team_name) {
-      var team_name = req.body.team_name;
       Team.findOne({ name: team_name })
         .then((team) => {
           if (!team) return next(new Error('No team found with that team name'));
