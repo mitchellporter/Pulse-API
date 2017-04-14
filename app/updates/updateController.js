@@ -1,9 +1,9 @@
-var logger = require('../../lib/logger');
-var config = require('../../config/config');
-var Emailer = require('../../lib/emailer');
-var Update = require('./updateModel');
-var async = require('async');
-var messenger = require('../messenger/messenger');
+const logger = require('../../lib/logger');
+const config = require('../../config/config');
+const Emailer = require('../../lib/emailer');
+const Update = require('./updateModel');
+const async = require('async');
+const messenger = require('../messenger/messenger');
 
 exports.params = function(req, res, next, id) {
     logger.silly('update params');

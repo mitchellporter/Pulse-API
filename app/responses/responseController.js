@@ -1,6 +1,6 @@
-var mongoose = require('mongoose');
-var Response = require('./responseModel');
-var logger = require('../../lib/logger');
+const mongoose = require('mongoose');
+const Response = require('./responseModel');
+const logger = require('../../lib/logger');
 
 exports.params = function(req, res, next, id) {
     var responses = req.update.responses;

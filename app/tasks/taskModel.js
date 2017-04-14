@@ -1,11 +1,11 @@
-var logger = require('../../lib/logger');
-var _ = require('lodash');
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
-var Item = require('../items/itemModel').schema;
+const logger = require('../../lib/logger');
+const _ = require('lodash');
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+const Item = require('../items/itemModel').schema;
 
-var statuses = ['pending', 'in_progress', 'completed'];
-var update_days = ['monday', 'wednesday', 'friday'];
+const statuses = ['pending', 'in_progress', 'completed'];
+const update_days = ['monday', 'wednesday', 'friday'];
 
 var TaskSchema = new Schema({
 	created_at: {

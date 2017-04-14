@@ -1,6 +1,6 @@
-var router = require('express').Router();
-var auth = require('../auth/auth');
-var feedController = require('../feeds/feedController');
+const router = require('express').Router();
+const auth = require('../auth/auth');
+const feedController = require('../feeds/feedController');
 
 var checkUser = [auth.decodeToken(), auth.getUser];
 

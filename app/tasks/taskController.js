@@ -1,9 +1,9 @@
-var logger = require('../../lib/logger');
-var Task = require('./taskModel');
-var TaskInvitation = require('../task_invitations/taskInvitationModel');
-var Item = require('../items/itemModel');
-var async = require('async');
-var messenger = require('../messenger/messenger');
+const logger = require('../../lib/logger');
+const Task = require('./taskModel');
+const TaskInvitation = require('../task_invitations/taskInvitationModel');
+const Item = require('../items/itemModel');
+const async = require('async');
+const messenger = require('../messenger/messenger');
 
 exports.params = function(req, res, next, taskId) {
 	Task.findById(taskId)

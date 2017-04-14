@@ -1,5 +1,5 @@
-var logger = require('../../lib/logger');
-var Item = require('./itemModel');
+const logger = require('../../lib/logger');
+const Item = require('./itemModel');
 
 exports.params = function(req, res, next, id) {
 

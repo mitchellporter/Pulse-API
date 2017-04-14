@@ -1,11 +1,11 @@
-var Promise = require('bluebird');
-var jwt = require('jsonwebtoken');
-var expressJwt = require('express-jwt');
-var User = require('../users/userModel');
-var Team = require('../teams/teamModel');
-var logger = require('../../lib/logger');
-var config = require('../../config/config');
-var checkToken = expressJwt({ secret: config.secrets.jwt });
+const Promise = require('bluebird');
+const jwt = require('jsonwebtoken');
+const expressJwt = require('express-jwt');
+const User = require('../users/userModel');
+const Team = require('../teams/teamModel');
+const logger = require('../../lib/logger');
+const config = require('../../config/config');
+const checkToken = expressJwt({ secret: config.secrets.jwt });
 
 exports.getUser = function(req, res, next) {
   logger.silly('fetching user with decoded tokens _id field');

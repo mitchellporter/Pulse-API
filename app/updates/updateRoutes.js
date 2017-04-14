@@ -1,8 +1,7 @@
-var router = require('express').Router();
-var updateController = require('./updateController');
-var auth = require('../auth/auth');
-
-var checkUser = [auth.decodeToken(), auth.getUser];
+const router = require('express').Router();
+const updateController = require('./updateController');
+const auth = require('../auth/auth');
+const checkUser = [auth.decodeToken(), auth.getUser];
 
 router.param('id', updateController.params);
 

@@ -1,9 +1,8 @@
-var router = require('express').Router();
-var teamController = require('./teamController');
-var userController = require('../users/userController');
-var auth = require('../auth/auth');
-
-var checkUser = [auth.decodeToken(), auth.getUser];
+const router = require('express').Router();
+const teamController = require('./teamController');
+const userController = require('../users/userController');
+const auth = require('../auth/auth');
+const checkUser = [auth.decodeToken(), auth.getUser];
 
 router.param('id', teamController.params);
 

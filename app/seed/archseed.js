@@ -1,58 +1,58 @@
 'use strict'
 
-var config = require('../../config/config');
-var logger = require('../../lib/logger');
-var Team = require('../teams/teamModel');
-var User = require('../users/userModel');
-var Task = require('../tasks/taskModel');
-var TaskInvitation = require('../task_invitations/taskInvitationModel');
-var Item = require('../items/itemModel');
-var Update = require('../updates/updateModel');
-var async = require('async');
-var casual = require('casual');
-var faker = require('faker');
-var Promise = require('bluebird');
-var mongoose = require('mongoose').connect(config.mongo_url);
+const config = require('../../config/config');
+const logger = require('../../lib/logger');
+const Team = require('../teams/teamModel');
+const User = require('../users/userModel');
+const Task = require('../tasks/taskModel');
+const TaskInvitation = require('../task_invitations/taskInvitationModel');
+const Item = require('../items/itemModel');
+const Update = require('../updates/updateModel');
+const async = require('async');
+const casual = require('casual');
+const faker = require('faker');
+const Promise = require('bluebird');
+const mongoose = require('mongoose').connect(config.mongo_url);
 mongoose.Promise = Promise;
 
 // Assets
-var cdn_url = 'https://d33833kh9ui3rd.cloudfront.net/';
-var asset_file_format = '.png';
-var avatar_asset_names = ['AllisonReynolds', 'DinaAlexander', 'DylanMcKay', 'EddieGelfen', 'EllenJosephineHickle', 'Iggy', 'Lisa', 'Oblina', 'PeteWrigley',
+const cdn_url = 'https://d33833kh9ui3rd.cloudfront.net/';
+const asset_file_format = '.png';
+const avatar_asset_names = ['AllisonReynolds', 'DinaAlexander', 'DylanMcKay', 'EddieGelfen', 'EllenJosephineHickle', 'Iggy', 'Lisa', 'Oblina', 'PeteWrigley',
     'RichardWang', 'Rufio', 'SamEmerson', 'ScottHoward', 'SimonHolmes', 'TinaCarlyle', 'WillSmith'];
 
-var positions = ['iOS Developer', 'Android Developer', 'Mobile Designer', 'Web Designer', 'Devops', 'Database Engineer', 'Customer Service Rep', 'Sales / Marketing', 'CEO'];
-var task_titles = ['Design the new navigation icons for the mobile app', 'We need a basic marketing website for the new app can', 'We need to review resumes for new Android developers'];
-var item_titles = ['Needs, Sign up button, place to input email address, or phone number.', 'Make sure to hi-light the press we recieved (Time, Inc. NYT.)', 'Show screen shots of the app in action.', 'Nice big hero image at the top.'];
+const positions = ['iOS Developer', 'Android Developer', 'Mobile Designer', 'Web Designer', 'Devops', 'Database Engineer', 'Customer Service Rep', 'Sales / Marketing', 'CEO'];
+const task_titles = ['Design the new navigation icons for the mobile app', 'We need a basic marketing website for the new app can', 'We need to review resumes for new Android developers'];
+const item_titles = ['Needs, Sign up button, place to input email address, or phone number.', 'Make sure to hi-light the press we recieved (Time, Inc. NYT.)', 'Show screen shots of the app in action.', 'Nice big hero image at the top.'];
 
 // Permanent dummy users
-var dummy_user_kori_id = '585c2130f31b2fbff4efbf68';
-var kori_avatar_url = 'https://d33833kh9ui3rd.cloudfront.net/kori.png';
-var dummy_user_mitchell_id = '586ecdc0213f22d94db5ef7f';
-var mitchell_avatar_url = 'https://d33833kh9ui3rd.cloudfront.net/mitchell.png';
+const dummy_user_kori_id = '585c2130f31b2fbff4efbf68';
+const kori_avatar_url = 'https://d33833kh9ui3rd.cloudfront.net/kori.png';
+const dummy_user_mitchell_id = '586ecdc0213f22d94db5ef7f';
+const mitchell_avatar_url = 'https://d33833kh9ui3rd.cloudfront.net/mitchell.png';
 
-var dummy_user_allen_id = '5881130a387e980f48c743f7';
-var allen_avatar_url = 'https://d33833kh9ui3rd.cloudfront.net/allen.png';
+const dummy_user_allen_id = '5881130a387e980f48c743f7';
+const allen_avatar_url = 'https://d33833kh9ui3rd.cloudfront.net/allen.png';
 
 
-var dummy_user_arch_id = '58c70df6105bd171feeb2cbc';
-var arch_avatar_url = 'https://d33833kh9ui3rd.cloudfront.net/arch.png'
+const dummy_user_arch_id = '58c70df6105bd171feeb2cbc';
+const arch_avatar_url = 'https://d33833kh9ui3rd.cloudfront.net/arch.png'
 
 
 
 // 1 day in ms, 2 days, ... 
-var dummy_task_due_dates = [Date.now() + 86400000, Date.now() + 172800000, Date.now() + 259200000, Date.now() + 345600000];
+const dummy_task_due_dates = [Date.now() + 86400000, Date.now() + 172800000, Date.now() + 259200000, Date.now() + 345600000];
 
-var pending_task_id = '58d6b31c2d424a133faba773';
-var in_progress_task_id = '586ebcae9188e7b6bfdd85c4';
-var task_invitation_id = '58bf269e9b5a8ff83f9a94e2';
-var team_id = '58b080b2356e913f3a3af182';
-var item_id = '58b09c7c247aa67459185307';
-var update_id = '58c9d33a1f3ffc0ee7c2c80d';
-var response_id = '58c9d33a1f3ffc0ee7c2c80e';
+const pending_task_id = '58d6b31c2d424a133faba773';
+const in_progress_task_id = '586ebcae9188e7b6bfdd85c4';
+const task_invitation_id = '58bf269e9b5a8ff83f9a94e2';
+const team_id = '58b080b2356e913f3a3af182';
+const item_id = '58b09c7c247aa67459185307';
+const update_id = '58c9d33a1f3ffc0ee7c2c80d';
+const response_id = '58c9d33a1f3ffc0ee7c2c80e';
 
 // Constants
-var update_days = ['monday', 'wednesday', 'friday'];
+const update_days = ['monday', 'wednesday', 'friday'];
 
 mongoose.connection.on('connected', function () {
     logger.silly('Mongoose default connection open');

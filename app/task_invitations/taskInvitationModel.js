@@ -1,10 +1,10 @@
-var logger = require('../../lib/logger');
-var async = require('async');
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
+const logger = require('../../lib/logger');
+const async = require('async');
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
-var statuses = ['pending', 'accepted', 'denied'];
-var update_days = ['monday', 'wednesday', 'friday'];
+const statuses = ['pending', 'accepted', 'denied'];
+const update_days = ['monday', 'wednesday', 'friday'];
 
 var TaskInvitationSchema = new Schema({
 	created_at: {

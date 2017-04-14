@@ -1,10 +1,10 @@
-var logger = require('../../lib/logger');
-var Task = require('../tasks/taskModel');
-var TaskInvitation = require('../task_invitations/taskInvitationModel');
-var Update = require('../updates/updateModel');
-var Item = require('../items/itemModel');
-var async = require('async');
-var messenger = require('../messenger/messenger');
+const logger = require('../../lib/logger');
+const Task = require('../tasks/taskModel');
+const TaskInvitation = require('../task_invitations/taskInvitationModel');
+const Update = require('../updates/updateModel');
+const Item = require('../items/itemModel');
+const async = require('async');
+const messenger = require('../messenger/messenger');
 
 exports.myTasks = function (req, res, next) {
 	var user = req.user;

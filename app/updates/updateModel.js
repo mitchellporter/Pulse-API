@@ -1,12 +1,11 @@
-var async = require('async');
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
-var Response = require('../responses/responseModel');
-var logger = require('../../lib/logger');
-var Task = require('../tasks/taskModel');
-var logger = require('../../lib/logger');
+const async = require('async');
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+const Response = require('../responses/responseModel');
+const logger = require('../../lib/logger');
+const Task = require('../tasks/taskModel');
 
-var types = ['automated', 'requested', 'random'];
+const types = ['automated', 'requested', 'random'];
 
 var UpdateSchema = new Schema({
     created_at: {

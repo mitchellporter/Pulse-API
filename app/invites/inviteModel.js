@@ -1,11 +1,11 @@
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
-var async = require('async');
-var logger = require('../../lib/logger');
-var config = require('../../config/config');
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+const async = require('async');
+const logger = require('../../lib/logger');
+const config = require('../../config/config');
 
-var types = ['team', 'task'];
-var statuses = ['pending', 'accepted'];
+const types = ['team', 'task'];
+const statuses = ['pending', 'accepted'];
 
 var InviteSchema = new Schema({
     created_at: {

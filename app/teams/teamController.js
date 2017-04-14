@@ -1,7 +1,7 @@
-var logger = require('../../lib/logger');
-var Team = require('./teamModel');
-var User = require('../users/userModel');
-var signToken = require('../auth/auth').signToken;
+const logger = require('../../lib/logger');
+const Team = require('./teamModel');
+const User = require('../users/userModel');
+const signToken = require('../auth/auth').signToken;
 
 exports.params = function(req, res, next, id) {
     Team.findById(id)

@@ -1,6 +1,6 @@
-var logger = require('../../lib/logger');
-var TaskInvitation = require('./taskInvitationModel');
-var async = require('async');
+const logger = require('../../lib/logger');
+const TaskInvitation = require('./taskInvitationModel');
+const async = require('async');
 
 exports.params = function(req, res, next, id) {
     TaskInvitation.findById(id)

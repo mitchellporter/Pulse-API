@@ -1,10 +1,10 @@
-var logger = require('../../lib/logger');
-var async = require('async');
-var _ = require('lodash');
-var Invite = require('./inviteModel');
-var User = require('../users/userModel');
-var TaskInvitation = require('../task_invitations/taskInvitationModel');
-var signToken = require('../auth/auth').signToken;
+const logger = require('../../lib/logger');
+const async = require('async');
+const _ = require('lodash');
+const Invite = require('./inviteModel');
+const User = require('../users/userModel');
+const TaskInvitation = require('../task_invitations/taskInvitationModel');
+const signToken = require('../auth/auth').signToken;
 
 exports.params = function(req, res, next, id) {
     Invite.findById(id)

@@ -1,8 +1,8 @@
-var logger = require('../../lib/logger');
-var bcrypt = require('bcrypt');
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
-var Response = require('../responses/responseModel');
+const logger = require('../../lib/logger');
+const bcrypt = require('bcrypt');
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+const Response = require('../responses/responseModel');
 
 var UserSchema = new Schema({
 	created_at: {

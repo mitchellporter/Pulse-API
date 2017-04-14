@@ -1,5 +1,5 @@
-var User = require('../users/userModel');
-var signToken = require('./auth').signToken;
+const User = require('../users/userModel');
+const signToken = require('./auth').signToken;
 
 exports.signin = function(req, res, next) {
   // req.user will be there from the middleware

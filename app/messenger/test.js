@@ -1,5 +1,5 @@
-var logger = require('../../lib/logger');
-var messenger = require('./messenger');
+const logger = require('../../lib/logger');
+const messenger = require('./messenger');
 
 messenger.sendMessage('nodejs_channel', 'sup dude from nodejs')
 .then(function(response) {

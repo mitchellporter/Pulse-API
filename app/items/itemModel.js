@@ -1,8 +1,8 @@
-var logger = require('../../lib/logger');
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
+const logger = require('../../lib/logger');
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
-var statuses = ['in_progress', 'completed'];
+const statuses = ['in_progress', 'completed'];
 
 var ItemSchema = new Schema({
 	created_at: {

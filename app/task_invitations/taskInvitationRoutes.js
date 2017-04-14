@@ -1,8 +1,7 @@
-var router = require('express').Router();
-var taskInvitationController = require('./taskInvitationController');
-var auth = require('../auth/auth');
-
-var checkUser = [auth.decodeToken(), auth.getUser];
+const router = require('express').Router();
+const taskInvitationController = require('./taskInvitationController');
+const auth = require('../auth/auth');
+const checkUser = [auth.decodeToken(), auth.getUser];
 
 router.param('id', taskInvitationController.params);
 

@@ -1,6 +1,6 @@
-var router = require('express').Router();
-var userController = require('./userController');
-var auth = require('../auth/auth');
+const router = require('express').Router();
+const userController = require('./userController');
+const auth = require('../auth/auth');
 
 var checkUser = [auth.decodeToken(), auth.getUser];
 

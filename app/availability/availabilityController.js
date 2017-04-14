@@ -1,6 +1,6 @@
-var logger = require('../../lib/logger');
-var Team = require('../teams/teamModel');
-var User = require('../users/userModel');
+const logger = require('../../lib/logger');
+const Team = require('../teams/teamModel');
+const User = require('../users/userModel');
 
 exports.teams = function(req, res, next) {
     var team_name = req.query.name;

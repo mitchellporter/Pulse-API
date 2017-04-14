@@ -1,10 +1,8 @@
-var router = require('express').Router();
-var taskController = require('./taskController');
-var itemController = require('../items/itemController');
-var auth = require('../auth/auth');
-
-var checkUser = [auth.decodeToken(), auth.getUser];
-
+const router = require('express').Router();
+const taskController = require('./taskController');
+const itemController = require('../items/itemController');
+const auth = require('../auth/auth');
+const checkUser = [auth.decodeToken(), auth.getUser];
 
 router.param('id', taskController.params);
 
