@@ -58,8 +58,8 @@ UpdateSchema.pre('save', function(next) {
 
 UpdateSchema.methods = {
 	// TODO: Remove all responses except for the user's in toJSON - they shouldn't be able to see everyone else's updates
-	generateResponses: generateResponses,
-	responseForAssigneeId: responseForAssigneeId,
+	generateResponses,
+	responseForAssigneeId,
 	toJSON: function() {
 		var obj = this.toObject();
 		delete obj.__v;

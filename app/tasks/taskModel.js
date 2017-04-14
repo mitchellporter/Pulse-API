@@ -69,8 +69,8 @@ TaskSchema.methods = {
 		delete obj.__v;
 		return obj;
 	},
-	updateCompletionPercentageFromNewUpdateResponse: updateCompletionPercentageFromNewUpdateResponse,
-	addAssignees: addAssignees
+	updateCompletionPercentageFromNewUpdateResponse,
+	addAssignees
 }
 
 function updateCompletionPercentageFromNewUpdateResponse(response) {

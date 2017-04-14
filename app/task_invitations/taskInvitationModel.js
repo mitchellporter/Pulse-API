@@ -45,7 +45,7 @@ TaskInvitationSchema.pre('validate', function(next) {
 });
 
 TaskInvitationSchema.statics = {
-	createTaskInvitationsForAssignees: createTaskInvitationsForAssignees
+	createTaskInvitationsForAssignees
 }
 
 TaskInvitationSchema.methods = {

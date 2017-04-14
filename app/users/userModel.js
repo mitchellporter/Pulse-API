@@ -98,9 +98,9 @@ UserSchema.methods = {
 		delete obj.password;
 		return obj;
 	},
-	storeMostRecentUpdateResponse: storeMostRecentUpdateResponse,
-	storeMostRecentResponseFromUpdate: storeMostRecentResponseFromUpdate,
-	setRandomAvatarURL: setRandomAvatarURL
+	storeMostRecentUpdateResponse,
+	storeMostRecentResponseFromUpdate,
+	setRandomAvatarURL
 }
 
 function setRandomAvatarURL() {
