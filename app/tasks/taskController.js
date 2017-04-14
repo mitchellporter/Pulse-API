@@ -8,12 +8,12 @@ var messenger = require('../messenger/messenger');
 exports.params = function(req, res, next, taskId) {
 	Task.findById(taskId)
 	.populate('items assigner assignees')
-	.then(function(task) {
+	.then((task) => {
 		if(!task) return next(new Error('no task exists with that id'));
 		req.task = task;
 		next();
 	})
-	.catch(function(err) {
+	.catch((err) => {
 		next(err);
 	})
 };
@@ -38,7 +38,7 @@ exports.get = function(req, res, next) {
 	
 	Task.find(query)
 	.populate(populate)
-	.then(function(tasks) {
+	.then((tasks) => {
 		logger.silly('found this many tasks: ' + tasks.length);
 		res.status(200).json({
 			success: true,
@@ -65,12 +65,12 @@ exports.put = function(req, res, next) {
 	task.status = status;
 	task.isNew = false;
 	task.save()
-	.then(function(task) {
+	.then((task) => {
 
 		logger.silly('updated task');
 		
 		task.populate([{ path: 'assigner' }, { path: 'assignees' }, { path: 'items' }]).execPopulate()
-		.then(function(task) {
+		.then((task) => {
 			res.status(201).json({
 				success: true,
 				task: task
@@ -98,10 +98,10 @@ exports.put = function(req, res, next) {
 		}
 
 		messenger.sendMessage(channel, message)
-			.then(function (response) {
+			.then((response) => {
 				logger.silly('response: ' + response);
 			})
-			.catch(function (err) {
+			.catch((err) => {
 				logger.silly('error: ' + err);
 			})
 	}
@@ -126,7 +126,7 @@ exports.post = function(req, res, next) {
 
 	// Loop through items and create items
 	var items = [];
-	async.forEachOf(items_json, function(value, key, callback1) {
+	async.forEachOf(items_json, (value, key, callback1) => {
 		var item_json = value;
 
 		var item = new Item();
@@ -134,7 +134,7 @@ exports.post = function(req, res, next) {
 		items.push(item);
 
 		callback1();
-	}, function(err) {
+	}, (err) => {
 		if (err) logger.error(err);
 
 		// TODO: Handle this later. We should always have items
@@ -144,7 +144,7 @@ exports.post = function(req, res, next) {
 		.then(createTask)
 		.then(populateAssignees)
 		.then(createTaskInvitations)
-		.then(function(task_invitations) {
+		.then((task_invitations) => {
 
 
 			res.status(201).json({
@@ -155,21 +155,21 @@ exports.post = function(req, res, next) {
 
 			if (!task_invitations) return;
 
-			async.forEachOf(task_invitations, function(value, key, callback2) {
+			async.forEachOf(task_invitations, (value, key, callback2) => {
 				var task_invitation = value;
 				logger.silly('current task invitation: ' + task_invitation);
 
 				sendMessage(task_invitation)
-					.then(function (response) {
+					.then((response) => {
 						logger.silly('response: ' + response);
 						callback2();
 					})
-					.catch(function (err) {
+					.catch((err) => {
 						logger.silly('error: ' + err);
 						callback2(err);
 					})
 
-			}, function(err) {
+			}, (err) => {
 				if (err) return logger.error(err);
 				logger.silly('successfully sent task assigned notification to all assignees!!!');
 			});
@@ -192,9 +192,9 @@ exports.post = function(req, res, next) {
 	}
 
 	function createTaskInvitations(task) {
-		return new Promise(function (resolve, reject) {
+		return new Promise((resolve, reject) => {
 			var task_invitations = [];
-			async.eachOf(task.assignees, function (value, key, callback) {
+			async.eachOf(task.assignees, (value, key, callback) => {
 				var assignee = value;
 				var task_invitation = new TaskInvitation({
 					sender: task.assigner,
@@ -203,7 +203,7 @@ exports.post = function(req, res, next) {
 				});
 				task_invitations.push(task_invitation);
 				callback();
-			}, function (err) {
+			}, (err) => {
 				if (err) return reject(err);
 				TaskInvitation.create(task_invitations)
 					.then(resolve)
@@ -229,7 +229,7 @@ exports.acceptTask = function(req, res, next) {
 
 	task.status = 'in_progress';
 	task.save()
-	.then(function(task) {
+	.then((task) => {
 		res.status(201).json({
 			success: true,
 			task: task
@@ -251,10 +251,10 @@ exports.sendUpdate = function(req, res, next) {
 	task.completion_percentage = completion_percentage;
 	
 	Task.update(task)
-	.then(function() {
+	.then(() => {
 
 		task.populate('assignees', '_id').execPopulate()
-		.then(function(task) {
+		.then((task) => {
 			// TODO: Send assigner real-time update w/ task object that has updated completion_percentage
 			res.status(201).json({
 				success: true
@@ -275,14 +275,14 @@ exports.addAssignees = function(req, res, next) {
 	var task_with_assignees;
 
 	task.addAssignees(assignees)
-	.then(function(task) {
+	.then((task) => {
 		return task.populate('assignees', '_id name position email avatar_url').execPopulate();
 	})
-	.then(function(populated_task) {
+	.then((populated_task) => {
 		task_with_assignees = populated_task;
 		return TaskInvitation.createTaskInvitationsForAssignees(populated_task, assignees);
 	})
-	.then(function(task_invitations) {
+	.then((task_invitations) => {
 		res.status(201).json({
 			success: true,
 			task: task_with_assignees
@@ -294,7 +294,7 @@ exports.addAssignees = function(req, res, next) {
 exports.delete = function(req, res, next) {
 	var task_id = req.task._id;
 	Task.remove({ _id: task_id })
-	.then(function(removed) {
+	.then((removed) => {
 		logger.silly('removed: ' + removed);
 		res.status(200).json({
 			success: true
