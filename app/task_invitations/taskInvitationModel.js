@@ -60,9 +60,9 @@ function createTaskInvitationsForAssignees(task, assignees) {
 
 	logger.silly('creating task invitiations for assignees');
 
-	return new Promise(function (resolve, reject) {
+	return new Promise((resolve, reject) => {
 			var task_invitations = [];
-			async.eachOf(assignees, function (value, key, callback) {
+			async.eachOf(assignees, (value, key, callback) => {
 				var assignee = value;
 				var task_invitation = new this({
 					sender: task.assigner,
@@ -71,15 +71,15 @@ function createTaskInvitationsForAssignees(task, assignees) {
 				});
 				task_invitations.push(task_invitation);
 				callback();
-			}.bind(this), function (err) {
+			}, (err) => {
 				if (err) return reject(err);
 				
 				this.create(task_invitations)
 				.then(resolve)
 				.catch(reject);
 
-			}.bind(this));
-		}.bind(this));
+			});
+		});
 }
 
 module.exports = mongoose.model('TaskInvitation', TaskInvitationSchema);
