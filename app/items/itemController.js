@@ -4,9 +4,7 @@ var Item = require('./itemModel');
 exports.params = function(req, res, next, id) {
 
     var items = req.task.items;
-    var item = items.find(function(item) {
-        return item._id == id;
-    });
+    var item = items.find(item => item._id == id);
     
     if (!item) return next(new Error('no item exists with that id'));
     logger.silly('found item!');
@@ -58,7 +56,7 @@ exports.put = function(req, res, next) {
     }
 
     task.save()
-        .then(function (task) {
+        .then((task) => {
             res.status(200).json({
                 success: true,
                 task: task
@@ -92,7 +90,7 @@ exports.delete = function(req, res, next) {
     var item = req.item;
 
     Item.remove({ _id: item._id })
-    .then(function(item) {
+    .then((item) => {
         res.status(200).json({
             success: true
         });
