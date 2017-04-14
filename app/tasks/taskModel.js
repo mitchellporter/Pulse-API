@@ -74,26 +74,25 @@ TaskSchema.methods = {
 }
 
 function updateCompletionPercentageFromNewUpdateResponse(response) {
-	return new Promise(function(resolve, reject) {
+	return new Promise((resolve, reject) => {
 		this.isNew = false;
 		this.completion_percentage = response.completion_percentage;
 		
 		this.save()
 		.then(resolve)
 		.catch(reject);
-	}.bind(this));
+	});
 }
 
 function addAssignees(assignees) {
-	return new Promise(function(resolve, reject) {
-
+	return new Promise((resolve, reject) => {
 		this.assignees = _.union(this.assignees, assignees);
 		
 		this.isNew = false;
 		this.save()
 		.then(resolve)
 		.catch(reject);
-	}.bind(this));
+	});
 }
 
 module.exports = mongoose.model('Task', TaskSchema);
