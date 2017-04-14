@@ -5,12 +5,12 @@ var signToken = require('../auth/auth').signToken;
 
 exports.params = function(req, res, next, id) {
 	User.findById(id)
-	.then(function(user) {
+	.then((user) => {
 		if(!user) return next(new Error('no user exists with that id'));
 		req.user = user;
 		next();
 	})
-	.catch(function(err) {
+	.catch((err) => {
 		next(err);
 	})
 };
@@ -22,7 +22,7 @@ exports.joinTeam = function(req, res, next) {
 	user.team = team;
 
 	user.save()
-	.then(function(user) {
+	.then((user) => {
 		var token = signToken(user._id);
 		res.status(201).json({
 			success: true,
@@ -44,7 +44,7 @@ exports.post = function(req, res, next) {
 
 	findTeam()
 	.then(createUser)
-	.then(function(user) {
+	.then((user) => {
 		var token = signToken(user._id);
 		res.status(201).json({
 			success: true,
@@ -68,7 +68,7 @@ exports.post = function(req, res, next) {
 
 exports.get = function(req, res, next) {
 	User.find({})
-	.then(function(users) {
+	.then((users) => {
 		res.status(200).json({
 			success: true,
 			team_members: users
