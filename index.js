@@ -1,19 +1,19 @@
 'use strict';
-var path = require('path');
-var config = require('./config/config');
-var logger = require('./lib/logger');
-var errors = require('./lib/errors');
-var throng = require('throng');
-var Promise = require('bluebird');
-var mongoose = require('mongoose').connect(config.mongo_url);
+
+const config = require('./config/config');
+const logger = require('./lib/logger');
+const errors = require('./lib/errors');
+const throng = require('throng');
+const Promise = require('bluebird');
+const mongoose = require('mongoose').connect(config.mongo_url);
 mongoose.Promise = Promise;
 
-var api = require('./app/api/api');
-var bodyParser = require('body-parser');
-var express = require('express');
-var app = express();
+const api = require('./app/api/api');
+const bodyParser = require('body-parser');
+const express = require('express');
+const app = express();
 
-var options = {
+const options = {
 	workers: config.web_concurrency,
 	lifetime: Infinity
 }
