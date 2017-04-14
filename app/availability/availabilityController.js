@@ -5,7 +5,7 @@ var User = require('../users/userModel');
 exports.teams = function(req, res, next) {
     var team_name = req.query.name;
     Team.findOne({ name: team_name })
-    .then(function(team) {
+    .then((team) => {
         logger.silly('found team: ' + team);
         if (!team) return teamNameIsAvailable();
         teamNameAlreadyTaken(team);
@@ -36,7 +36,7 @@ exports.emails = function(req, res, next) {
     var email = req.query.email;
 
     User.findOne({ email: email })
-    .then(function(user) {
+    .then((user) => {
         logger.silly('found user: ' + user);
         if (!user) return emailAddressIsAvailable();
         emailAddressAlreadyTaken();
