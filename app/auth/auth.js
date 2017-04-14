@@ -13,7 +13,7 @@ exports.getUser = function(req, res, next) {
 	// we store the _id for identification :P
 	var userId = req.user._id;
 	User.findById(userId)
-		.then(function(user) {
+		.then((user) => {
 		if(!user) return next(new Error('no user exists with that id'));
 		req.user = user;
 		next();
@@ -55,14 +55,14 @@ exports.verifyUser = function () {
     if (team_name) {
       var team_name = req.body.team_name;
       Team.findOne({ name: team_name })
-        .then(function (team) {
+        .then((team) => {
           if (!team) return next(new Error('No team found with that team name'));
           return User.findOne({ team: team, email: email });
         })
-        .then(function (user) {
+        .then((user) => {
           if (!user) return next(new Error('No user found'));
           user.authenticate(password)
-            .then(function (result) {
+            .then((result) => {
               if (!result) return res.status(401).json({
                 error: {
                   message: 'The password you entered was incorrect.'
@@ -90,7 +90,7 @@ exports.verifyUser = function () {
 
       logger.silly('about to find user');
       User.findOne({ team: team_id, email: email })
-        .then(function (user) {
+        .then((user) => {
           if (!user) return res.status(401).json({
             error: {
               message: 'No user with email address of ' + email
@@ -98,7 +98,7 @@ exports.verifyUser = function () {
           });
 
           user.authenticate(password)
-            .then(function (result) {
+            .then((result) => {
               if (!result) return res.status(401).json({
                 error: {
                   message: 'The password you entered was incorrect.'
