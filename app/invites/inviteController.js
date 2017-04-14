@@ -9,7 +9,7 @@ var signToken = require('../auth/auth').signToken;
 exports.params = function(req, res, next, id) {
     Invite.findById(id)
 	.populate({ path: 'task', populate: { path: 'assigner', select: '_id name position email avatar_url' }}) // task.assigner
-    .then(function(invite) {
+    .then((invite) => {
         if (!invite) return next(new Error('No invite exists with that id'));
 
         // TODO: Uncomment this later on when we have a functioning site
@@ -36,23 +36,23 @@ exports.put = function(req, res, next) {
     invite.status = 'accepted';
     invite.isNew = false;
     invite.save()
-    .then(function(invite) {
+    .then((invite) => {
         response.invite = invite;
         return createUser(req.body);
     })
-    .then(function(user) {
+    .then((user) => {
         response.user = user;
         response.token = signToken(user._id);
         return addUserToTaskAssignees();
     })
-    .then(function(task) {
+    .then((task) => {
         res.status(200).json(response);
     })
     .catch(next);
 
     function createUser(body) {
         logger.silly('body: ' + Object.keys(body));
-        return new Promise(function(resolve, reject) {
+        return new Promise((resolve, reject) => {
             var user = new User({
                 name: body.name,
                 password: body.password,
@@ -79,7 +79,7 @@ exports.put = function(req, res, next) {
         logger.silly('invite already accepted - just return existing user + fesh token');
         logger.silly('email: ' + invite.email);
         User.findOne({ email: invite.email })
-            .then(function (user) {
+            .then((user) => {
 
                 res.status(200).json({
                     success: true,
@@ -112,7 +112,7 @@ exports.post = function(req, res, next) {
 
     createTaskInvitations()
     .then(createInvites)
-    .then(function(invites) {
+    .then((invites) => {
             res.status(201).json({
                 success: true,
                 invites: invites
@@ -120,7 +120,7 @@ exports.post = function(req, res, next) {
 
             // Send invites
             Invite.send(invites)
-            .then(function () {
+            .then(() => {
                     logger.silly('successfully sent emails to all invitees');
             })
             .catch(logger.error)
@@ -129,8 +129,8 @@ exports.post = function(req, res, next) {
 
     function createInvites(task_invitations) {
         var invites = [];
-        return new Promise(function (resolve, reject) {
-            async.forEachOf(invitees, function (value, key, callback) {
+        return new Promise((resolve, reject) => {
+            async.forEachOf(invitees, (value, key, callback) => {
 
                 var invitee = value;
                 var invite = new Invite({
@@ -144,7 +144,7 @@ exports.post = function(req, res, next) {
                 });
                 invites.push(invite);
                 callback();
-            }, function (err) {
+            }, (err) => {
                 if (err) return reject(err);
 
                 Invite.create(invites)
@@ -156,8 +156,8 @@ exports.post = function(req, res, next) {
 
     function createTaskInvitations() {
         var task_invitations = [];
-        return new Promise(function (resolve, reject) {
-            async.forEachOf(invitees, function (value, key, callback) {
+        return new Promise((resolve, reject) => {
+            async.forEachOf(invitees, (value, key, callback) => {
                 var invitee = value;
                 var task_invitation = new TaskInvitation({
                     sender: sender,
@@ -165,7 +165,7 @@ exports.post = function(req, res, next) {
                 });
                 task_invitations.push(task_invitation);
                 callback();
-            }, function (err) {
+            }, (err) => {
                 if (err) return reject(err);
 
                 TaskInvitation.create(task_invitations)
