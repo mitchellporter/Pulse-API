@@ -5,7 +5,7 @@ var signToken = require('../auth/auth').signToken;
 
 exports.params = function(req, res, next, id) {
     Team.findById(id)
-    .then(function(team) {
+    .then((team) => {
 		if(!team) return next(new Error('no team exists with that id'));
         req.team = team;
         next();
@@ -16,7 +16,7 @@ exports.params = function(req, res, next, id) {
 exports.search = function(req, res, next) {
     var name = req.query.search;
     Team.findOne({ name: name })
-    .then(function(team) {
+    .then((team) => {
         if (!team) return next(new Error('no team exists with that name'));
         res.status(200).json({
             success: true,
@@ -44,7 +44,7 @@ var team = new Team({
 
 createTeam()
 .then(createUser)
-.then(function(user) {
+.then((user) => {
 
     var token = signToken(user._id);
     res.status(201).json({
@@ -71,7 +71,7 @@ exports.getMembers = function(req, res, next) {
     var team = req.team;
     
     User.find({ team: team })
-    .then(function(users) {
+    .then((users) => {
         res.status(200).json({
             success: true,
             team_members: users
