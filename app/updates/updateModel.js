@@ -71,9 +71,9 @@ UpdateSchema.methods = {
 function generateResponses(assignee_id, completion_percentage, message) {
 	logger.silly('responses 1');
 
-	return new Promise(function (resolve, reject) {
+	return new Promise((resolve, reject) => {
 		var task = this.task;
-		async.forEachOf(task.assignees, function (value, key, callback) {
+		async.forEachOf(task.assignees, (value, key, callback) => {
 			var assignee = value;
 			var response = new Response({
 				assignee: assignee,
@@ -88,19 +88,19 @@ function generateResponses(assignee_id, completion_percentage, message) {
 			}
 			this.responses.push(response);
 			callback();
-		}.bind(this), function (err) {
+		}, (err) => {
 			if (err) return reject(err);
 			resolve(this);
-		}.bind(this));
-	}.bind(this));
+		});
+	});
 }
 
 function generateResponsesForRandom(assignee_id, completion_percentage) {
 		logger.silly('responses 2');
 
-	return new Promise(function (resolve, reject) {
+	return new Promise((resolve, reject) => {
 		var task = this.task;
-		async.forEachOf(task.assignees, function (value, key, callback) {
+		async.forEachOf(task.assignees, (value, key, callback) => {
 			var assignee = value;
 			var response = new Response({
 				assignee: assignee,
@@ -109,34 +109,34 @@ function generateResponsesForRandom(assignee_id, completion_percentage) {
 			if (assignee._id == assignee_id) response.completion_percentage = completion_percentage;
 			this.responses.push(response);
 			callback();
-		}.bind(this), function (err) {
+		}, (err) => {
 			if (err) return reject(err);
 			resolve(this);
-		}.bind(this));
-	}.bind(this));
+		});
+	});
 }
 
 function responseForAssigneeId(assigneeId) {
-	return new Promise(function(resolve, reject) {
-		var response = this.responses.find(function(response) {		
+	return new Promise((resolve, reject) => {
+		var response = this.responses.find((response) => {		
 			if (mongoose.Types.ObjectId.isValid(response.assignee._id)) return response.assignee._id.toString() == assigneeId;;
 			return response.assignee._id == assigneeId;
 		})
 		resolve(response);
-	}.bind(this));
+	});
 }
 
 UpdateSchema.statics.findByTaskAssigner = function (assigner) {
-	return new Promise(function (resolve, reject) {
+	return new Promise((resolve, reject) => {
 		Task.find({ assigner: assigner })
-			.then(function (tasks) {
+			.then((tasks) => {
 				this.find({ task: tasks })
 				.populate([ { path: 'task', populate: [{ path: 'assigner', select: '_id name position email avatar_url' }, { path: 'assignees', select: '_id name position email avatar_url' }] }, { path: 'responses.assignee', select: '_id name position email avatar_url' } ])
 				.then(resolve)
 				.catch(reject);
-			}.bind(this))
+			})
 			.catch(reject);
-	}.bind(this));
+	});
 }
 
 module.exports = mongoose.model('Update', UpdateSchema);
