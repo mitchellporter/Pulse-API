@@ -43,21 +43,21 @@ var UserSchema = new Schema({
 	most_recent_update_response: Response.schema,
 });
 
-UserSchema.pre('validate', function(next) {
+UserSchema.pre('validate', (next) => {
 	if(!this.created_at) this.created_at = new Date();
 	this.updated_at = new Date();
 	next();
 });
 
 // TODO: Try using hard bind and making this work
-UserSchema.pre('save', function(next) {
+UserSchema.pre('save', (next) => {
 	var user = this;
 	if (!user.isModified('password')) return next();
 
 	if(user.isNew && !user.avatar_url) user.setRandomAvatarURL(); 
 
 	// Encrypt password
-	user.encryptPassword(user.password, function(err, hash) {
+	user.encryptPassword(user.password, (err, hash) => {
 		if (err) return next(err);
 		user.password = hash;
 		next();
@@ -75,18 +75,18 @@ function randomAvatarURL() {
 // TODO: Replace callbacks with Promises
 UserSchema.methods = {
 	authenticate: function(password) {
-		return new Promise(function(resolve, reject) {
-			bcrypt.compare(password, this.password, function (err, result) {
+		return new Promise((resolve, reject) => {
+			bcrypt.compare(password, this.password, (err, result) => {
 				if (err) return reject(err);
 				return resolve(result);
-			}.bind(this));
-		}.bind(this));
+			});
+		});
 	},
 	encryptPassword: function(password, callback) {
 		if (!password) {
 			callback(new Error('password param is undefined'));
 		} else {
-			bcrypt.hash(password, 10, function(err, hash) {
+			bcrypt.hash(password, 10, (err, hash) => {
 				callback(err, hash);
 			});
 		}
@@ -107,29 +107,29 @@ function setRandomAvatarURL() {
 }
 
 function storeMostRecentUpdateResponse(response) {
-	return new Promise(function(resolve, reject) {
+	return new Promise((resolve, reject) => {
 		this.isNew = false;
 		this.most_recent_update_response = response;
 
 		this.save()
 		.then(resolve)
 		.catch(reject);
-	}.bind(this));
+	});
 }
 
 function storeMostRecentResponseFromUpdate(update) {
-	return new Promise(function(resolve, reject) {
+	return new Promise((resolve, reject) => {
 		update.responseForAssigneeId(this._id)
-		.then(function(response) {
+		.then((response) => {
 			if (!response) return reject(new Error('no response on update belongs to user'));
 
 			this.isNew = false;
 			this.most_recent_update_response = response;
 			return this.save();
-		}.bind(this))
+		})
 		.then(resolve)
 		.catch(reject);
-	}.bind(this));
+	});
 }
 
 module.exports = mongoose.model('User', UserSchema);
