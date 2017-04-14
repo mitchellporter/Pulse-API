@@ -43,14 +43,15 @@ var UserSchema = new Schema({
 	most_recent_update_response: Response.schema,
 });
 
-UserSchema.pre('validate', (next) => {
+UserSchema.pre('validate', function(next){
 	if(!this.created_at) this.created_at = new Date();
 	this.updated_at = new Date();
+
 	next();
 });
 
 // TODO: Try using hard bind and making this work
-UserSchema.pre('save', (next) => {
+UserSchema.pre('save', function(next) {
 	var user = this;
 	if (!user.isModified('password')) return next();
 
