@@ -38,20 +38,20 @@ function start() {
 	app.use(errors);
 	
 	// Server setup
-	var server = app.listen(config.port, function() {
+	var server = app.listen(config.port, () => {
 		console.log('server server server');
 		logger.silly('pid: ' + process.pid + ' listening on port:' + config.port);
 	});
 	
 	// Shutdown
-	var gracefulShutdown = function() {
+	var gracefulShutdown = () => {
 		logger.silly('Received SIGTERM signal, shutting down express server');
 		server.close();
 	}
 	
 	process.on('SIGTERM', gracefulShutdown);
 		
-	server.on('close', function() {
+	server.on('close', () => {
 		logger.silly('Express server closed.. about to cleanup connections');
 		
 		mongoose.disconnect();
