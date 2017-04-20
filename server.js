@@ -39,7 +39,6 @@ function start() {
 	
 	// Server setup
 	var server = app.listen(config.port, () => {
-		console.log('server server server');
 		logger.silly('pid: ' + process.pid + ' listening on port:' + config.port);
 	});
 	
