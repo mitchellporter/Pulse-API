@@ -38,6 +38,8 @@ const allen_avatar_url = 'https://d33833kh9ui3rd.cloudfront.net/allen.png';
 const dummy_user_arch_id = '58c70df6105bd171feeb2cbc';
 const arch_avatar_url = 'https://d33833kh9ui3rd.cloudfront.net/arch.png'
 
+const dummy_user_mike_id = '58f8ef49de159c22a4d19fd1';
+const mike_avatar_url = 'https://d33833kh9ui3rd.cloudfront.net/mike.png';
 
 
 // 1 day in ms, 2 days, ... 
@@ -64,6 +66,8 @@ function startSeed() {
     var kori;
     var allen;
     var arch;
+    var mike;
+
     var users = [];
     var tasks = [];
 
@@ -96,7 +100,12 @@ function startSeed() {
             users.push(arch);
             return createItunesConnectUser();
         })
-        .then(function(itunes_connect) {
+        .then(function(itunes_connect_user) {
+            return createMike();
+        })
+        .then(function(mike_user) {
+            mike = mike_user;
+            users.push(mike);
             return createInProgressTasks();
         })
         .then(function(created_tasks) {
@@ -185,6 +194,21 @@ function startSeed() {
             email: 'pulsegrenade@gmail.com',
             position: 'web dev',
             avatar_url: arch_avatar_url,
+            team: design_first_apps_team
+        });
+        return user.save();
+    }
+
+    function createMike() {
+        logger.silly('creating mike user');
+
+        var user = new User({
+            _id: new mongoose.mongo.ObjectId(dummy_user_mike_id),
+            name: 'Mike',
+            password: '1234',
+            email: 'mike@designfirstapps.com',
+            position: 'web dev',
+            avatar_url: mike_avatar_url,
             team: design_first_apps_team
         });
         return user.save();
