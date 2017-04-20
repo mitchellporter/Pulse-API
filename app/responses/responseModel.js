@@ -1,7 +1,7 @@
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
-var logger = require('../../lib/logger');
-var statuses = ['requested', 'sent'];
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+const logger = require('../../lib/logger');
+const statuses = ['requested', 'sent'];
 
 var ResponseSchema = new Schema({
     created_at: {

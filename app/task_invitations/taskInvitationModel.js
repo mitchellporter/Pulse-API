@@ -1,10 +1,10 @@
-var logger = require('../../lib/logger');
-var async = require('async');
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
+const logger = require('../../lib/logger');
+const async = require('async');
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
-var statuses = ['pending', 'accepted', 'denied'];
-var update_days = ['monday', 'wednesday', 'friday'];
+const statuses = ['pending', 'accepted', 'denied'];
+const update_days = ['monday', 'wednesday', 'friday'];
 
 var TaskInvitationSchema = new Schema({
 	created_at: {
@@ -45,7 +45,7 @@ TaskInvitationSchema.pre('validate', function(next) {
 });
 
 TaskInvitationSchema.statics = {
-	createTaskInvitationsForAssignees: createTaskInvitationsForAssignees
+	createTaskInvitationsForAssignees
 }
 
 TaskInvitationSchema.methods = {
@@ -60,9 +60,9 @@ function createTaskInvitationsForAssignees(task, assignees) {
 
 	logger.silly('creating task invitiations for assignees');
 
-	return new Promise(function (resolve, reject) {
+	return new Promise((resolve, reject) => {
 			var task_invitations = [];
-			async.eachOf(assignees, function (value, key, callback) {
+			async.eachOf(assignees, (value, key, callback) => {
 				var assignee = value;
 				var task_invitation = new this({
 					sender: task.assigner,
@@ -71,15 +71,15 @@ function createTaskInvitationsForAssignees(task, assignees) {
 				});
 				task_invitations.push(task_invitation);
 				callback();
-			}.bind(this), function (err) {
+			}, (err) => {
 				if (err) return reject(err);
 				
 				this.create(task_invitations)
 				.then(resolve)
 				.catch(reject);
 
-			}.bind(this));
-		}.bind(this));
+			});
+		});
 }
 
 module.exports = mongoose.model('TaskInvitation', TaskInvitationSchema);

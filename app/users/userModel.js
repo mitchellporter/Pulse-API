@@ -1,8 +1,8 @@
-var logger = require('../../lib/logger');
-var bcrypt = require('bcrypt');
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
-var Response = require('../responses/responseModel');
+const logger = require('../../lib/logger');
+const bcrypt = require('bcrypt');
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+const Response = require('../responses/responseModel');
 
 var UserSchema = new Schema({
 	created_at: {
@@ -43,9 +43,10 @@ var UserSchema = new Schema({
 	most_recent_update_response: Response.schema,
 });
 
-UserSchema.pre('validate', function(next) {
+UserSchema.pre('validate', function(next){
 	if(!this.created_at) this.created_at = new Date();
 	this.updated_at = new Date();
+
 	next();
 });
 
@@ -57,7 +58,7 @@ UserSchema.pre('save', function(next) {
 	if(user.isNew && !user.avatar_url) user.setRandomAvatarURL(); 
 
 	// Encrypt password
-	user.encryptPassword(user.password, function(err, hash) {
+	user.encryptPassword(user.password, (err, hash) => {
 		if (err) return next(err);
 		user.password = hash;
 		next();
@@ -75,18 +76,18 @@ function randomAvatarURL() {
 // TODO: Replace callbacks with Promises
 UserSchema.methods = {
 	authenticate: function(password) {
-		return new Promise(function(resolve, reject) {
-			bcrypt.compare(password, this.password, function (err, result) {
+		return new Promise((resolve, reject) => {
+			bcrypt.compare(password, this.password, (err, result) => {
 				if (err) return reject(err);
 				return resolve(result);
-			}.bind(this));
-		}.bind(this));
+			});
+		});
 	},
 	encryptPassword: function(password, callback) {
 		if (!password) {
 			callback(new Error('password param is undefined'));
 		} else {
-			bcrypt.hash(password, 10, function(err, hash) {
+			bcrypt.hash(password, 10, (err, hash) => {
 				callback(err, hash);
 			});
 		}
@@ -97,9 +98,9 @@ UserSchema.methods = {
 		delete obj.password;
 		return obj;
 	},
-	storeMostRecentUpdateResponse: storeMostRecentUpdateResponse,
-	storeMostRecentResponseFromUpdate: storeMostRecentResponseFromUpdate,
-	setRandomAvatarURL: setRandomAvatarURL
+	storeMostRecentUpdateResponse,
+	storeMostRecentResponseFromUpdate,
+	setRandomAvatarURL
 }
 
 function setRandomAvatarURL() {
@@ -107,29 +108,29 @@ function setRandomAvatarURL() {
 }
 
 function storeMostRecentUpdateResponse(response) {
-	return new Promise(function(resolve, reject) {
+	return new Promise((resolve, reject) => {
 		this.isNew = false;
 		this.most_recent_update_response = response;
 
 		this.save()
 		.then(resolve)
 		.catch(reject);
-	}.bind(this));
+	});
 }
 
 function storeMostRecentResponseFromUpdate(update) {
-	return new Promise(function(resolve, reject) {
+	return new Promise((resolve, reject) => {
 		update.responseForAssigneeId(this._id)
-		.then(function(response) {
+		.then((response) => {
 			if (!response) return reject(new Error('no response on update belongs to user'));
 
 			this.isNew = false;
 			this.most_recent_update_response = response;
 			return this.save();
-		}.bind(this))
+		})
 		.then(resolve)
 		.catch(reject);
-	}.bind(this));
+	});
 }
 
 module.exports = mongoose.model('User', UserSchema);

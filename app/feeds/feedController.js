@@ -1,10 +1,10 @@
-var logger = require('../../lib/logger');
-var Task = require('../tasks/taskModel');
-var TaskInvitation = require('../task_invitations/taskInvitationModel');
-var Update = require('../updates/updateModel');
-var Item = require('../items/itemModel');
-var async = require('async');
-var messenger = require('../messenger/messenger');
+const logger = require('../../lib/logger');
+const Task = require('../tasks/taskModel');
+const TaskInvitation = require('../task_invitations/taskInvitationModel');
+const Update = require('../updates/updateModel');
+const Item = require('../items/itemModel');
+const async = require('async');
+const messenger = require('../messenger/messenger');
 
 exports.myTasks = function (req, res, next) {
 	var user = req.user;
@@ -15,7 +15,7 @@ exports.myTasks = function (req, res, next) {
 	// 2. Fetch task's where user is an assignee
 
 	var response = {};
-	async.parallel([findTaskInvitationsForUser, findTasks], function(err) {
+	async.parallel([findTaskInvitationsForUser, findTasks], (err) => {
 		if (err) logger.error(err);
 		if (err) return next(err);
 
@@ -26,12 +26,12 @@ exports.myTasks = function (req, res, next) {
 	function findTaskInvitationsForUser(callback) {
 		TaskInvitation.find({ receiver: user })
 			.populate([{ path: 'sender' }, { path: 'receiver' }, { path: 'task', populate: [{ path: 'items' }, { path: 'assignees', select: '_id name email position avatar_url' }, { path: 'assigner', select: '_id name email position avatar_url' }] }])
-			.then(function (task_invitations) {
+			.then((task_invitations) => {
 				logger.silly('found this many task invitations: ' + task_invitations.length);
 				response.task_invitations = task_invitations;
 				callback(null, task_invitations);
 			})
-			.catch(function(err) {
+			.catch((err) => {
 				callback(err, null);
 			});
 	}
@@ -39,12 +39,12 @@ exports.myTasks = function (req, res, next) {
 	function findTasks(callback) {
 		Task.find({ $or: [{'status': 'in_progress'}, {'status': 'completed'}], assignees: user })
 			.populate(populate)
-			.then(function (tasks) {
+			.then((tasks) => {
 				logger.silly('found this many tasks: ' + tasks.length);
 				response.tasks = tasks;
 				callback(null, tasks);
 			})
-			.catch(function(err) {
+			.catch((err) => {
 				callback(err, null);
 			});
 	}
@@ -58,7 +58,7 @@ exports.getUpdates = function(req, res, next) {
 	};
 
 	// Can turn this into one request
-	async.parallel([findUpdatesThatNeedResponses, findUpdatesForAssigner], function(err) {
+	async.parallel([findUpdatesThatNeedResponses, findUpdatesForAssigner], (err) => {
 		if (err) logger.error(err);
 		if (err) return next(err);
 
@@ -75,11 +75,11 @@ exports.getUpdates = function(req, res, next) {
 
 		Update.find({ $and: [{ 'responses.assignee': user }] })
 		.populate([{ path: 'task', populate: [{ path: 'assigner', select: '_id name position email avatar_url' }, { path: 'assignees', select: '_id name position email avatar_url' }] }, { path: 'responses.assignee', select: '_id name position email avatar_url' } ]) // task.assigner
-		.then(function(updates) {
+		.then((updates) => {
 			Array.prototype.push.apply(response.updates, updates);
 			callback(null, updates);
 		})
-		.catch(function(err) {
+		.catch((err) => {
 			callback(err, null);
 		});
 	}
@@ -88,11 +88,11 @@ exports.getUpdates = function(req, res, next) {
 	function findUpdatesForAssigner(callback) {
 		logger.silly('finding updates for assigner: ' + user._id);
 		Update.findByTaskAssigner(user)
-		.then(function(updates) {
+		.then((updates) => {
 			Array.prototype.push.apply(response.updates, updates);
 			callback(null, updates);
 		})
-		.catch(function(err) {
+		.catch((err) => {
 			callback(err, null);
 		});
 	}
@@ -109,7 +109,7 @@ exports.tasksCreated = function (req, res, next) {
 	// 2. Fetch task's where user is an assignee
 
 	var response = {};
-	async.parallel([findTasks], function(err) {
+	async.parallel([findTasks], (err) => {
 		if (err) logger.error(err);
 		if (err) return next(err);
 
@@ -120,12 +120,12 @@ exports.tasksCreated = function (req, res, next) {
 	function findTaskInvitationsSentByUser(callback) {
 		TaskInvitation.find({ sender: user })
 			.populate([{ path: 'sender' }, { path: 'receiver' }, { path: 'task', populate: [{ path: 'items' }, { path: 'assignees', select: '_id name email position avatar_url' }, { path: 'assigner', select: '_id name email position avatar_url' }] }])
-			.then(function (task_invitations) {
+			.then((task_invitations) => {
 				logger.silly('found this many task invitations: ' + task_invitations.length);
 				response.task_invitations = task_invitations;
 				callback(null, task_invitations);
 			})
-			.catch(function(err) {
+			.catch((err) => {
 				callback(err, null);
 			});
 	}
@@ -133,12 +133,12 @@ exports.tasksCreated = function (req, res, next) {
 	function findTasks(callback) {
 		Task.find({ assigner: user })
 			.populate(populate)
-			.then(function (tasks) {
+			.then((tasks) => {
 				logger.silly('found this many tasks: ' + tasks.length);
 				response.tasks = tasks;
 				callback(null, tasks);
 			})
-			.catch(function(err) {
+			.catch((err) => {
 				callback(err, null);
 			});
 	}

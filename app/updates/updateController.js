@@ -1,15 +1,15 @@
-var logger = require('../../lib/logger');
-var config = require('../../config/config');
-var Emailer = require('../../lib/emailer');
-var Update = require('./updateModel');
-var async = require('async');
-var messenger = require('../messenger/messenger');
+const logger = require('../../lib/logger');
+const config = require('../../config/config');
+const Emailer = require('../../lib/emailer');
+const Update = require('./updateModel');
+const async = require('async');
+const messenger = require('../messenger/messenger');
 
 exports.params = function(req, res, next, id) {
     logger.silly('update params');
     Update.findById(id)
     .populate({ path: 'task', populate: [{ path: 'assigner' }, { path: 'assignees' }] })
-    .then(function(update) {
+    .then((update) => {
         if (!update) return next(new Error('no update exists with that id'));
         req.update = update;
         next();
@@ -21,7 +21,7 @@ exports.get = function(req, res, next) {
     var task = req.task;
 
     Update.find({ task: task })
-    .then(function(updates) {
+    .then((updates) => {
         res.status(200).json({
             success: true,
             updates: updates
@@ -41,18 +41,16 @@ exports.getOne = function(req, res, next) {
 exports.put = function(req, res, next) {
     logger.silly('updates put');
 
+    const { message, completion_percentage } = req.body;
+
     var assignee = req.user;
     var assignee_id = assignee._id;
 
     var update = req.update;
-    var completion_percentage = req.body.completion_percentage;
-    var message = req.body.message;
-
-    // TODO: This is annoying, fix later
 
     //  TODO: I think its broken right now because you're modifying the array while iterating over it
     var new_response;
-    async.forEachOf(update.responses, function(value, key, callback) {
+    async.forEachOf(update.responses, (value, key, callback) => {
         var response = value;
 
         if (response.assignee.toString() == assignee_id) {
@@ -66,9 +64,7 @@ exports.put = function(req, res, next) {
 
             // TODO: There's a cleaner way to do this
             // Filter out old response and add updated one
-            var filtered_responses = update.responses.filter(function (response) {
-                return response.assignee.toString() != assignee_id;
-            });
+            var filtered_responses = update.responses.filter(response => { return response.assignee.toString() != assignee_id });
 
             response.assignee = req.user;
             filtered_responses.push(response);
@@ -78,26 +74,27 @@ exports.put = function(req, res, next) {
         } else {
             callback();
         }
-    }, function(err) {
+
+    }, (err) => {
         if (err) return next(err);
 
         update.isNew = false;
         update.save()
-        .then(function(update) {
+        .then((update) => {
             res.status(200).json({
                 success: true,
                 update: update
             });
 
             sendMessageToTaskAssigner(update)
-            .then(function(response) {
+            .then((response) => {
                 logger.silly('successfully sent new update response notification to assigner');
             })
             .catch(logger.error);
 
             // Denormalized most recent update for user
             assignee.storeMostRecentResponseFromUpdate(update)
-            .then(function(assignee) {
+            .then((assignee) => {
                 logger.silly('successfully stored most recent update for assignee');
             })
             .catch(logger.error);
@@ -106,7 +103,7 @@ exports.put = function(req, res, next) {
             update.task.isNew = false;
             update.task.completion_percentage = completion_percentage
             update.task.save()
-            .then(function(task) {
+            .then((task) => {
                 logger.silly('successfully updated the tasks completion percentage');
             })
             .catch(logger.error);
@@ -133,8 +130,8 @@ exports.put = function(req, res, next) {
 exports.post = function(req, res, next) {
 
     var task = req.task;
-    var type = req.body.type;
-    var message = req.body.message;
+
+    const { type, message } = req.body;
 
     var update = new Update(req.body);
     update.task = task;
@@ -149,17 +146,17 @@ exports.post = function(req, res, next) {
         completion_percentage = req.body.completion_percentage;
     }
     update.generateResponses(assignee_id, completion_percentage, message)
-    .then(function(update) {
+    .then((update) => {
         return update.save();
     })
-    .then(function(update) {
+    .then((update) => {
 
         // TODO: Need to use addToSet to prevent duplicates
         task.updates.push(update);
         task.isNew = false;
         return task.save();
     })
-    .then(function(task) {
+    .then((task) => {
         res.status(201).json({
             success: true,
             update: update
@@ -169,22 +166,22 @@ exports.post = function(req, res, next) {
         if (type == 'requested') {
             sendEmailsToTaskAssignees()
             .then(sendMessageToTaskAssignees)
-            .then(function() {
+            .then(() => {
                logger.silly('successfully sent update request notification to all assignees');
             })
             .catch(logger.error)
         } else {
             sendMessageToTaskAssigner()
-            .then(function() {
+            .then(() => {
                 logger.silly('successfully sent random update notification to assigner');
             })
             .catch(logger.error)
 
             update.responseForAssigneeId(assignee_id)
-            .then(function(response) {
+            .then((response) => {
                 return assignee.storeMostRecentUpdateResponse(response);
             })
-            .then(function() {
+            .then(() => {
                 logger.silly('successfully set most_recent_update_response on assignee');
             })
             .catch(logger.error);
@@ -193,7 +190,7 @@ exports.post = function(req, res, next) {
             update.task.isNew = false;
             update.task.completion_percentage = completion_percentage
             update.task.save()
-            .then(function(task) {
+            .then((task) => {
                 logger.silly('successfully updated the tasks completion percentage');
             })
             .catch(logger.error);
@@ -209,17 +206,17 @@ exports.post = function(req, res, next) {
             type: 'update_request',
             update: update
         }
-        return new Promise(function (resolve, reject) {
-            async.forEachOf(update.responses, function (value, key, callback) {
+        return new Promise((resolve, reject) => {
+            async.forEachOf(update.responses, (value, key, callback) => {
                 channel = value.assignee._id;
                 logger.silly('channel: ' + channel);
                 messenger.sendMessage(channel, message)
-                    .then(function (response) {
+                    .then((response) => {
                         callback();
                     })
                     .catch(callback);
 
-            }, function (err) {
+            }, (err) => {
                 if (err) return reject(err);
                 resolve();
             });
@@ -229,8 +226,8 @@ exports.post = function(req, res, next) {
     function sendEmailsToTaskAssignees() {
         logger.silly('sending update request emails to all task assignees');
 
-        return new Promise(function (resolve, reject) {
-            var callback = function (err, success) {
+        return new Promise((resolve, reject) => {
+            var callback = (err, success) => {
                 if (err) console.log(err);
                 if (success) console.log(success);
                 ready();
@@ -247,7 +244,7 @@ exports.post = function(req, res, next) {
             var emailer = new Emailer(options, callback);
 
             function ready() {
-                async.forEachOf(task.assignees, function (value, key, callback) {
+                async.forEachOf(task.assignees, (value, key, callback) => {
                     var assignee = value;
                     logger.silly('assignee email: ' + assignee.email);
 
@@ -259,12 +256,12 @@ exports.post = function(req, res, next) {
                     };
 
                     emailer.send(message)
-                        .then(function (info) {
+                        .then((info) => {
                             callback();
                         })
                         .catch(callback);
 
-                }, function (err) {
+                }, (err) => {
                     if (err) return reject(err);
                     resolve();
                 });

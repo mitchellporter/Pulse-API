@@ -1,12 +1,10 @@
-var mongoose = require('mongoose');
-var Response = require('./responseModel');
-var logger = require('../../lib/logger');
+const mongoose = require('mongoose');
+const Response = require('./responseModel');
+const logger = require('../../lib/logger');
 
 exports.params = function(req, res, next, id) {
     var responses = req.update.responses;
-    var response = responses.find(function(response) {
-        return response._id == id;
-    });
+    var response = responses.find(response =>  response._id == id );
     
     if (!response) return next(new Error('no update response exists with that id'));
     req.response = response;
@@ -17,8 +15,10 @@ exports.put = function(req, res, next) {
     var update = req.update;
     var response = req.response;
 
-    response.message = req.body.message;
-    response.completion_percentage = req.body.completion_percentage;
+    const { message, completion_percentage } = req.body;
+
+    response.message = message;
+    response.completion_percentage = completion_percentage;
     response.status = 'sent';
     response.isNew = false;
 
@@ -29,7 +29,7 @@ exports.put = function(req, res, next) {
     
     update.isNew = false;
     update.save()
-        .then(function (update) {
+        .then((update) => {
             res.status(200).json({
                 success: true,
                 update: update

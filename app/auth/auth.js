@@ -1,11 +1,11 @@
-var Promise = require('bluebird');
-var jwt = require('jsonwebtoken');
-var expressJwt = require('express-jwt');
-var User = require('../users/userModel');
-var Team = require('../teams/teamModel');
-var logger = require('../../lib/logger');
-var config = require('../../config/config');
-var checkToken = expressJwt({ secret: config.secrets.jwt });
+const Promise = require('bluebird');
+const jwt = require('jsonwebtoken');
+const expressJwt = require('express-jwt');
+const User = require('../users/userModel');
+const Team = require('../teams/teamModel');
+const logger = require('../../lib/logger');
+const config = require('../../config/config');
+const checkToken = expressJwt({ secret: config.secrets.jwt });
 
 exports.getUser = function(req, res, next) {
   logger.silly('fetching user with decoded tokens _id field');
@@ -13,7 +13,7 @@ exports.getUser = function(req, res, next) {
 	// we store the _id for identification :P
 	var userId = req.user._id;
 	User.findById(userId)
-		.then(function(user) {
+		.then((user) => {
 		if(!user) return next(new Error('no user exists with that id'));
 		req.user = user;
 		next();
@@ -46,23 +46,18 @@ exports.verifyUser = function () {
 
     logger.silly('about to verify user');
 
-    var team_id = req.body.team_id;
-    var team_name = req.body.team_name;
-    var email = req.body.email;
-    var password = req.body.password;
-
+    const { team_id, team_name, email, password } = req.body;
 
     if (team_name) {
-      var team_name = req.body.team_name;
       Team.findOne({ name: team_name })
-        .then(function (team) {
+        .then((team) => {
           if (!team) return next(new Error('No team found with that team name'));
           return User.findOne({ team: team, email: email });
         })
-        .then(function (user) {
+        .then((user) => {
           if (!user) return next(new Error('No user found'));
           user.authenticate(password)
-            .then(function (result) {
+            .then((result) => {
               if (!result) return res.status(401).json({
                 error: {
                   message: 'The password you entered was incorrect.'
@@ -90,7 +85,7 @@ exports.verifyUser = function () {
 
       logger.silly('about to find user');
       User.findOne({ team: team_id, email: email })
-        .then(function (user) {
+        .then((user) => {
           if (!user) return res.status(401).json({
             error: {
               message: 'No user with email address of ' + email
@@ -98,7 +93,7 @@ exports.verifyUser = function () {
           });
 
           user.authenticate(password)
-            .then(function (result) {
+            .then((result) => {
               if (!result) return res.status(401).json({
                 error: {
                   message: 'The password you entered was incorrect.'

@@ -1,14 +1,14 @@
-var logger = require('../../lib/logger');
-var Promise = require('bluebird');
-var PubNub = require('pubnub');
-var pubnub = new PubNub({
+const logger = require('../../lib/logger');
+const Promise = require('bluebird');
+const PubNub = require('pubnub');
+const pubnub = new PubNub({
     ssl           : false,  // <- enable TLS Tunneling over TCP
     publishKey   : 'pub-c-874ce7f4-a1ce-4e25-bbc5-c3fb8e4c1a24',
     subscribeKey : 'sub-c-007d8d40-d9fc-11e6-b6b1-02ee2ddab7fe',
     secretKey: 'sec-c-MmU5MDFlZTItZTA1ZS00ZmRlLTk3YmMtNTQ4ZWVkZTVhMzdi'
 });
-var test_pub_channel = 'nodejs_channel'; // messages sent from me
-var test_sub_channel = 'ios_channel' // messages from iOS client
+const test_pub_channel = 'nodejs_channel'; // messages sent from me
+const test_sub_channel = 'ios_channel' // messages from iOS client
 
 // TODO: Need to add a flag here to enable/disable
 exports.sendMessage = function(channel, message) {

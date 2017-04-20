@@ -1,7 +1,7 @@
-var logger = require('../../lib/logger');
-var bcrypt = require('bcrypt');
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
+const logger = require('../../lib/logger');
+const bcrypt = require('bcrypt');
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
 var TeamSchema = new Schema({
 	created_at: {

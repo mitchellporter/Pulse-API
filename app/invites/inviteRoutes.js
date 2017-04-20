@@ -1,8 +1,8 @@
-var router = require('express').Router();
-var auth = require('../auth//auth');
-var inviteController = require('./inviteController');
+const router = require('express').Router();
+const auth = require('../auth//auth');
+const inviteController = require('./inviteController');
 
-var checkUser = [auth.decodeToken(), auth.getUser];
+const checkUser = [auth.decodeToken(), auth.getUser];
 
 router.param('id', inviteController.params);
 
