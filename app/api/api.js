@@ -9,4 +9,6 @@ router.use('/teams', require('../teams/teamRoutes'));
 router.use('/feeds', require('../feeds/feedRoutes'));
 router.use('/availability', require('../availability/availabilityRoutes'));
 router.use('/invites', require('../invites/inviteRoutes'));
+router.use('/standups', require('../standups/standupRoutes'));
+
 module.exports = router;

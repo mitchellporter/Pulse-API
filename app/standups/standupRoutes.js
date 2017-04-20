@@ -1,4 +1,5 @@
 const router = require('express').Router();
+const standupController = require('./standupController');
 const auth = require('../auth/auth');
 const checkUser = [auth.decodeToken(), auth.getUser];
 
@@ -10,5 +11,5 @@ router.route('/')
 
 router.route('/:id')
 .get(checkUser, standupController.getOne)
-.put(checkUser, standupController.put)
-.delete(checkUser, standupController.delete)
+
+module.exports = router;

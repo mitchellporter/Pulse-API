@@ -8,6 +8,7 @@ const Task = require('../tasks/taskModel');
 const TaskInvitation = require('../task_invitations/taskInvitationModel');
 const Item = require('../items/itemModel');
 const Update = require('../updates/updateModel');
+const Standup = require('../standups/standupModel');
 const async = require('async');
 const casual = require('casual');
 const faker = require('faker');
@@ -28,19 +29,25 @@ const item_titles = ['Needs, Sign up button, place to input email address, or ph
 // Permanent dummy users
 const dummy_user_kori_id = '585c2130f31b2fbff4efbf68';
 const kori_avatar_url = 'https://d33833kh9ui3rd.cloudfront.net/kori.png';
+const kori_standup_id = '58f91d90afcf2363f3276ec6';
+
 const dummy_user_mitchell_id = '586ecdc0213f22d94db5ef7f';
 const mitchell_avatar_url = 'https://d33833kh9ui3rd.cloudfront.net/mitchell.png';
+const mitchell_standup_id = '58f91daaafcf2363f3276ec7';
 
 const dummy_user_allen_id = '5881130a387e980f48c743f7';
 const allen_avatar_url = 'https://d33833kh9ui3rd.cloudfront.net/allen.png';
-
+const allen_standup_id = '58f91dccafcf2363f3276ec8';
 
 const dummy_user_arch_id = '58c70df6105bd171feeb2cbc';
 const arch_avatar_url = 'https://d33833kh9ui3rd.cloudfront.net/arch.png'
+const arch_standup_id = '58f91dffdd093264618d3ae5';
 
 const dummy_user_mike_id = '58f8ef49de159c22a4d19fd1';
 const mike_avatar_url = 'https://d33833kh9ui3rd.cloudfront.net/mike.png';
+const mike_standup_id = '58f91e00dd093264618d3ae6';
 
+const standup_text = 'Today I did several things to the iOS app:\n\n1. I replaced the old launch screen image with the new image\n2. I added and setup the Crashlytics SDK\n3. I added the new app icons\n';
 
 // 1 day in ms, 2 days, ... 
 const dummy_task_due_dates = [Date.now() + 86400000, Date.now() + 172800000, Date.now() + 259200000, Date.now() + 345600000];
@@ -72,7 +79,8 @@ function startSeed() {
     var tasks = [];
 
     var design_first_apps_team;
-    logger.silly('starting arch seed process...');
+    logger.silly('starting seed process...');
+
     dropDb()
         .then(createTeams)
         .then(function (teams) {
@@ -115,6 +123,12 @@ function startSeed() {
         .then(createPendingTasks)
         .then(createTaskInvitations)
         .then(createRequestedTaskUpdates)
+        .then(createStandups)
+        .then(createMitchellStandup)
+        .then(createKoriStandup)
+        .then(createAllenStandup)
+        .then(createArchStandup)
+        .then(createMikeStandup)
         .then(handleSeedSuccess)
         .catch(handleSeedError)
        
@@ -437,6 +451,77 @@ function startSeed() {
                 resolve();
             });
         });
+    }
+
+    function createStandups() {
+        logger.silly('creating standups');
+
+        var standups = [];
+        return new Promise((resolve, reject) => {
+            async.forEachOf(users, (value, key, callback) => {
+                const author = value;
+                
+                // generate 10 standups
+                async.times(10, (n, next) => {
+                    const standup = new Standup({
+                        text: standup_text,
+                        author: author
+                    });
+                    standups.push(standup);
+                    next(null, standup)
+                }, (err, standups) => {
+                    callback();
+                });
+            }, err => {
+                if (err) return reject(err);
+                resolve(Standup.create(standups));
+            });
+        });
+    }
+
+    function createMitchellStandup() {
+        const standup = new Standup({
+            _id: mitchell_standup_id,
+            text: standup_text,
+            author: mitchell
+        });
+        return standup.save();
+    }
+
+    function createKoriStandup() {
+        const standup = new Standup({
+            _id: kori_standup_id,
+            text: standup_text,
+            author: kori
+        });
+        return standup.save();
+    }
+
+    function createAllenStandup() {
+        const standup = new Standup({
+            _id: allen_standup_id,
+            text: standup_text,
+            author: allen
+        });
+        return standup.save();
+    }
+
+    function createArchStandup() {
+        const standup = new Standup({
+            _id: arch_standup_id,
+            text: standup_text,
+            author: arch
+        });
+        return standup.save();
+    }
+
+    function createMikeStandup() {
+        const standup = new Standup({
+            _id: mike_standup_id,
+            text: standup_text,
+            author: mike
+        });
+        return standup.save();
     }
 
     function randomDueDate() {
