@@ -7,9 +7,17 @@ exports.signin = function(req, res, next) {
   // and send it back for the client to consume
   var user = req.user;
   var token = signToken(user._id);
+  const expiry = new Date(Date.now() + 1000 * 60 * 60 * 3);
+
+  // TODO: Needs final params
+  res.cookie('token', token, {
+    httpOnly: true,
+    expires: expiry
+  });
+      
   res.json({
-  	'success': true,
-  	'token': token,
-  	'user': user
+    success: true,
+    token: token,
+    user: user
   });
 };

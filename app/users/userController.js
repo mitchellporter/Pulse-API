@@ -46,6 +46,13 @@ exports.post = function(req, res, next) {
 	.then(createUser)
 	.then((user) => {
 		var token = signToken(user._id);
+
+		// TODO: Needs final params
+		res.cookie('token', token, {
+			httpOnly: true,
+			expires: expiry
+		});
+
 		res.status(201).json({
 			success: true,
 			team: user.team,

@@ -35,6 +35,9 @@ exports.decodeToken = function() {
     // this will call next if token is valid
     // and send error if its not. It will attached
     // the decoded token to req.user
+
+    if (req.cookies.token) req.headers.authorization = 'Bearer ' + req.cookies.token;
+
     checkToken(req, res, next);
   };
 };
