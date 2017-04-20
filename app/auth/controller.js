@@ -11,7 +11,7 @@ exports.signin = function(req, res, next) {
 
   // TODO: Needs final params
   res.cookie('token', token, {
-    httpOnly: true,
+    httpOnly: false,
     expires: expiry
   });
       
