@@ -4,6 +4,7 @@ router.use('/auth', require('../auth/routes'));
 router.use('/members', require('../users/userRoutes'));
 router.use('/projects', require('../projects/projectRoutes'));
 router.use('/tasks', require('../tasks/taskRoutes'));
+router.use('/task_chats', require('../task_chats/taskChatRoutes'));
 router.use('/subtasks', require('../subtasks/subtaskRoutes'));
 router.use('/project_invitations', require('../project_invitations/projectInvitationRoutes'));
 router.use('/task_invitations', require('../task_invitations/taskInvitationRoutes'));
