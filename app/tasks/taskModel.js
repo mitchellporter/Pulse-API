@@ -16,6 +16,11 @@ var TaskSchema = new Schema({
 		type: Date,
 		required: true
 	},
+	project: {
+		type: mongoose.Schema.Types.ObjectId,
+		ref: 'Project',
+		required: true 
+	},
 	assigner: {
 		type: mongoose.Schema.Types.ObjectId,
 		ref: 'User',
@@ -30,7 +35,6 @@ var TaskSchema = new Schema({
         type: String,
         required: true
     },
-	items: [Item],
     due_date: {
         type: Date
     },
