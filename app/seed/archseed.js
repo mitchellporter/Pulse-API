@@ -259,7 +259,7 @@ function startSeed() {
                 
                 var task = new Task({
                     assigner: assigner,
-                    assignees: filtered_assignees,
+                    assignee: filtered_assignees[0],
                     title: 'This tasks assigner is ' + assigner.name,
                     details: 'description goes here',
                     due_date: randomDueDate(), // optional,
@@ -295,7 +295,7 @@ function startSeed() {
                 
                 var task = new Task({
                     assigner: assigner,
-                    assignees: filtered_assignees,
+                    assignee: filtered_assignees[0],
                     title: 'This tasks assigner is ' + assigner.name,
                     details: 'description goes here',
                     due_date: randomDueDate()
@@ -369,38 +369,35 @@ function startSeed() {
         logger.silly('creating task invitations');
 
         var task_invitation_id_used = false;
+        var task_invitations = [];
+
         return new Promise(function (resolve, reject) {
             async.forEachOf(tasks, function (value, key, callback) {
                 var task = value;
+                var assignee = task.assignee;
 
-                var task_invitations = [];
-                async.eachOf(task.assignees, function (value, key, callback2) {
-                    var assignee = value;
-                    var task_invitation = new TaskInvitation({
-                        sender: task.assigner,
-                        receiver: assignee,
-                        task: task,
-                    });
+                var task_invitation = new TaskInvitation({
+                    sender: task.assigner,
+                    receiver: assignee,
+                    task: task,
+                });
 
-                    // Our hardcoded task is now attached to the hardcoded task invitation
-                    if (task._id == pending_task_id && assignee == arch && !task_invitation_id_used) {
-                        task_invitation._id = task_invitation_id;
-                        task_invitation_id_used = true;
-                    }
-                    task_invitations.push(task_invitation);
-                    callback2();
+                // Our hardcoded task is now attached to the hardcoded task invitation
+                if (task._id == pending_task_id && assignee == arch && !task_invitation_id_used) {
+                    task_invitation._id = task_invitation_id;
+                    task_invitation_id_used = true;
+                }
+
+                task_invitations.push(task_invitation);
+                callback(); 
                 }, function (err) {
                     if (err) return reject(err);
                     TaskInvitation.create(task_invitations)
-                    .then(function(task_invitation) {
-                        callback();
+                    .then(function(task_invitations) {
+                        resolve(task_invitations)
                     })
-                    .catch(callback);
+                    .catch(logger.error);
                 });
-            }, function (err) {
-                if (err) return reject(err);
-                resolve();
-            });
         });
     }
 
