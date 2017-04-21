@@ -259,7 +259,7 @@ function startSeed() {
                 
                 var task = new Task({
                     assigner: assigner,
-                    assignee: filtered_assignees[0],
+                    assignee: mike,
                     title: 'This tasks assigner is ' + assigner.name,
                     details: 'description goes here',
                     due_date: randomDueDate(), // optional,
@@ -295,7 +295,7 @@ function startSeed() {
                 
                 var task = new Task({
                     assigner: assigner,
-                    assignee: filtered_assignees[0],
+                    assignee: mike,
                     title: 'This tasks assigner is ' + assigner.name,
                     details: 'description goes here',
                     due_date: randomDueDate()
