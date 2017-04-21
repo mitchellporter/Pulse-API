@@ -16,17 +16,23 @@ var UpdateSchema = new Schema({
         type: Date,
         required: true
     },
-	type: {
-		type: String,
-		required: true,
-		enum: types
+	comment: {
+		type: String
+	},
+	sender: {
+		type: mongoose.Schema.Types.ObjectId,
+		ref: 'User',
+		required: true
 	},
 	task: {
 		type: mongoose.Schema.Types.ObjectId,
 		ref: 'Task',
 		required: true
 	},
-	responses: [Response.schema]
+	update_request: {
+		type: mongoose.Schema.Types.ObjectId,
+		ref: 'UpdateRequest'
+	}
 });
 
 UpdateSchema.pre('validate', function(next) {
@@ -35,25 +41,9 @@ UpdateSchema.pre('validate', function(next) {
 	next();
 });
 
-// The handlers for Response model wont get called unless they are in the
-// update's responses array BEFORE save is called
 UpdateSchema.pre('save', function(next) {
 	if (!this.isNew) return next();
 	next();
-	// TODO: task should never be an id here, we need the real task object
-	// var task = this.task;
-	// async.forEachOf(task.assignees, function(value, key, callback) {
-	// 	var assignee = value;
-	// 	var response = new Response({
-	// 		assignee: assignee,
-	// 		completion_percentage: 0
-	// 	});
-	// 	this.responses.push(response);
-	// 	callback();
-	// }.bind(this), function(err) {
-	// 	if (err) return next(err);
-	// 	next();
-	// });
 });
 
 UpdateSchema.methods = {
