@@ -1,7 +1,7 @@
 const logger = require('../../lib/logger');
 const Schema = require('mongoose').Schema;
 
-const statuses = ['pending', 'in_progress', 'completed'];
+const statuses = ['in_progress', 'completed'];
 
 var SubtaskSchema = new Schema({
 	created_at: {
@@ -19,8 +19,7 @@ var SubtaskSchema = new Schema({
 	},
 	completed_by: {
 		type: mongoose.Schema.Types.ObjectId,
-		ref: 'User',
-		required: true
+		ref: 'User'
 	},
     text: {
         type: String,
@@ -29,7 +28,7 @@ var SubtaskSchema = new Schema({
     status: {
 		type: String,
 		required: true,
-		default: 'pending',
+		default: 'in_progress',
 		enum: statuses
 	}
 });
