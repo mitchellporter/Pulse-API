@@ -142,7 +142,7 @@ exports.post = function(req, res, next) {
 
 		createItems()
 		.then(createTask)
-		.then(populateAssignees)
+		.then(populateAssignee)
 		.then(createTaskInvitations)
 		.then((task_invitations) => {
 
@@ -186,9 +186,9 @@ exports.post = function(req, res, next) {
 		return task.save();
 	}
 
-	function populateAssignees(task) {
-		logger.silly('populate assignees');
-		return task.populate('assignees').execPopulate();
+	function populateAssignee(task) {
+		logger.silly('populate assignee');
+		return task.populate('assignee').execPopulate();
 	}
 
 	function createTaskInvitations(task) {
