@@ -21,11 +21,11 @@ var TaskSchema = new Schema({
 		ref: 'User',
 		required: true
 	},
-	assignees: [{ // TODO: Validate array: http://stackoverflow.com/a/25966143/3344977
+	assignee: { 
         type: mongoose.Schema.Types.ObjectId,
 		ref: 'User',
         required: true
-    }],
+    },
     title: {
         type: String,
         required: true
