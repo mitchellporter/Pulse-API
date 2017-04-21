@@ -70,7 +70,7 @@ TaskSchema.methods = {
 		return obj;
 	},
 	updateCompletionPercentageFromNewUpdateResponse,
-	addAssignees
+	addAssignee
 }
 
 function updateCompletionPercentageFromNewUpdateResponse(response) {
@@ -84,11 +84,11 @@ function updateCompletionPercentageFromNewUpdateResponse(response) {
 	});
 }
 
-function addAssignees(assignees) {
+function addAssignee(assignee) {
 	return new Promise((resolve, reject) => {
-		this.assignees = _.union(this.assignees, assignees);
-		
+		this.assignee = assignee;
 		this.isNew = false;
+		
 		this.save()
 		.then(resolve)
 		.catch(reject);

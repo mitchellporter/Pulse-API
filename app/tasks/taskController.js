@@ -60,9 +60,8 @@ exports.put = function(req, res, next) {
 	logger.silly('task put');
 
 	var task = req.task;
-	var status = req.body.status;
+	if (req.body.status) task.status = req.body.status;
 
-	task.status = status;
 	task.isNew = false;
 	task.save()
 	.then((task) => {
@@ -103,7 +102,7 @@ exports.put = function(req, res, next) {
 			})
 			.catch((err) => {
 				logger.silly('error: ' + err);
-			})
+			});
 	}
 };
 
@@ -271,21 +270,21 @@ exports.addAssignees = function(req, res, next) {
 	logger.silly('adding assignees to task');
 
 	var task = req.task;
-	var assignees = req.body.assignees;
-	var task_with_assignees;
+	var assignee = req.body.assignee;
+	var task_with_assignee;
 
-	task.addAssignees(assignees)
+	task.addAssignee(assignee)
 	.then((task) => {
-		return task.populate('assignees', '_id name position email avatar_url').execPopulate();
+		return task.populate('assignee', '_id name position email avatar_url').execPopulate();
 	})
 	.then((populated_task) => {
-		task_with_assignees = populated_task;
+		task_with_assignee = populated_task;
 		return TaskInvitation.createTaskInvitationsForAssignees(populated_task, assignees);
 	})
 	.then((task_invitations) => {
 		res.status(201).json({
 			success: true,
-			task: task_with_assignees
+			task: task_with_assignee
 		});
 	})
 	.catch(next);
