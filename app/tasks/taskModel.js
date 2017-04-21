@@ -2,7 +2,6 @@ const logger = require('../../lib/logger');
 const _ = require('lodash');
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const Item = require('../items/itemModel').schema;
 
 const statuses = ['pending', 'in_progress', 'completed'];
 const update_days = ['monday', 'wednesday', 'friday'];
