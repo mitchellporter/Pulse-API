@@ -76,7 +76,7 @@ function startSeed() {
     logger.silly('starting seed...');
 
     async.auto({
-        createTeam,
+        team: createTeam,
         createMitchellUser,
         createKoriUser,
         createAllenUser,
@@ -106,7 +106,7 @@ function createTeam(callback) {
         .catch(callback);
 }
 
-const createMitchellUser = ['createTeam', function createMitchellUser(results, callback) {
+const createMitchellUser = ['team', function createMitchellUser(results, callback) {
     logger.silly('creating mitchell user');
 
     var user = new User({
@@ -116,7 +116,7 @@ const createMitchellUser = ['createTeam', function createMitchellUser(results, c
         email: 'mitchell@designfirstapps.com',
         position: 'iOS dev',
         avatar_url: mitchell_avatar_url,
-        team: results.createTeam
+        team: results.team
     });
 
     user.save()
@@ -126,7 +126,7 @@ const createMitchellUser = ['createTeam', function createMitchellUser(results, c
     .catch(callback);
 }];
 
-const createKoriUser = ['createTeam', function(results, callback) {
+const createKoriUser = ['team', function(results, callback) {
     logger.silly('creating kori user');
 
     var user = new User({
@@ -136,7 +136,7 @@ const createKoriUser = ['createTeam', function(results, callback) {
         email: 'mitchell@founderfox.io',
         position: 'designer',
         avatar_url: kori_avatar_url,
-        team: results.createTeam
+        team: results.team
     });
 
     user.save()
@@ -146,7 +146,7 @@ const createKoriUser = ['createTeam', function(results, callback) {
     .catch(callback);
 }];
 
-const createAllenUser = ['createTeam', function (results, callback) {
+const createAllenUser = ['team', function (results, callback) {
     logger.silly('creating allen user');
 
     var user = new User({
@@ -156,7 +156,7 @@ const createAllenUser = ['createTeam', function (results, callback) {
         email: 'allen@designfirstapps.com',
         position: 'iOS dev',
         avatar_url: allen_avatar_url,
-        team: results.createTeam
+        team: results.team
     });
 
     user.save()
@@ -166,7 +166,7 @@ const createAllenUser = ['createTeam', function (results, callback) {
     .catch(callback);
 }];
 
-const createMikeUser = ['createTeam', function (results, callback) {
+const createMikeUser = ['team', function (results, callback) {
     logger.silly('creating mike user');
 
     var user = new User({
@@ -176,7 +176,7 @@ const createMikeUser = ['createTeam', function (results, callback) {
         email: 'mike@designfirstapps.com',
         position: 'web dev',
         avatar_url: mike_avatar_url,
-        team: results.createTeam
+        team: results.team
     });
 
     user.save()
