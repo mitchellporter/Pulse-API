@@ -13,8 +13,4 @@ router.route('/')
 router.route('/:id')
 .get(teamController.getOne)
 
-router.route('/:id/members')
-.get(checkUser, teamController.getMembers)
-.post(userController.joinTeam)
-
 module.exports = router;
