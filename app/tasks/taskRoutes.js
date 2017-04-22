@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const taskController = require('./taskController');
-const itemController = require('../items/itemController');
+const subtaskController = require('../subtasks/subtaskController');
 const auth = require('../auth/auth');
 const checkUser = [auth.decodeToken(), auth.getUser];
 
@@ -25,7 +25,7 @@ router.use('/:id/updates', require('../updates/updateRoutes'));
 
 router.use('/:id/invitations', require('../task_invitations/taskInvitationRoutes'));
 
-router.use('/:id/items', require('../items/itemRoutes'));
+router.use('/:id/subtasks', require('../subtasks/subtaskRoutes'));
 
 router.use('/:id/invites', require('../invites/inviteRoutes'));
 

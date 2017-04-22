@@ -47,85 +47,11 @@ UpdateSchema.pre('save', function(next) {
 });
 
 UpdateSchema.methods = {
-	// TODO: Remove all responses except for the user's in toJSON - they shouldn't be able to see everyone else's updates
-	generateResponses,
-	responseForAssigneeId,
 	toJSON: function() {
 		var obj = this.toObject();
 		delete obj.__v;
 		return obj;
 	}
-}
-
-function generateResponses(assignee_id, completion_percentage, message) {
-	logger.silly('responses 1');
-
-	return new Promise((resolve, reject) => {
-		var task = this.task;
-		async.forEachOf(task.assignees, (value, key, callback) => {
-			var assignee = value;
-			var response = new Response({
-				assignee: assignee,
-				completion_percentage: 0
-			});
-			
-			if (assignee._id.toString() == assignee_id || response.assignee._id == assignee_id) {
-				logger.silly('assignee hit!');
-				response.completion_percentage = completion_percentage;
-				response.message = message;
-				response.status = 'sent';
-			}
-			this.responses.push(response);
-			callback();
-		}, (err) => {
-			if (err) return reject(err);
-			resolve(this);
-		});
-	});
-}
-
-function generateResponsesForRandom(assignee_id, completion_percentage) {
-		logger.silly('responses 2');
-
-	return new Promise((resolve, reject) => {
-		var task = this.task;
-		async.forEachOf(task.assignees, (value, key, callback) => {
-			var assignee = value;
-			var response = new Response({
-				assignee: assignee,
-				completion_percentage: 0
-			});
-			if (assignee._id == assignee_id) response.completion_percentage = completion_percentage;
-			this.responses.push(response);
-			callback();
-		}, (err) => {
-			if (err) return reject(err);
-			resolve(this);
-		});
-	});
-}
-
-function responseForAssigneeId(assigneeId) {
-	return new Promise((resolve, reject) => {
-		var response = this.responses.find((response) => {		
-			if (mongoose.Types.ObjectId.isValid(response.assignee._id)) return response.assignee._id.toString() == assigneeId;;
-			return response.assignee._id == assigneeId;
-		})
-		resolve(response);
-	});
-}
-
-UpdateSchema.statics.findByTaskAssigner = function (assigner) {
-	return new Promise((resolve, reject) => {
-		Task.find({ assigner: assigner })
-			.then((tasks) => {
-				this.find({ task: tasks })
-				.populate([ { path: 'task', populate: [{ path: 'assigner', select: '_id name position email avatar_url' }, { path: 'assignees', select: '_id name position email avatar_url' }] }, { path: 'responses.assignee', select: '_id name position email avatar_url' } ])
-				.then(resolve)
-				.catch(reject);
-			})
-			.catch(reject);
-	});
-}
+};
 
 module.exports = mongoose.model('Update', UpdateSchema);

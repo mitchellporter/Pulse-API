@@ -4,7 +4,7 @@ const async = require('async');
 
 exports.params = function(req, res, next, id) {
     TaskInvitation.findById(id)
-    .populate([{ path: 'task', populate: [{ path: 'assigner' }, { path: 'assignees' }, { path: 'items' }] }])
+    .populate([{ path: 'task', populate: [{ path: 'assigner' }, { path: 'assignees' }, { path: 'subtasks' }] }])
 	.then((task_invitation) => {
 		if(!task_invitation) return next(new Error('no task invitation exists with that id'));
 		req.task_invitation = task_invitation;

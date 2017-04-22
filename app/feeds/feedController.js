@@ -2,14 +2,14 @@ const logger = require('../../lib/logger');
 const Task = require('../tasks/taskModel');
 const TaskInvitation = require('../task_invitations/taskInvitationModel');
 const Update = require('../updates/updateModel');
-const Item = require('../items/itemModel');
+const Subtask = require('../subtasks/subtaskModel');
 const async = require('async');
 const messenger = require('../messenger/messenger');
 
 exports.myTasks = function (req, res, next) {
 	var user = req.user;
 
-	var populate = [{ path: 'assigner' }, { path: 'assignee' }, { path: 'items' }];
+	var populate = [{ path: 'assigner' }, { path: 'assignee' }, { path: 'subtasks' }];
 
 	// 1. Fetch task invitations sent to user
 	// 2. Fetch task's where user is an assignee
@@ -25,7 +25,7 @@ exports.myTasks = function (req, res, next) {
 
 	function findTaskInvitationsForUser(callback) {
 		TaskInvitation.find({ receiver: user })
-			.populate([{ path: 'sender' }, { path: 'receiver' }, { path: 'task', populate: [{ path: 'items' }, { path: 'assignee', select: '_id name email position avatar_url' }, { path: 'assigner', select: '_id name email position avatar_url' }] }])
+			.populate([{ path: 'sender' }, { path: 'receiver' }, { path: 'task', populate: [{ path: 'subtasks' }, { path: 'assignee', select: '_id name email position avatar_url' }, { path: 'assigner', select: '_id name email position avatar_url' }] }])
 			.then((task_invitations) => {
 				logger.silly('found this many task invitations: ' + task_invitations.length);
 				response.task_invitations = task_invitations;
@@ -103,7 +103,7 @@ exports.tasksCreated = function (req, res, next) {
 	logger.silly('user id: ' + user._id);
 	logger.silly('user name: ' + user.name);
 
-	var populate = [{ path: 'assigner' }, { path: 'assignee' }, { path: 'items' }];
+	var populate = [{ path: 'assigner' }, { path: 'assignee' }, { path: 'subtasks' }];
 
 	// 1. Fetch task invitations sent to user
 	// 2. Fetch task's where user is an assignee
@@ -119,7 +119,7 @@ exports.tasksCreated = function (req, res, next) {
 
 	function findTaskInvitationsSentByUser(callback) {
 		TaskInvitation.find({ sender: user })
-			.populate([{ path: 'sender' }, { path: 'receiver' }, { path: 'task', populate: [{ path: 'items' }, { path: 'assignee', select: '_id name email position avatar_url' }, { path: 'assigner', select: '_id name email position avatar_url' }] }])
+			.populate([{ path: 'sender' }, { path: 'receiver' }, { path: 'task', populate: [{ path: 'subtasks' }, { path: 'assignee', select: '_id name email position avatar_url' }, { path: 'assigner', select: '_id name email position avatar_url' }] }])
 			.then((task_invitations) => {
 				logger.silly('found this many task invitations: ' + task_invitations.length);
 				response.task_invitations = task_invitations;
