@@ -1,13 +1,13 @@
 const logger = require('../../lib/logger');
 const Task = require('./taskModel');
 const TaskInvitation = require('../task_invitations/taskInvitationModel');
-const Item = require('../items/itemModel');
+const Subtask = require('../subtasks/subtaskModel');
 const async = require('async');
 const messenger = require('../messenger/messenger');
 
 exports.params = function(req, res, next, taskId) {
 	Task.findById(taskId)
-	.populate('items assigner assignee')
+	.populate('subtasks assigner assignee')
 	.then((task) => {
 		if(!task) return next(new Error('no task exists with that id'));
 		req.task = task;
@@ -34,7 +34,7 @@ exports.get = function(req, res, next) {
 		query.status = req.query.status;
 	}
 
-	var populate = [{ path: 'assigner' }, { path: 'assignee' }, { path: 'items' }];
+	var populate = [{ path: 'assigner' }, { path: 'assignee' }, { path: 'subtasks' }];
 	
 	Task.find(query)
 	.populate(populate)
@@ -68,7 +68,7 @@ exports.put = function(req, res, next) {
 
 		logger.silly('updated task');
 		
-		task.populate([{ path: 'assigner' }, { path: 'assignee' }, { path: 'items' }]).execPopulate()
+		task.populate([{ path: 'assigner' }, { path: 'assignee' }, { path: 'subtasks' }]).execPopulate()
 		.then((task) => {
 			res.status(201).json({
 				success: true,
@@ -108,11 +108,11 @@ exports.put = function(req, res, next) {
 
 exports.post = function(req, res, next) {
 	var assigner = req.user;
-	var items_json = req.body.items;
+	var subtasks_json = req.body.subtasks;
 
 	// NOTE: If you don't delete this, and req.body is used for Task's init,
 	// then mongoose always throws an exception. Not sure why yet.
-	delete req.body.items;
+	delete req.body.subtasks;
 
 	var task = new Task(req.body);
 	task.assigner = assigner;
@@ -123,23 +123,23 @@ exports.post = function(req, res, next) {
 	due_date.setSeconds(due_date_interval);
 	task.due_date = due_date;
 
-	// Loop through items and create items
-	var items = [];
-	async.forEachOf(items_json, (value, key, callback1) => {
-		var item_json = value;
+	// Loop through subtasks and create subtasks
+	var subtasks = [];
+	async.forEachOf(subtasks_json, (value, key, callback1) => {
+		var subtask_json = value;
 
-		var item = new Item();
-		item.text = item_json;
-		items.push(item);
+		var subtask = new Subtask();
+		subtask.text = subtask_json;
+		subtasks.push(subtask);
 
 		callback1();
 	}, (err) => {
 		if (err) logger.error(err);
 
-		// TODO: Handle this later. We should always have items
-		if (items.count == 0) throw Error('NO ITEMS :('); 	
+		// TODO: Handle this later. We should always have subtasks
+		if (subtasks.count == 0) throw Error('NO SUBTASKS :('); 	
 
-		createItems()
+		createSubtasks()
 		.then(createTask)
 		.then(populateAssignee)
 		.then(createTaskInvitation)
@@ -175,12 +175,12 @@ exports.post = function(req, res, next) {
 		.catch(next);
 	});
 
-	function createItems() {
-		return Item.create(items);
+	function createSubtasks() {
+		return Subtask.create(subtasks);
 	}
 
-	function createTask(items) {
-		task.items = items;
+	function createTask(subtasks) {
+		task.subtasks = subtasks;
 		return task.save();
 	}
 
