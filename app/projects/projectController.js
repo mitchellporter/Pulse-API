@@ -21,3 +21,18 @@ exports.get = function(req, res, next) {
     })
     .catch(next);
 };
+
+exports.post = function(req, res, next) {
+    var project = new Project(req.body);
+    project.creator = req.user;
+    project.members = req.user;
+
+    project.save()
+    .then(project => {
+        res.status(201).json({
+            success: true,
+            project: project
+        });
+    })
+    .catch(next);
+};

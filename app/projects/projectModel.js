@@ -1,4 +1,5 @@
-const Schema = require('mongoose').Schema;
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
 var ProjectSchema = new Schema({
 	created_at: {
@@ -15,6 +16,11 @@ var ProjectSchema = new Schema({
     },
     due_date: {
         type: Date
+    },
+    creator: {
+        type: mongoose.Schema.Types.ObjectId,
+		ref: 'User',
+		required: true
     },
     members: [{
         type: mongoose.Schema.Types.ObjectId,
