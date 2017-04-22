@@ -20,25 +20,24 @@ exports.params = function(req, res, next, taskId) {
 
 exports.get = function(req, res, next) {
 
-	var query = {};
-	if (req.query.assigner) { 
-		logger.silly('assigner id found in query string!')
-		query.assigner = req.query.assigner
-	};
-	if (req.query.assignee) {
-		logger.silly('assignee id found in query string!')
-		query.assignee = req.query.assignee;
-	};
+	// var query = {};
+	// if (req.query.assigner) { 
+	// 	logger.silly('assigner id found in query string!')
+	// 	query.assigner = req.query.assigner
+	// };
+	// if (req.query.assignee) {
+	// 	logger.silly('assignee id found in query string!')
+	// 	query.assignee = req.query.assignee;
+	// };
 
-	if (req.query.status) {
-		query.status = req.query.status;
-	}
+	// if (req.query.status) {
+	// 	query.status = req.query.status;
+	// }
 
-	var populate = [{ path: 'assigner' }, { path: 'assignee' }, { path: 'items' }];
+	// var populate = [{ path: 'assigner' }, { path: 'assignee' }, { path: 'items' }];
 	
-	Task.find(query)
-	.populate(populate)
-	.then((tasks) => {
+	Task.mquery(req)
+	.then(tasks => {
 		logger.silly('found this many tasks: ' + tasks.length);
 		res.status(200).json({
 			success: true,
