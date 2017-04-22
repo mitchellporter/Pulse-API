@@ -1,5 +1,6 @@
 const logger = require('../../lib/logger');
-const Schema = require('mongoose').Schema;
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
 const statuses = ['pending', 'accepted', 'denied'];
 
