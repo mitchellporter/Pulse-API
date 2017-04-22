@@ -29,7 +29,6 @@ function start() {
 	app.set('trust proxy', true);
 
 	// middleware
-	// app.use(mquery.middleware({limit:10, maxLimit:50}));
 	middleware(app);
 	
 	// routes
