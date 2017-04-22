@@ -1,7 +1,6 @@
 const async = require('async');
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const Response = require('../responses/responseModel');
 const logger = require('../../lib/logger');
 const Task = require('../tasks/taskModel');
 
