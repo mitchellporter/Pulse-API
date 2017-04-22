@@ -15,18 +15,4 @@ router.route('/:id')
 .put(checkUser, taskController.put)
 .delete(checkUser, taskController.delete)
 
-router.use('/:id/updates', require('../updates/updateRoutes'));
-
-// router.route('/:id/request_updates')
-// .post(auth.getUser, updateController.requestUpdate)
-
-// router.route('/:id/send_update')
-// .post(auth.getUser, updateController.sendUpdate)
-
-router.use('/:id/invitations', require('../task_invitations/taskInvitationRoutes'));
-
-router.use('/:id/subtasks', require('../subtasks/subtaskRoutes'));
-
-router.use('/:id/invites', require('../invites/inviteRoutes'));
-
 module.exports = router;
