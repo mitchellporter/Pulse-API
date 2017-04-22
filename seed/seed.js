@@ -67,5 +67,131 @@ const update_days = ['monday', 'wednesday', 'friday'];
 
 mongoose.connection.on('connected', function () {
     logger.silly('Mongoose default connection open');
-    startSeed();
+    dropDb()
+    .then(startSeed)
+    .catch(handleSeedError);
 });
+
+function startSeed() {
+    logger.silly('starting seed...');
+
+    async.auto({
+        createTeam,
+        createMitchellUser,
+        createKoriUser,
+        createAllenUser,
+        createMikeUser,
+    }, (err, results) => {
+        if (err) return handleSeedError(err);
+        handleSeedSuccess();
+    });
+}
+
+function dropDb() {
+    logger.silly('dropping db');
+    return mongoose.connection.db.dropDatabase();
+}
+
+function createTeam(callback) {
+    logger.silly('creating design first apps team');
+    var design_first_apps_team = new Team({
+        name: 'designfirstapps'
+    });
+    design_first_apps_team._id = team_id;
+
+    design_first_apps_team.save()
+        .then(team => {
+            callback(null, team);
+        })
+        .catch(callback);
+}
+
+const createMitchellUser = ['createTeam', function createMitchellUser(results, callback) {
+    logger.silly('creating mitchell user');
+
+    var user = new User({
+        _id: new mongoose.mongo.ObjectId(dummy_user_mitchell_id),
+        name: 'Mitchell',
+        password: '1234',
+        email: 'mitchell@designfirstapps.com',
+        position: 'iOS dev',
+        avatar_url: mitchell_avatar_url,
+        team: results.createTeam
+    });
+
+    user.save()
+    .then(mitchell => {
+        callback(null, mitchell);
+    })
+    .catch(callback);
+}];
+
+const createKoriUser = ['createTeam', function(results, callback) {
+    logger.silly('creating kori user');
+
+    var user = new User({
+        _id: new mongoose.mongo.ObjectId(dummy_user_kori_id),
+        name: 'Kori',
+        password: '1234',
+        email: 'mitchell@founderfox.io',
+        position: 'designer',
+        avatar_url: kori_avatar_url,
+        team: results.createTeam
+    });
+
+    user.save()
+    .then(kori => {
+        callback(null, kori);
+    })
+    .catch(callback);
+}];
+
+const createAllenUser = ['createTeam', function (results, callback) {
+    logger.silly('creating allen user');
+
+    var user = new User({
+        _id: new mongoose.mongo.ObjectId(dummy_user_allen_id),
+        name: 'Allen',
+        password: '1234',
+        email: 'allen@designfirstapps.com',
+        position: 'iOS dev',
+        avatar_url: allen_avatar_url,
+        team: results.createTeam
+    });
+
+    user.save()
+    .then(allen => {
+        callback(null, allen);
+    })
+    .catch(callback);
+}];
+
+const createMikeUser = ['createTeam', function (results, callback) {
+    logger.silly('creating mike user');
+
+    var user = new User({
+        _id: new mongoose.mongo.ObjectId(dummy_user_mike_id),
+        name: 'Mike',
+        password: '1234',
+        email: 'mike@designfirstapps.com',
+        position: 'web dev',
+        avatar_url: mike_avatar_url,
+        team: results.createTeam
+    });
+
+    user.save()
+    .then(mike => {
+        callback(null, mike);
+    })
+    .catch(callback);
+}];
+
+function handleSeedSuccess() {
+    logger.silly('successfully seeded db');
+    process.exit();
+}
+
+function handleSeedError(err) {
+    logger.error('seed error: ' + err);
+    process.exit();
+}
