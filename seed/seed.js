@@ -462,7 +462,11 @@ const tasksAssignedByMitchell = ['mitchell', 'kori', 'allen', 'mike', 'mitchell_
             assignee: assignees[n],
             project: results.mitchell_created_projects[n],
             title: 'this is a test task title',
-            status: 'in_progress'
+            status: 'in_progress',
+            due_date: dummy_task_due_dates[Math.floor(Math.random() * dummy_task_due_dates.length)],
+            completion_percentage: Number(Math.random() * (100 - 27) + 27).toFixed(0),
+            attachment_count: Number(Math.random() * (10 - 2) + 2).toFixed(0),
+            chat_count: Number(Math.random() * (10 - 2) + 2).toFixed(0)
         });
         
         callback(null, task);
@@ -489,7 +493,11 @@ const tasksAssignedByKori = ['mitchell', 'kori', 'allen', 'mike', 'kori_created_
             assignee: assignees[n],
             project: results.kori_created_projects[n],
             title: 'this is a test task title',
-            status: 'in_progress'
+            status: 'in_progress',
+            due_date: dummy_task_due_dates[Math.floor(Math.random() * dummy_task_due_dates.length)],
+            completion_percentage: Number(Math.random() * (100 - 27) + 27).toFixed(0),
+            attachment_count: Number(Math.random() * (10 - 2) + 2).toFixed(0),
+            chat_count: Number(Math.random() * (10 - 2) + 2).toFixed(0)
         });
 
         callback(null, task);
@@ -505,22 +513,6 @@ const tasksAssignedByKori = ['mitchell', 'kori', 'allen', 'mike', 'kori_created_
     });
 }];
 
-// // Pretend this is some complicated async factory
-// var createUser = function(id, callback) {
-//     callback(null, {
-//         id: 'user' + id
-//     });
-// };
-
-// // generate 5 users
-// async.times(5, function(n, next) {
-//     createUser(n, function(err, user) {
-//         next(err, user);
-//     });
-// }, function(err, users) {
-//     // we should now have 5 users
-// });
-
 const tasksAssignedByAllen = ['mitchell', 'kori', 'allen', 'mike', 'allen_created_projects', function (results, callback) {
     logger.silly('creating tasks assigned by allen');
 
@@ -532,7 +524,11 @@ const tasksAssignedByAllen = ['mitchell', 'kori', 'allen', 'mike', 'allen_create
             assignee: assignees[n],
             project: results.allen_created_projects[n],
             title: 'this is a test task title',
-            status: 'in_progress'
+            status: 'in_progress',
+            due_date: dummy_task_due_dates[Math.floor(Math.random() * dummy_task_due_dates.length)],
+            completion_percentage: Number(Math.random() * (100 - 27) + 27).toFixed(0),
+            attachment_count: Number(Math.random() * (10 - 2) + 2).toFixed(0),
+            chat_count: Number(Math.random() * (10 - 2) + 2).toFixed(0)
         });
         
         callback(null, task);
@@ -559,7 +555,11 @@ const tasksAssignedByMike = ['mitchell', 'kori', 'allen', 'mike', 'mike_created_
             assignee: assignees[n],
             project: results.mike_created_projects[n],
             title: 'this is a test task title',
-            status: 'in_progress'
+            status: 'in_progress',
+            due_date: dummy_task_due_dates[Math.floor(Math.random() * dummy_task_due_dates.length)],
+            completion_percentage: Number(Math.random() * (100 - 27) + 27).toFixed(0),
+            attachment_count: Number(Math.random() * (10 - 2) + 2).toFixed(0),
+            chat_count: Number(Math.random() * (10 - 2) + 2).toFixed(0)
         });
         
         callback(null, task);

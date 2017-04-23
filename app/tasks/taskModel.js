@@ -51,6 +51,16 @@ var TaskSchema = new Schema({
 		type: Number,
 		required: true,
 		default: 0
+	},
+	attachment_count: {
+		type: Number,
+		required: true,
+		default: 0
+	},
+	chat_count: {
+		type: Number,
+		required: true,
+		default: 0
 	}
 });
 
