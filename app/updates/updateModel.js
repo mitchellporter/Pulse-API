@@ -23,6 +23,11 @@ var UpdateSchema = new Schema({
 		ref: 'User',
 		required: true
 	},
+	receiver: {
+		type: mongoose.Schema.Types.ObjectId,
+		ref: 'User',
+		required: true
+	},
 	task: {
 		type: mongoose.Schema.Types.ObjectId,
 		ref: 'Task',

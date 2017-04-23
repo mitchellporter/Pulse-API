@@ -679,6 +679,8 @@ const updateRequestsSentByMitchell = ['tasks_assigned_by_mitchell', function (re
     const createUpdateRequest = function(n, callback) {
 
         let update_request = new UpdateRequest({
+            sender: results.tasks_assigned_by_mitchell[n].assigner,
+            receiver: results.tasks_assigned_by_mitchell[n].assignee,
             task: results.tasks_assigned_by_mitchell[n]
         });
 
@@ -700,6 +702,8 @@ const updateRequestsSentByKori = ['tasks_assigned_by_kori', function (results, c
 
     const createUpdateRequest = function(n, callback) {
         let update_request = new UpdateRequest({
+            sender: results.tasks_assigned_by_kori[n].assigner,
+            receiver: results.tasks_assigned_by_kori[n].assignee,
             task: results.tasks_assigned_by_kori[n]
         });
         callback(null, update_request);
@@ -722,6 +726,8 @@ const updateRequestsSentByAllen = ['tasks_assigned_by_allen', function (results,
     const createUpdateRequest = function(n, callback) {
 
         let update_request = new UpdateRequest({
+            sender: results.tasks_assigned_by_allen[n].assigner,
+            receiver: results.tasks_assigned_by_allen[n].assignee,
             task: results.tasks_assigned_by_allen[n]
         });
         callback(null, update_request);
@@ -743,6 +749,8 @@ const updateRequestsSentByMike = ['tasks_assigned_by_mike', function (results, c
     const createUpdateRequest = function(n, callback) {
 
         let update_request = new UpdateRequest({
+            sender: results.tasks_assigned_by_mike[n].assigner,
+            receiver: results.tasks_assigned_by_mike[n].assignee,
             task: results.tasks_assigned_by_mike[n]
         });
         callback(null, update_request);
@@ -766,6 +774,7 @@ const updatesSentToMitchell = ['tasks_assigned_by_mitchell', function (results, 
         
         let update = new Update({
             sender: results.tasks_assigned_by_mitchell[n].assignee,
+            receiver: results.tasks_assigned_by_mitchell[n].assigner,
             comment: 'this is a test update comment',
             task: results.tasks_assigned_by_mitchell[n]
         });
@@ -789,6 +798,7 @@ const updatesSentToKori = ['tasks_assigned_by_kori', function (results, callback
         
         let update = new Update({
             sender: results.tasks_assigned_by_kori[n].assignee,
+            receiver: results.tasks_assigned_by_kori[n].assigner,
             comment: 'this is a test update comment',
             task: results.tasks_assigned_by_kori[n]
         });
@@ -812,6 +822,7 @@ const updatesSentToAllen = ['tasks_assigned_by_allen', function (results, callba
         
         let update = new Update({
             sender: results.tasks_assigned_by_allen[n].assignee,
+            receiver: results.tasks_assigned_by_allen[n].assigner,
             comment: 'this is a test update comment',
             task: results.tasks_assigned_by_allen[n]
         });
@@ -835,6 +846,7 @@ const updatesSentToMike = ['tasks_assigned_by_mike', function (results, callback
         
         let update = new Update({
             sender: results.tasks_assigned_by_mike[n].assignee,
+            receiver: results.tasks_assigned_by_mike[n].assigner,
             comment: 'this is a test update comment',
             task: results.tasks_assigned_by_mike[n]
         });
