@@ -239,8 +239,7 @@ const createMikeUser = ['team', function (results, callback) {
 const mitchellCreatedProjects = ['mitchell', 'kori', 'allen', 'mike', function (results, callback) {
     logger.silly('creating projects created by mitchell');
 
-    var projects = [];
-    var createProject = function(innerCallback) {
+    var createProject = function(callback) {
 
         let project = new Project({
             creator: results.mitchell,
@@ -252,8 +251,7 @@ const mitchellCreatedProjects = ['mitchell', 'kori', 'allen', 'mike', function (
             tasks_completed_count: 0
         });
         
-        projects.push(project);
-        innerCallback(null, project);
+        callback(null, project);
     };
 
     async.times(3, (n, next) => {
@@ -269,8 +267,7 @@ const mitchellCreatedProjects = ['mitchell', 'kori', 'allen', 'mike', function (
 const koriCreatedProjects = ['kori', 'mitchell', 'allen', 'mike', function (results, callback) {
      logger.silly('creating projects created by kori');
 
-    var projects = [];
-    var createProject = function(innerCallback) {
+    var createProject = function(callback) {
 
         let project = new Project({
             creator: results.kori,
@@ -282,8 +279,7 @@ const koriCreatedProjects = ['kori', 'mitchell', 'allen', 'mike', function (resu
             tasks_completed_count: 0
         });
         
-        projects.push(project);
-        innerCallback(null, project);
+        callback(null, project);
     };
 
     async.times(3, (n, next) => {
@@ -299,8 +295,7 @@ const koriCreatedProjects = ['kori', 'mitchell', 'allen', 'mike', function (resu
 const allenCreatedProjects = ['mitchell', 'kori', 'allen', 'mike', function (results, callback) {
      logger.silly('creating projects created by allen');
 
-    var projects = [];
-    var createProject = function(innerCallback) {
+    var createProject = function(callback) {
 
         let project = new Project({
             creator: results.allen,
@@ -312,8 +307,7 @@ const allenCreatedProjects = ['mitchell', 'kori', 'allen', 'mike', function (res
             tasks_completed_count: 0
         });
         
-        projects.push(project);
-        innerCallback(null, project);
+        callback(null, project);
     };
 
     async.times(3, (n, next) => {
@@ -329,8 +323,7 @@ const allenCreatedProjects = ['mitchell', 'kori', 'allen', 'mike', function (res
 const mikeCreatedProjects = ['mitchell', 'kori', 'allen', 'mike', function (results, callback) {
      logger.silly('creating projects created by mike');
 
-    var projects = [];
-    var createProject = function(innerCallback) {
+    var createProject = function(callback) {
 
         let project = new Project({
             creator: results.mike,
@@ -342,8 +335,7 @@ const mikeCreatedProjects = ['mitchell', 'kori', 'allen', 'mike', function (resu
             tasks_completed_count: 0
         });
         
-        projects.push(project);
-        innerCallback(null, project);
+        callback(null, project);
     };
 
     async.times(3, (n, next) => {
@@ -487,10 +479,14 @@ const tasksAssignedByMitchell = ['mitchell', 'kori', 'allen', 'mike', 'mitchell_
 }];
 
 const tasksAssignedByKori = ['mitchell', 'kori', 'allen', 'mike', 'kori_created_projects', function (results, callback) {
-    logger.silly('creating tasks assigned by kori');
+    logger.silly('CREATED PROJECTS LENGTH: ' + results.kori_created_projects.length);
 
     const assignees = [results.mitchell, results.allen, results.mike];
+    logger.silly('ASSIGNEES LENGTH: ' + assignees.length);
+    
     var createTask = function(n, callback) {
+
+        logger.silly('CREATE TASK');
 
         let task = new Task({
             assigner: results.kori,
@@ -499,12 +495,23 @@ const tasksAssignedByKori = ['mitchell', 'kori', 'allen', 'mike', 'kori_created_
             title: 'this is a test task title',
             status: 'in_progress'
         });
-        
-        task.save().then(task => { callback(null, task) }).catch(callback);
+
+        task.save()
+        .then(task => { 
+        logger.silly('TASK SUCCESS');
+        callback(null, task) 
+        })
+        .catch(err => {
+            logger.silly('TASK FAIL: ' + err);
+            logger.silly('TASK THAT FAILED: ' + task);
+            callback(err); 
+        });
     };
 
+    logger.silly('async ' + results.kori_created_projects.length + ' times');
     async.times(results.kori_created_projects.length, (n, next) => {
         createTask(n, (err, task) => {
+            logger.silly('next');
             next(err, task);
         });
     }, (err, tasks) => {
@@ -512,6 +519,22 @@ const tasksAssignedByKori = ['mitchell', 'kori', 'allen', 'mike', 'kori_created_
         callback(null, tasks);
     });
 }];
+
+// // Pretend this is some complicated async factory
+// var createUser = function(id, callback) {
+//     callback(null, {
+//         id: 'user' + id
+//     });
+// };
+
+// // generate 5 users
+// async.times(5, function(n, next) {
+//     createUser(n, function(err, user) {
+//         next(err, user);
+//     });
+// }, function(err, users) {
+//     // we should now have 5 users
+// });
 
 const tasksAssignedByAllen = ['mitchell', 'kori', 'allen', 'mike', 'allen_created_projects', function (results, callback) {
     logger.silly('creating tasks assigned by allen');
