@@ -26,7 +26,7 @@ exports.myTasks = function (req, res, next) {
 
 	function findTaskInvitationsForUser(callback) {
 		TaskInvitation.find({ receiver: user })
-			.populate([{ path: 'sender' }, { path: 'receiver' }, { path: 'task', populate: [{ path: 'subtasks' }, { path: 'assignee', select: '_id name email position avatar_url' }, { path: 'assigner', select: '_id name email position avatar_url' }] }])
+			.populate('sender receiver task')
 			.then((task_invitations) => {
 				logger.silly('found this many task invitations: ' + task_invitations.length);
 				response.task_invitations = task_invitations;
@@ -53,10 +53,6 @@ exports.myTasks = function (req, res, next) {
 
 exports.tasksCreated = function (req, res, next) {
 	var user = req.user;
-	logger.silly('user id: ' + user._id);
-	logger.silly('user name: ' + user.name);
-
-	var populate = [{ path: 'assigner' }, { path: 'assignee' }, { path: 'subtasks' }];
 
 	var response = {};
 	async.parallel([findTasks], (err) => {
@@ -67,22 +63,9 @@ exports.tasksCreated = function (req, res, next) {
 		res.status(200).json(response);
 	});
 
-	function findTaskInvitationsSentByUser(callback) {
-		TaskInvitation.find({ sender: user })
-			.populate([{ path: 'sender' }, { path: 'receiver' }, { path: 'task', populate: [{ path: 'subtasks' }, { path: 'assignee', select: '_id name email position avatar_url' }, { path: 'assigner', select: '_id name email position avatar_url' }] }])
-			.then((task_invitations) => {
-				logger.silly('found this many task invitations: ' + task_invitations.length);
-				response.task_invitations = task_invitations;
-				callback(null, task_invitations);
-			})
-			.catch((err) => {
-				callback(err, null);
-			});
-	}
-
 	function findTasks(callback) {
 		Task.find({ assigner: user })
-			.populate(populate)
+			.populate('assigner assignee')
 			.then((tasks) => {
 				logger.silly('found this many tasks: ' + tasks.length);
 				response.tasks = tasks;
