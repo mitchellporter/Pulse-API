@@ -1,6 +1,7 @@
 'use strict'
 
 const async = require('async');
+const _ = require('lodash');
 const casual = require('casual');
 const faker = require('faker');
 const Promise = require('bluebird');
@@ -11,6 +12,8 @@ mongoose.Promise = Promise;
 const logger = require('../lib/logger');
 const Team = require('../app/teams/teamModel');
 const User = require('../app/users/userModel');
+const Project = require('../app/projects/projectModel');
+const ProjectInvitation = require('../app/project_invitations/projectInvitationModel');
 const Task = require('../app/tasks/taskModel');
 const TaskInvitation = require('../app/task_invitations/taskInvitationModel');
 const Subtask = require('../app/subtasks/subtaskModel');
@@ -64,6 +67,7 @@ const response_id = '58c9d33a1f3ffc0ee7c2c80e';
 
 // Constants
 const update_days = ['monday', 'wednesday', 'friday'];
+const task_statuses = ['in_progress', 'completed'];
 
 mongoose.connection.on('connected', function () {
     logger.silly('Mongoose default connection open');
@@ -76,11 +80,53 @@ function startSeed() {
     logger.silly('starting seed...');
 
     async.auto({
+
+        // Team + members
         team: createTeam,
-        createMitchellUser,
-        createKoriUser,
-        createAllenUser,
-        createMikeUser,
+        mitchell: createMitchellUser,
+        kori: createKoriUser,
+        allen: createAllenUser,
+        mike: createMikeUser,
+
+        // Projects
+        mitchell_created_projects: mitchellCreatedProjects,
+        kori_created_projects: koriCreatedProjects,
+        allen_created_projects: allenCreatedProjects,
+        mike_created_projects: mikeCreatedProjects,
+
+        // Project invitations
+        mitchellReceivedProjectInvitations,
+        koriReceivedProjectInvitations,
+        allenReceivedProjectInvitations,
+        mikeReceivedProjectInvitations,
+
+        // Tasks
+        tasks_assigned_by_mitchell: tasksAssignedByMitchell,
+        tasks_assigned_by_kori: tasksAssignedByKori,
+        tasks_assigned_by_allen: tasksAssignedByAllen,
+        tasks_assigned_by_mike: tasksAssignedByMike,
+
+        // Task invitations
+        task_invitations_sent_by_mitchell: taskInvitationsSentByMitchell,
+        task_invitations_sent_by_kori: taskInvitationsSentByKori,
+        task_invitations_sent_by_allen: taskInvitationsSentByAllen,
+        task_invitations_sent_by_mike: taskInvitationsSentByMike,
+
+        // Update requests
+        update_requests_sent_by_mitchell: updateRequestsSentByMitchell,
+        update_requests_sent_by_kori: updateRequestsSentByKori,
+        update_requests_sent_by_allen: updateRequestsSentByAllen,
+        update_requests_sent_by_mike: updateRequestsSentByMike,
+
+        // Updates
+        updates_sent_to_mitchell: updatesSentToMitchell,
+        updates_sent_to_kori: updatesSentToKori,
+        updates_sent_to_allen: updatesSentToAllen,
+        updates_sent_to_mike: updatesSentToMike,
+
+        // Standups
+        standups
+
     }, (err, results) => {
         if (err) return handleSeedError(err);
         handleSeedSuccess();
@@ -91,6 +137,8 @@ function dropDb() {
     logger.silly('dropping db');
     return mongoose.connection.db.dropDatabase();
 }
+
+// Team + Members
 
 function createTeam(callback) {
     logger.silly('creating design first apps team');
@@ -185,6 +233,646 @@ const createMikeUser = ['team', function (results, callback) {
     })
     .catch(callback);
 }];
+
+// Projects
+
+const mitchellCreatedProjects = ['mitchell', 'kori', 'allen', 'mike', function (results, callback) {
+    logger.silly('creating projects created by mitchell');
+
+    var projects = [];
+    var createProject = function(innerCallback) {
+
+        let project = new Project({
+            creator: results.mitchell,
+            members: [results.mitchell, results.kori, results.allen, results.mike],
+            name: 'This is a test project title',
+            completion_percentage: 0, // TODO: Add random completion percentage
+            standups_count: 0,
+            tasks_in_progress_count: 0,
+            tasks_completed_count: 0
+        });
+        
+        projects.push(project);
+        innerCallback(null, project);
+    };
+
+    async.times(3, (n, next) => {
+        createProject((err, project) => {
+            next(err, project);
+        });
+    }, (err, projects) => {
+        if (err) return callback(err);
+        Project.create(projects).then(projects => { callback(null, projects) }).catch(callback);
+    });
+}];
+
+const koriCreatedProjects = ['kori', 'mitchell', 'allen', 'mike', function (results, callback) {
+     logger.silly('creating projects created by kori');
+
+    var projects = [];
+    var createProject = function(innerCallback) {
+
+        let project = new Project({
+            creator: results.kori,
+            members: [results.mitchell, results.kori, results.allen, results.mike],
+            name: 'This is a test project title',
+            completion_percentage: 0, // TODO: Add random completion percentage
+            standups_count: 0,
+            tasks_in_progress_count: 0,
+            tasks_completed_count: 0
+        });
+        
+        projects.push(project);
+        innerCallback(null, project);
+    };
+
+    async.times(3, (n, next) => {
+        createProject((err, project) => {
+            next(err, project);
+        });
+    }, (err, projects) => {
+        if (err) return callback(err);
+        Project.create(projects).then(projects => { callback(null, projects) }).catch(callback);
+    });
+}];
+
+const allenCreatedProjects = ['mitchell', 'kori', 'allen', 'mike', function (results, callback) {
+     logger.silly('creating projects created by allen');
+
+    var projects = [];
+    var createProject = function(innerCallback) {
+
+        let project = new Project({
+            creator: results.allen,
+            members: [results.mitchell, results.kori, results.allen, results.mike],
+            name: 'This is a test project title',
+            completion_percentage: 0, // TODO: Add random completion percentage
+            standups_count: 0,
+            tasks_in_progress_count: 0,
+            tasks_completed_count: 0
+        });
+        
+        projects.push(project);
+        innerCallback(null, project);
+    };
+
+    async.times(3, (n, next) => {
+        createProject((err, project) => {
+            next(err, project);
+        });
+    }, (err, projects) => {
+        if (err) return callback(err);
+        Project.create(projects).then(projects => { callback(null, projects) }).catch(callback);
+    });
+}];
+
+const mikeCreatedProjects = ['mitchell', 'kori', 'allen', 'mike', function (results, callback) {
+     logger.silly('creating projects created by mike');
+
+    var projects = [];
+    var createProject = function(innerCallback) {
+
+        let project = new Project({
+            creator: results.mike,
+            members: [results.mitchell, results.kori, results.allen, results.mike],
+            name: 'This is a test project title',
+            completion_percentage: 0, // TODO: Add random completion percentage
+            standups_count: 0,
+            tasks_in_progress_count: 0,
+            tasks_completed_count: 0
+        });
+        
+        projects.push(project);
+        innerCallback(null, project);
+    };
+
+    async.times(3, (n, next) => {
+        createProject((err, project) => {
+            next(err, project);
+        });
+    }, (err, projects) => {
+        if (err) return callback(err);
+        Project.create(projects).then(projects => { callback(null, projects) }).catch(callback);
+    });
+}];
+
+// Project Invitations
+
+const mitchellReceivedProjectInvitations = ['mitchell', 'kori_created_projects', 'allen_created_projects', 'mike_created_projects', function (results, callback) {
+    logger.silly('creating project invitations received by mitchell');
+
+    const projects = _.merge(results.kori_created_projects, results.allen_created_projects, results.mike_created_projects);
+    var createProjectInvitation = function(n, callback) {
+
+        let project_invitation = new ProjectInvitation({
+            sender: projects[n].creator,
+            receiver: results.mitchell,
+            project: projects[n]
+        });
+ 
+        project_invitation.save().then(project_invitation => { callback(null, project_invitation) }).catch(callback);
+    };
+
+    async.times(projects.length, (n, next) => {
+        createProjectInvitation(n, (err, project) => {
+            next(err, project);
+        });
+    }, (err, project_invitations) => {
+        if (err) return callback(err);
+        callback(null, project_invitations);
+    });
+}];
+
+const koriReceivedProjectInvitations = ['kori', 'mitchell_created_projects', 'allen_created_projects', 'mike_created_projects', function (results, callback) {
+    logger.silly('creating project invitations received by kori');
+
+    const projects = _.merge(results.mitchell_created_projects, results.allen_created_projects, results.mike_created_projects);
+    var createProjectInvitation = function(n, callback) {
+
+        let project_invitation = new ProjectInvitation({
+            sender: projects[n].creator,
+            receiver: results.kori,
+            project: projects[n]
+        });
+ 
+        project_invitation.save().then(project_invitation => { callback(null, project_invitation) }).catch(callback);
+    };
+
+    async.times(projects.length, (n, next) => {
+        createProjectInvitation(n, (err, project) => {
+            next(err, project);
+        });
+    }, (err, project_invitations) => {
+        if (err) return callback(err);
+        callback(null, project_invitations);
+    });
+}];
+
+const allenReceivedProjectInvitations = ['allen', 'mitchell_created_projects', 'kori_created_projects', 'mike_created_projects', function (results, callback) {
+    logger.silly('creating project invitations received by allen');
+
+    const projects = _.merge(results.mitchell_created_projects, results.kori_created_projects, results.mike_created_projects);
+    var createProjectInvitation = function(n, callback) {
+
+        let project_invitation = new ProjectInvitation({
+            sender: projects[n].creator,
+            receiver: results.allen,
+            project: projects[n]
+        });
+ 
+        project_invitation.save().then(project_invitation => { callback(null, project_invitation) }).catch(callback);
+    };
+
+    async.times(projects.length, (n, next) => {
+        createProjectInvitation(n, (err, project) => {
+            next(err, project);
+        });
+    }, (err, project_invitations) => {
+        if (err) return callback(err);
+        callback(null, project_invitations);
+    });
+}];
+
+const mikeReceivedProjectInvitations = ['mike', 'mitchell_created_projects', 'kori_created_projects', 'allen_created_projects', function (results, callback) {
+    logger.silly('creating project invitations received by mike');
+
+    const projects = _.merge(results.mitchell_created_projects, results.kori_created_projects, results.allen_created_projects);
+    var createProjectInvitation = function(n, callback) {
+
+        let project_invitation = new ProjectInvitation({
+            sender: projects[n].creator,
+            receiver: results.mike,
+            project: projects[n]
+        });
+ 
+        project_invitation.save().then(project_invitation => { callback(null, project_invitation) }).catch(callback);
+    };
+
+    async.times(projects.length, (n, next) => {
+        createProjectInvitation(n, (err, project) => {
+            next(err, project);
+        });
+    }, (err, project_invitations) => {
+        if (err) return callback(err);
+        callback(null, project_invitations);
+    });
+}];
+
+// Tasks
+const tasksAssignedByMitchell = ['mitchell', 'kori', 'allen', 'mike', 'mitchell_created_projects', function (results, callback) {
+    logger.silly('creating tasks assigned by mitchell');
+
+    const assignees = [results.kori, results.allen, results.mike];
+    var createTask = function(n, callback) {
+
+        let task = new Task({
+            assigner: results.mitchell,
+            assignee: assignees[n],
+            project: results.mitchell_created_projects[n],
+            title: 'this is a test task title',
+            status: 'in_progress'
+        });
+        
+        task.save().then(task => { callback(null, task) }).catch(callback);
+    };
+
+    async.times(results.mitchell_created_projects.length, (n, next) => {
+        createTask(n, (err, task) => {
+            next(err, task);
+        });
+    }, (err, tasks) => {
+        if (err) return callback(err);
+        callback(null, tasks);
+    });
+}];
+
+const tasksAssignedByKori = ['mitchell', 'kori', 'allen', 'mike', 'kori_created_projects', function (results, callback) {
+    logger.silly('creating tasks assigned by kori');
+
+    const assignees = [results.mitchell, results.allen, results.mike];
+    var createTask = function(n, callback) {
+
+        let task = new Task({
+            assigner: results.kori,
+            assignee: assignees[n],
+            project: results.kori_created_projects[n],
+            title: 'this is a test task title',
+            status: 'in_progress'
+        });
+        
+        task.save().then(task => { callback(null, task) }).catch(callback);
+    };
+
+    async.times(results.mitchell_created_projects.length, (n, next) => {
+        createTask(n, (err, task) => {
+            next(err, task);
+        });
+    }, (err, tasks) => {
+        if (err) return callback(err);
+        callback(null, tasks);
+    });
+}];
+
+const tasksAssignedByAllen = ['mitchell', 'kori', 'allen', 'mike', 'allen_created_projects', function (results, callback) {
+    logger.silly('creating tasks assigned by allen');
+
+    const assignees = [results.mitchell, results.kori, results.mike];
+    var createTask = function(n, callback) {
+
+        let task = new Task({
+            assigner: results.allen,
+            assignee: assignees[n],
+            project: results.allen_created_projects[n],
+            title: 'this is a test task title',
+            status: 'in_progress'
+        });
+        
+        task.save().then(task => { callback(null, task) }).catch(callback);
+    };
+
+    async.times(results.mitchell_created_projects.length, (n, next) => {
+        createTask(n, (err, task) => {
+            next(err, task);
+        });
+    }, (err, tasks) => {
+        if (err) return callback(err);
+        callback(null, tasks);
+    });
+}];
+
+const tasksAssignedByMike = ['mitchell', 'kori', 'allen', 'mike', 'mike_created_projects', function (results, callback) {
+    logger.silly('creating tasks assigned by mike');
+
+    const assignees = [results.mitchell, results.kori, results.allen];
+    var createTask = function(n, callback) {
+
+        let task = new Task({
+            assigner: results.mike,
+            assignee: assignees[n],
+            project: results.mike_created_projects[n],
+            title: 'this is a test task title',
+            status: 'in_progress'
+        });
+        
+        task.save().then(task => { callback(null, task) }).catch(callback);
+    };
+
+    async.times(results.mitchell_created_projects.length, (n, next) => {
+        createTask(n, (err, task) => {
+            next(err, task);
+        });
+    }, (err, tasks) => {
+        if (err) return callback(err);
+        callback(null, tasks);
+    });
+}];
+
+// Task invitations
+const taskInvitationsSentByMitchell = ['mitchell', 'tasks_assigned_by_mitchell', function (results, callback) {
+    logger.silly('creating task invitations sent by mitchell');
+
+    const createTaskInvitation = function(n, callback) {
+
+        let task_invitation = new TaskInvitation({
+            task: results.tasks_assigned_by_mitchell[n],
+            sender: results.mitchell,
+            receiver: results.tasks_assigned_by_mitchell[n].assignee
+        });
+        
+        task_invitation.save().then(task_invitation => { callback(null, task_invitation) }).catch(callback);
+    };
+
+    async.times(results.tasks_assigned_by_mitchell.length, (n, next) => {
+        createTaskInvitation(n, (err, task_invitation) => {
+            next(err, task_invitation);
+        });
+    }, (err, task_invitations) => {
+        if (err) return callback(err);
+        callback(null, task_invitations);
+    });
+}];
+
+const taskInvitationsSentByKori = ['kori', 'tasks_assigned_by_kori', function (results, callback) {
+    logger.silly('creating task invitations sent by kori');
+
+    const createTaskInvitation = function(n, callback) {
+
+        let task_invitation = new TaskInvitation({
+            task: results.tasks_assigned_by_kori[n],
+            sender: results.kori,
+            receiver: results.tasks_assigned_by_kori[n].assignee
+        });
+        
+        task_invitation.save().then(task_invitation => { callback(null, task_invitation) }).catch(callback);
+    };
+
+    async.times(results.tasks_assigned_by_kori.length, (n, next) => {
+        createTaskInvitation(n, (err, task_invitation) => {
+            next(err, task_invitation);
+        });
+    }, (err, task_invitations) => {
+        if (err) return callback(err);
+        callback(null, task_invitations);
+    });
+}];
+
+const taskInvitationsSentByAllen = ['allen', 'tasks_assigned_by_allen', function (results, callback) {
+    logger.silly('creating task invitations sent by allen');
+
+    const createTaskInvitation = function(n, callback) {
+
+        let task_invitation = new TaskInvitation({
+            task: results.tasks_assigned_by_allen[n],
+            sender: results.allen,
+            receiver: results.tasks_assigned_by_allen[n].assignee
+        });
+        
+        task_invitation.save().then(task_invitation => { callback(null, task_invitation) }).catch(callback);
+    };
+
+    async.times(results.tasks_assigned_by_allen.length, (n, next) => {
+        createTaskInvitation(n, (err, task_invitation) => {
+            next(err, task_invitation);
+        });
+    }, (err, task_invitations) => {
+        if (err) return callback(err);
+        callback(null, task_invitations);
+    });
+}];
+
+const taskInvitationsSentByMike = ['mike', 'tasks_assigned_by_mike', function (results, callback) {
+    logger.silly('creating task invitations sent by mike');
+
+    const createTaskInvitation = function(n, callback) {
+
+        let task_invitation = new TaskInvitation({
+            task: results.tasks_assigned_by_mike[n],
+            sender: results.mike,
+            receiver: results.tasks_assigned_by_mike[n].assignee
+        });
+        
+        task_invitation.save().then(task_invitation => { callback(null, task_invitation) }).catch(callback);
+    };
+
+    async.times(results.tasks_assigned_by_mike.length, (n, next) => {
+        createTaskInvitation(n, (err, task_invitation) => {
+            next(err, task_invitation);
+        });
+    }, (err, task_invitations) => {
+        if (err) return callback(err);
+        callback(null, task_invitations);
+    });
+}];
+
+// Update requests
+const updateRequestsSentByMitchell = ['tasks_assigned_by_mitchell', function (results, callback) {
+    logger.silly('creating update requests sent by mitchell');
+
+    const createUpdateRequest = function(n, callback) {
+
+        let update_request = new UpdateRequest({
+            task: results.tasks_assigned_by_mitchell[n]
+        });
+        update_request.save().then(update_request => { callback(null, update_request) }).catch(callback);
+    };
+
+    async.times(results.tasks_assigned_by_mitchell.length, (n, next) => {
+        createUpdateRequest(n, (err, update_request) => {
+            next(err, update_request);
+        });
+    }, (err, update_requests) => {
+        if (err) return callback(err);
+        callback(null, update_requests);
+    });
+}];
+
+const updateRequestsSentByKori = ['tasks_assigned_by_kori', function (results, callback) {
+    logger.silly('creating update requests sent by kori');
+
+    const createUpdateRequest = function(n, callback) {
+
+        let update_request = new UpdateRequest({
+            task: results.tasks_assigned_by_kori[n]
+        });
+        update_request.save().then(update_request => { callback(null, update_request) }).catch(callback);
+    };
+
+    async.times(results.tasks_assigned_by_mitchell.length, (n, next) => {
+        createUpdateRequest(n, (err, update_request) => {
+            next(err, update_request);
+        });
+    }, (err, update_requests) => {
+        if (err) return callback(err);
+        callback(null, update_requests);
+    });
+}];
+
+const updateRequestsSentByAllen = ['tasks_assigned_by_allen', function (results, callback) {
+    logger.silly('creating update requests sent by allen');
+
+    const createUpdateRequest = function(n, callback) {
+
+        let update_request = new UpdateRequest({
+            task: results.tasks_assigned_by_allen[n]
+        });
+        update_request.save().then(update_request => { callback(null, update_request) }).catch(callback);
+    };
+
+    async.times(results.tasks_assigned_by_mitchell.length, (n, next) => {
+        createUpdateRequest(n, (err, update_request) => {
+            next(err, update_request);
+        });
+    }, (err, update_requests) => {
+        if (err) return callback(err);
+        callback(null, update_requests);
+    });
+}];
+
+const updateRequestsSentByMike = ['tasks_assigned_by_mike', function (results, callback) {
+    logger.silly('creating update requests sent by mike');
+
+    const createUpdateRequest = function(n, callback) {
+
+        let update_request = new UpdateRequest({
+            task: results.tasks_assigned_by_mike[n]
+        });
+        update_request.save().then(update_request => { callback(null, update_request) }).catch(callback);
+    };
+
+    async.times(results.tasks_assigned_by_mike.length, (n, next) => {
+        createUpdateRequest(n, (err, update_request) => {
+            next(err, update_request);
+        });
+    }, (err, update_requests) => {
+        if (err) return callback(err);
+        callback(null, update_requests);
+    });
+}];
+
+// Updates
+const updatesSentToMitchell = ['tasks_assigned_by_mitchell', function (results, callback) {
+    logger.silly('creating updates sent to mitchell');
+
+    const createUpdate = function(n, callback) {
+        
+        let update = new Update({
+            sender: results.tasks_assigned_by_mitchell[n].assignee,
+            comment: 'this is a test update comment',
+            task: results.tasks_assigned_by_mitchell[n]
+        });
+        update.save().then(update => { callback(null, update) }).catch(callback);
+    };
+
+    async.times(results.tasks_assigned_by_mitchell.length, (n, next) => {
+        createUpdate(n, (err, update) => {
+            next(err, update);
+        });
+    }, (err, updates) => {
+        if (err) return callback(err);
+        callback(null, updates);
+    });
+}];
+
+const updatesSentToKori = ['tasks_assigned_by_kori', function (results, callback) {
+    logger.silly('creating updates sent to kori');
+
+    const createUpdate = function(n, callback) {
+        
+        let update = new Update({
+            sender: results.tasks_assigned_by_kori[n].assignee,
+            comment: 'this is a test update comment',
+            task: results.tasks_assigned_by_kori[n]
+        });
+        update.save().then(update => { callback(null, update) }).catch(callback);
+    };
+
+    async.times(results.tasks_assigned_by_kori.length, (n, next) => {
+        createUpdate(n, (err, update) => {
+            next(err, update);
+        });
+    }, (err, updates) => {
+        if (err) return callback(err);
+        callback(null, updates);
+    });
+}];
+
+const updatesSentToAllen = ['tasks_assigned_by_allen', function (results, callback) {
+    logger.silly('creating updates sent to allen');
+
+    const createUpdate = function(n, callback) {
+        
+        let update = new Update({
+            sender: results.tasks_assigned_by_allen[n].assignee,
+            comment: 'this is a test update comment',
+            task: results.tasks_assigned_by_allen[n]
+        });
+        update.save().then(update => { callback(null, update) }).catch(callback);
+    };
+
+    async.times(results.tasks_assigned_by_allen.length, (n, next) => {
+        createUpdate(n, (err, update) => {
+            next(err, update);
+        });
+    }, (err, updates) => {
+        if (err) return callback(err);
+        callback(null, updates);
+    });
+}];
+
+const updatesSentToMike = ['tasks_assigned_by_mike', function (results, callback) {
+    logger.silly('creating updates sent to mike');
+
+    const createUpdate = function(n, callback) {
+        
+        let update = new Update({
+            sender: results.tasks_assigned_by_mike[n].assignee,
+            comment: 'this is a test update comment',
+            task: results.tasks_assigned_by_mike[n]
+        });
+        update.save().then(update => { callback(null, update) }).catch(callback);
+    };
+
+    async.times(results.tasks_assigned_by_mike.length, (n, next) => {
+        createUpdate(n, (err, update) => {
+            next(err, update);
+        });
+    }, (err, updates) => {
+        if (err) return callback(err);
+        callback(null, updates);
+    });
+}];
+
+// Standups
+const standups = ['mitchell', 'kori', 'allen', 'mike', function (results, callback) {
+    logger.silly('creating standups');
+
+    const users = [results.mitchell, results.kori, results.allen, results.mike];
+    const createStandup = function(n, callback) {
+        
+        var user;
+        if (n <= 2) user = results.mitchell;
+        if (n <= 5 && !user) user = results.mitchell;
+        if (n <= 8 && !user) user = results.mitchell;
+        if (n <= 11 && !user) user = results.mitchell;
+
+        // logger.silly('author: ' + user);
+        let standup = new Standup({
+            author: user,
+            text: 'this is a test standup'
+        });
+        standup.save().then(standup => { callback(null, standup) }).catch(callback);
+    };
+
+    async.times(users.length * 3, (n, next) => {
+        createStandup(n, (err, standup) => {
+            next(err, standup);
+        });
+    }, (err, standups) => {
+        if (err) return callback(err);
+        callback(null, standups);
+    });
+}];
+
 
 function handleSeedSuccess() {
     logger.silly('successfully seeded db');

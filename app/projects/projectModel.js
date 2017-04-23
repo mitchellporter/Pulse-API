@@ -42,7 +42,7 @@ var ProjectSchema = new Schema({
         required: true,
         default: 0
     },
-    completed_tasks_count: {
+    tasks_completed_count: {
         type: Number,
         required: true,
         default: 0
@@ -54,11 +54,6 @@ ProjectSchema.pre('validate', function(next){
 	this.updated_at = new Date();
 
 	next();
-});
-
-// TODO: Try using hard bind and making this work
-ProjectSchema.pre('save', function(next) {
-
 });
 
 module.exports = mongoose.model('Project', ProjectSchema);
