@@ -849,15 +849,9 @@ const standups = ['mitchell', 'kori', 'allen', 'mike', function (results, callba
     const users = [results.mitchell, results.kori, results.allen, results.mike];
     const createStandup = function(n, callback) {
         
-        var user;
-        if (n <= 2) user = results.mitchell;
-        if (n <= 5 && !user) user = results.mitchell;
-        if (n <= 8 && !user) user = results.mitchell;
-        if (n <= 11 && !user) user = results.mitchell;
-
-        // logger.silly('author: ' + user);
+        const index = Math.trunc((n / 12) * 4);
         let standup = new Standup({
-            author: user,
+            author: users[index],
             text: 'this is a test standup'
         });
         standup.save().then(standup => { callback(null, standup) }).catch(callback);
