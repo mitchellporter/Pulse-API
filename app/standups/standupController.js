@@ -13,12 +13,8 @@ exports.params = function(req, res, next, id) {
 };
 
 exports.get = function(req, res, next) {
-
-    var query = {};
-	if (req.query.author) query.author = req.query.author
 	
-    Standup.find(query)
-    .populate('author', '_id name email position avatar_url')
+    Standup.mquery(req)
     .then(standups => {
         res.status(200).json({
             success: true,
