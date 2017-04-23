@@ -45,7 +45,6 @@ var TaskSchema = new Schema({
 	},
 	update_days: [{
 		type: String,
-		required: true,
 		enum: update_days
 	}],
     completion_percentage: {

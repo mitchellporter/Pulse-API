@@ -260,7 +260,7 @@ const mitchellCreatedProjects = ['mitchell', 'kori', 'allen', 'mike', function (
         });
     }, (err, projects) => {
         if (err) return callback(err);
-        Project.create(projects).then(projects => { callback(null, projects) }).catch(callback);
+        Project.create(projects).then(projects => { callback(null, projects) }).catch(logger.error);
     });
 }];
 
@@ -288,7 +288,7 @@ const koriCreatedProjects = ['kori', 'mitchell', 'allen', 'mike', function (resu
         });
     }, (err, projects) => {
         if (err) return callback(err);
-        Project.create(projects).then(projects => { callback(null, projects) }).catch(callback);
+        Project.create(projects).then(projects => { callback(null, projects) }).catch(logger.error);
     });
 }];
 
@@ -316,7 +316,7 @@ const allenCreatedProjects = ['mitchell', 'kori', 'allen', 'mike', function (res
         });
     }, (err, projects) => {
         if (err) return callback(err);
-        Project.create(projects).then(projects => { callback(null, projects) }).catch(callback);
+        Project.create(projects).then(projects => { callback(null, projects) }).catch(logger.error);
     });
 }];
 
@@ -344,7 +344,7 @@ const mikeCreatedProjects = ['mitchell', 'kori', 'allen', 'mike', function (resu
         });
     }, (err, projects) => {
         if (err) return callback(err);
-        Project.create(projects).then(projects => { callback(null, projects) }).catch(callback);
+        Project.create(projects).then(projects => { callback(null, projects) }).catch(logger.error);
     });
 }];
 
@@ -361,8 +361,8 @@ const mitchellReceivedProjectInvitations = ['mitchell', 'kori_created_projects',
             receiver: results.mitchell,
             project: projects[n]
         });
- 
-        project_invitation.save().then(project_invitation => { callback(null, project_invitation) }).catch(callback);
+
+        callback(null, project_invitation); 
     };
 
     async.times(projects.length, (n, next) => {
@@ -371,7 +371,7 @@ const mitchellReceivedProjectInvitations = ['mitchell', 'kori_created_projects',
         });
     }, (err, project_invitations) => {
         if (err) return callback(err);
-        callback(null, project_invitations);
+        ProjectInvitation.create(project_invitations).then(project_invitations => { callback(null, project_invitations) }).catch(logger.error);
     });
 }];
 
@@ -387,7 +387,7 @@ const koriReceivedProjectInvitations = ['kori', 'mitchell_created_projects', 'al
             project: projects[n]
         });
  
-        project_invitation.save().then(project_invitation => { callback(null, project_invitation) }).catch(callback);
+        callback(null, project_invitation); 
     };
 
     async.times(projects.length, (n, next) => {
@@ -396,7 +396,7 @@ const koriReceivedProjectInvitations = ['kori', 'mitchell_created_projects', 'al
         });
     }, (err, project_invitations) => {
         if (err) return callback(err);
-        callback(null, project_invitations);
+        ProjectInvitation.create(project_invitations).then(project_invitations => { callback(null, project_invitations) }).catch(logger.error);
     });
 }];
 
@@ -412,7 +412,7 @@ const allenReceivedProjectInvitations = ['allen', 'mitchell_created_projects', '
             project: projects[n]
         });
  
-        project_invitation.save().then(project_invitation => { callback(null, project_invitation) }).catch(callback);
+        callback(null, project_invitation); 
     };
 
     async.times(projects.length, (n, next) => {
@@ -421,7 +421,7 @@ const allenReceivedProjectInvitations = ['allen', 'mitchell_created_projects', '
         });
     }, (err, project_invitations) => {
         if (err) return callback(err);
-        callback(null, project_invitations);
+        ProjectInvitation.create(project_invitations).then(project_invitations => { callback(null, project_invitations) }).catch(logger.error);
     });
 }];
 
@@ -437,7 +437,7 @@ const mikeReceivedProjectInvitations = ['mike', 'mitchell_created_projects', 'ko
             project: projects[n]
         });
  
-        project_invitation.save().then(project_invitation => { callback(null, project_invitation) }).catch(callback);
+        callback(null, project_invitation); 
     };
 
     async.times(projects.length, (n, next) => {
@@ -446,7 +446,7 @@ const mikeReceivedProjectInvitations = ['mike', 'mitchell_created_projects', 'ko
         });
     }, (err, project_invitations) => {
         if (err) return callback(err);
-        callback(null, project_invitations);
+        ProjectInvitation.create(project_invitations).then(project_invitations => { callback(null, project_invitations) }).catch(logger.error);
     });
 }];
 
@@ -465,7 +465,7 @@ const tasksAssignedByMitchell = ['mitchell', 'kori', 'allen', 'mike', 'mitchell_
             status: 'in_progress'
         });
         
-        task.save().then(task => { callback(null, task) }).catch(callback);
+        callback(null, task);
     };
 
     async.times(results.mitchell_created_projects.length, (n, next) => {
@@ -474,19 +474,15 @@ const tasksAssignedByMitchell = ['mitchell', 'kori', 'allen', 'mike', 'mitchell_
         });
     }, (err, tasks) => {
         if (err) return callback(err);
-        callback(null, tasks);
+        Task.create(tasks).then(tasks => { callback(null, tasks) }).catch(logger.error);
     });
 }];
 
 const tasksAssignedByKori = ['mitchell', 'kori', 'allen', 'mike', 'kori_created_projects', function (results, callback) {
-    logger.silly('CREATED PROJECTS LENGTH: ' + results.kori_created_projects.length);
 
     const assignees = [results.mitchell, results.allen, results.mike];
-    logger.silly('ASSIGNEES LENGTH: ' + assignees.length);
     
     var createTask = function(n, callback) {
-
-        logger.silly('CREATE TASK');
 
         let task = new Task({
             assigner: results.kori,
@@ -496,27 +492,16 @@ const tasksAssignedByKori = ['mitchell', 'kori', 'allen', 'mike', 'kori_created_
             status: 'in_progress'
         });
 
-        task.save()
-        .then(task => { 
-        logger.silly('TASK SUCCESS');
-        callback(null, task) 
-        })
-        .catch(err => {
-            logger.silly('TASK FAIL: ' + err);
-            logger.silly('TASK THAT FAILED: ' + task);
-            callback(err); 
-        });
+        callback(null, task);
     };
 
-    logger.silly('async ' + results.kori_created_projects.length + ' times');
     async.times(results.kori_created_projects.length, (n, next) => {
         createTask(n, (err, task) => {
-            logger.silly('next');
             next(err, task);
         });
     }, (err, tasks) => {
         if (err) return callback(err);
-        callback(null, tasks);
+        Task.create(tasks).then(tasks => { callback(null, tasks) }).catch(logger.error);
     });
 }];
 
@@ -550,7 +535,7 @@ const tasksAssignedByAllen = ['mitchell', 'kori', 'allen', 'mike', 'allen_create
             status: 'in_progress'
         });
         
-        task.save().then(task => { callback(null, task) }).catch(callback);
+        callback(null, task);
     };
 
     async.times(results.allen_created_projects.length, (n, next) => {
@@ -559,7 +544,7 @@ const tasksAssignedByAllen = ['mitchell', 'kori', 'allen', 'mike', 'allen_create
         });
     }, (err, tasks) => {
         if (err) return callback(err);
-        callback(null, tasks);
+        Task.create(tasks).then(tasks => { callback(null, tasks) }).catch(logger.error);
     });
 }];
 
@@ -577,7 +562,7 @@ const tasksAssignedByMike = ['mitchell', 'kori', 'allen', 'mike', 'mike_created_
             status: 'in_progress'
         });
         
-        task.save().then(task => { callback(null, task) }).catch(callback);
+        callback(null, task);
     };
 
     async.times(results.mike_created_projects.length, (n, next) => {
@@ -586,7 +571,7 @@ const tasksAssignedByMike = ['mitchell', 'kori', 'allen', 'mike', 'mike_created_
         });
     }, (err, tasks) => {
         if (err) return callback(err);
-        callback(null, tasks);
+        Task.create(tasks).then(tasks => { callback(null, tasks) }).catch(logger.error);
     });
 }];
 
@@ -602,7 +587,7 @@ const taskInvitationsSentByMitchell = ['mitchell', 'tasks_assigned_by_mitchell',
             receiver: results.tasks_assigned_by_mitchell[n].assignee
         });
         
-        task_invitation.save().then(task_invitation => { callback(null, task_invitation) }).catch(callback);
+        callback(null, task_invitation);
     };
 
     async.times(results.tasks_assigned_by_mitchell.length, (n, next) => {
@@ -611,7 +596,7 @@ const taskInvitationsSentByMitchell = ['mitchell', 'tasks_assigned_by_mitchell',
         });
     }, (err, task_invitations) => {
         if (err) return callback(err);
-        callback(null, task_invitations);
+        TaskInvitation.create(task_invitations).then(task_invitations => { callback(null, task_invitations) }).catch(logger.error);
     });
 }];
 
@@ -626,7 +611,7 @@ const taskInvitationsSentByKori = ['kori', 'tasks_assigned_by_kori', function (r
             receiver: results.tasks_assigned_by_kori[n].assignee
         });
         
-        task_invitation.save().then(task_invitation => { callback(null, task_invitation) }).catch(callback);
+        callback(null, task_invitation);
     };
 
     async.times(results.tasks_assigned_by_kori.length, (n, next) => {
@@ -635,7 +620,7 @@ const taskInvitationsSentByKori = ['kori', 'tasks_assigned_by_kori', function (r
         });
     }, (err, task_invitations) => {
         if (err) return callback(err);
-        callback(null, task_invitations);
+        TaskInvitation.create(task_invitations).then(task_invitations => { callback(null, task_invitations) }).catch(logger.error);
     });
 }];
 
@@ -650,7 +635,7 @@ const taskInvitationsSentByAllen = ['allen', 'tasks_assigned_by_allen', function
             receiver: results.tasks_assigned_by_allen[n].assignee
         });
         
-        task_invitation.save().then(task_invitation => { callback(null, task_invitation) }).catch(callback);
+        callback(null, task_invitation);
     };
 
     async.times(results.tasks_assigned_by_allen.length, (n, next) => {
@@ -659,7 +644,7 @@ const taskInvitationsSentByAllen = ['allen', 'tasks_assigned_by_allen', function
         });
     }, (err, task_invitations) => {
         if (err) return callback(err);
-        callback(null, task_invitations);
+        TaskInvitation.create(task_invitations).then(task_invitations => { callback(null, task_invitations) }).catch(logger.error);
     });
 }];
 
@@ -674,7 +659,7 @@ const taskInvitationsSentByMike = ['mike', 'tasks_assigned_by_mike', function (r
             receiver: results.tasks_assigned_by_mike[n].assignee
         });
         
-        task_invitation.save().then(task_invitation => { callback(null, task_invitation) }).catch(callback);
+        callback(null, task_invitation);
     };
 
     async.times(results.tasks_assigned_by_mike.length, (n, next) => {
@@ -683,7 +668,7 @@ const taskInvitationsSentByMike = ['mike', 'tasks_assigned_by_mike', function (r
         });
     }, (err, task_invitations) => {
         if (err) return callback(err);
-        callback(null, task_invitations);
+        TaskInvitation.create(task_invitations).then(task_invitations => { callback(null, task_invitations) }).catch(logger.error);
     });
 }];
 
@@ -696,7 +681,8 @@ const updateRequestsSentByMitchell = ['tasks_assigned_by_mitchell', function (re
         let update_request = new UpdateRequest({
             task: results.tasks_assigned_by_mitchell[n]
         });
-        update_request.save().then(update_request => { callback(null, update_request) }).catch(callback);
+
+        callback(null, update_request);
     };
 
     async.times(results.tasks_assigned_by_mitchell.length, (n, next) => {
@@ -705,7 +691,7 @@ const updateRequestsSentByMitchell = ['tasks_assigned_by_mitchell', function (re
         });
     }, (err, update_requests) => {
         if (err) return callback(err);
-        callback(null, update_requests);
+        UpdateRequest.create(update_requests).then(update_requests => { callback(null, update_requests) }).catch(logger.error);
     });
 }];
 
@@ -713,20 +699,20 @@ const updateRequestsSentByKori = ['tasks_assigned_by_kori', function (results, c
     logger.silly('creating update requests sent by kori');
 
     const createUpdateRequest = function(n, callback) {
-
         let update_request = new UpdateRequest({
             task: results.tasks_assigned_by_kori[n]
         });
-        update_request.save().then(update_request => { callback(null, update_request) }).catch(callback);
+        callback(null, update_request);
     };
 
-    async.times(results.tasks_assigned_by_mitchell.length, (n, next) => {
+    async.times(results.tasks_assigned_by_kori.length, (n, next) => {
         createUpdateRequest(n, (err, update_request) => {
+            // logger.silly('update request: ' + update_request);
             next(err, update_request);
         });
     }, (err, update_requests) => {
         if (err) return callback(err);
-        callback(null, update_requests);
+        UpdateRequest.create(update_requests).then(update_requests => { callback(null, update_requests) }).catch(logger.error);
     });
 }];
 
@@ -738,16 +724,16 @@ const updateRequestsSentByAllen = ['tasks_assigned_by_allen', function (results,
         let update_request = new UpdateRequest({
             task: results.tasks_assigned_by_allen[n]
         });
-        update_request.save().then(update_request => { callback(null, update_request) }).catch(callback);
+        callback(null, update_request);
     };
 
-    async.times(results.tasks_assigned_by_mitchell.length, (n, next) => {
+    async.times(results.tasks_assigned_by_allen.length, (n, next) => {
         createUpdateRequest(n, (err, update_request) => {
             next(err, update_request);
         });
     }, (err, update_requests) => {
         if (err) return callback(err);
-        callback(null, update_requests);
+        UpdateRequest.create(update_requests).then(update_requests => { callback(null, update_requests) }).catch(logger.error);
     });
 }];
 
@@ -759,7 +745,7 @@ const updateRequestsSentByMike = ['tasks_assigned_by_mike', function (results, c
         let update_request = new UpdateRequest({
             task: results.tasks_assigned_by_mike[n]
         });
-        update_request.save().then(update_request => { callback(null, update_request) }).catch(callback);
+        callback(null, update_request);
     };
 
     async.times(results.tasks_assigned_by_mike.length, (n, next) => {
@@ -768,7 +754,7 @@ const updateRequestsSentByMike = ['tasks_assigned_by_mike', function (results, c
         });
     }, (err, update_requests) => {
         if (err) return callback(err);
-        callback(null, update_requests);
+        UpdateRequest.create(update_requests).then(update_requests => { callback(null, update_requests) }).catch(logger.error);
     });
 }];
 
@@ -783,7 +769,7 @@ const updatesSentToMitchell = ['tasks_assigned_by_mitchell', function (results, 
             comment: 'this is a test update comment',
             task: results.tasks_assigned_by_mitchell[n]
         });
-        update.save().then(update => { callback(null, update) }).catch(callback);
+        callback(null, update);
     };
 
     async.times(results.tasks_assigned_by_mitchell.length, (n, next) => {
@@ -792,7 +778,7 @@ const updatesSentToMitchell = ['tasks_assigned_by_mitchell', function (results, 
         });
     }, (err, updates) => {
         if (err) return callback(err);
-        callback(null, updates);
+        Update.create(updates).then(updates => { callback(null, updates) }).catch(logger.error);    
     });
 }];
 
@@ -806,7 +792,7 @@ const updatesSentToKori = ['tasks_assigned_by_kori', function (results, callback
             comment: 'this is a test update comment',
             task: results.tasks_assigned_by_kori[n]
         });
-        update.save().then(update => { callback(null, update) }).catch(callback);
+        callback(null, update);
     };
 
     async.times(results.tasks_assigned_by_kori.length, (n, next) => {
@@ -815,7 +801,7 @@ const updatesSentToKori = ['tasks_assigned_by_kori', function (results, callback
         });
     }, (err, updates) => {
         if (err) return callback(err);
-        callback(null, updates);
+        Update.create(updates).then(updates => { callback(null, updates) }).catch(logger.error);    
     });
 }];
 
@@ -829,7 +815,7 @@ const updatesSentToAllen = ['tasks_assigned_by_allen', function (results, callba
             comment: 'this is a test update comment',
             task: results.tasks_assigned_by_allen[n]
         });
-        update.save().then(update => { callback(null, update) }).catch(callback);
+        callback(null, update);
     };
 
     async.times(results.tasks_assigned_by_allen.length, (n, next) => {
@@ -838,7 +824,7 @@ const updatesSentToAllen = ['tasks_assigned_by_allen', function (results, callba
         });
     }, (err, updates) => {
         if (err) return callback(err);
-        callback(null, updates);
+        Update.create(updates).then(updates => { callback(null, updates) }).catch(logger.error);    
     });
 }];
 
@@ -852,7 +838,7 @@ const updatesSentToMike = ['tasks_assigned_by_mike', function (results, callback
             comment: 'this is a test update comment',
             task: results.tasks_assigned_by_mike[n]
         });
-        update.save().then(update => { callback(null, update) }).catch(callback);
+        callback(null, update);
     };
 
     async.times(results.tasks_assigned_by_mike.length, (n, next) => {
@@ -861,7 +847,7 @@ const updatesSentToMike = ['tasks_assigned_by_mike', function (results, callback
         });
     }, (err, updates) => {
         if (err) return callback(err);
-        callback(null, updates);
+        Update.create(updates).then(updates => { callback(null, updates) }).catch(logger.error);    
     });
 }];
 
@@ -877,7 +863,7 @@ const standups = ['mitchell', 'kori', 'allen', 'mike', function (results, callba
             author: users[index],
             text: 'this is a test standup'
         });
-        standup.save().then(standup => { callback(null, standup) }).catch(callback);
+        callback(null, standup);
     };
 
     async.times(users.length * 3, (n, next) => {
@@ -886,7 +872,7 @@ const standups = ['mitchell', 'kori', 'allen', 'mike', function (results, callba
         });
     }, (err, standups) => {
         if (err) return callback(err);
-        callback(null, standups);
+        Standup.create(standups).then(standups => { callback(null, standups) }).catch(logger.error);
     });
 }];
 
