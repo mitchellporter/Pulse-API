@@ -503,7 +503,7 @@ const tasksAssignedByKori = ['mitchell', 'kori', 'allen', 'mike', 'kori_created_
         task.save().then(task => { callback(null, task) }).catch(callback);
     };
 
-    async.times(results.mitchell_created_projects.length, (n, next) => {
+    async.times(results.kori_created_projects.length, (n, next) => {
         createTask(n, (err, task) => {
             next(err, task);
         });
@@ -530,7 +530,7 @@ const tasksAssignedByAllen = ['mitchell', 'kori', 'allen', 'mike', 'allen_create
         task.save().then(task => { callback(null, task) }).catch(callback);
     };
 
-    async.times(results.mitchell_created_projects.length, (n, next) => {
+    async.times(results.allen_created_projects.length, (n, next) => {
         createTask(n, (err, task) => {
             next(err, task);
         });
@@ -557,7 +557,7 @@ const tasksAssignedByMike = ['mitchell', 'kori', 'allen', 'mike', 'mike_created_
         task.save().then(task => { callback(null, task) }).catch(callback);
     };
 
-    async.times(results.mitchell_created_projects.length, (n, next) => {
+    async.times(results.mike_created_projects.length, (n, next) => {
         createTask(n, (err, task) => {
             next(err, task);
         });
