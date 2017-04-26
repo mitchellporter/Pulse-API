@@ -5,6 +5,8 @@ const logger = require('./lib/logger');
 const middleware = require('./lib/middleware');
 const errors = require('./lib/errors');
 const throng = require('throng');
+const knex = require('knex')(require('./knexfile')['development']);
+const Model = require('objection').Model;
 const Promise = require('bluebird');
 
 const api = require('./app/api/api');
@@ -19,6 +21,8 @@ const options = {
 throng(options, start);
 
 function start() {
+	
+	Model.knex(knex);
 	
 	app.set('x-powered-by', false);
 	app.set('trust proxy', true);
