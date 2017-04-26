@@ -1,53 +1,38 @@
-const logger = require('../../lib/logger');
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+const Model = require('objection').Model;
+const Project = require('../projects/project');
+const User = require('../users/user');
 
-const statuses = ['pending', 'accepted', 'denied'];
-
-var ProjectInvitationSchema = new Schema({
-	created_at: {
-		type: Date,
-		required: true
-	},
-	updated_at: {
-		type: Date,
-		required: true
-	},
-	sender: {
-		type: mongoose.Schema.Types.ObjectId,
-		ref: 'User',
-		required: true
-	},
-    receiver: {
-		type: mongoose.Schema.Types.ObjectId,
-		ref: 'User'
-		// required: true
-	},
-	project: {
-		type: mongoose.Schema.Types.ObjectId,
-		ref: 'project',
-		required: true
-	},
-	status: {
-		type: String,
-		required: true,
-		default: 'pending',
-		enum: statuses
+class ProjectInvitation extends Model {
+	static get tableName() {
+		return 'ProjectInvitation';
 	}
-});
 
-ProjectInvitationSchema.pre('validate', function(next) {
-	if(!this.created_at) this.created_at = new Date();
-	this.updated_at = new Date();
-	next();
-});
-
-ProjectInvitationSchema.methods = {
-	toJSON: function() {
-		var obj = this.toObject();
-		delete obj.__v;
-		return obj;
+	static get relationMappings() {
+		return {
+			project: {
+				relation: Model.BelongsToOneRelation,
+				modelClass: Project,
+				join: {
+					from: 'projectinvitation.project',
+					to: 'project.id'
+				}
+			},
+			sender: {
+				relation: Model.BelongsToOneRelation,
+				modelClass: User,
+				join: {
+					from: 'projectinvitation.sender',
+					to: 'user.id'
+				}
+			},
+			receiver: {
+				relation: Model.BelongsToOneRelation,
+				modelClass: User,
+				join: {
+					from: 'projectinvitation.receiver',
+					to: 'user.id'
+				}
+			}
+		}
 	}
 }
-
-module.exports = mongoose.model('ProjectInvitation', ProjectInvitationSchema);
