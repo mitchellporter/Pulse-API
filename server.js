@@ -4,7 +4,6 @@ const config = require('./config/config');
 const logger = require('./lib/logger');
 const middleware = require('./lib/middleware');
 const errors = require('./lib/errors');
-const throng = require('throng');
 const knex = require('knex')(require('./knexfile')['development']);
 const Model = require('objection').Model;
 const Promise = require('bluebird');
@@ -13,48 +12,38 @@ const api = require('./app/api/api');
 const express = require('express');
 const app = express();
 
-const options = {
-	workers: config.web_concurrency,
-	lifetime: Infinity
+Model.knex(knex);
+
+app.set('x-powered-by', false);
+app.set('trust proxy', true);
+
+// middleware
+middleware(app);
+
+// routes
+app.use('/api/' + config.api_version, api);
+
+// web routes
+app.use('/', require('./web/routes'));
+
+// errors
+app.use(errors);
+
+// Server setup
+var server = app.listen(config.port, () => {
+	logger.silly('pid: ' + process.pid + ' listening on port:' + config.port);
+});
+
+// Shutdown
+var gracefulShutdown = () => {
+	logger.silly('Received SIGTERM signal, shutting down express server');
+	server.close();
 }
 
-throng(options, start);
+process.on('SIGTERM', gracefulShutdown);
 
-function start() {
-	
-	Model.knex(knex);
-	
-	app.set('x-powered-by', false);
-	app.set('trust proxy', true);
+server.on('close', () => {
+	logger.silly('Express server closed.. about to cleanup connections');
 
-	// middleware
-	middleware(app);
-	
-	// routes
-	app.use('/api/' + config.api_version, api);
-
-	// web routes
-	app.use('/', require('./web/routes'));
-	
-	// errors
-	app.use(errors);
-	
-	// Server setup
-	var server = app.listen(config.port, () => {
-		logger.silly('pid: ' + process.pid + ' listening on port:' + config.port);
-	});
-	
-	// Shutdown
-	var gracefulShutdown = () => {
-		logger.silly('Received SIGTERM signal, shutting down express server');
-		server.close();
-	}
-	
-	process.on('SIGTERM', gracefulShutdown);
-		
-	server.on('close', () => {
-		logger.silly('Express server closed.. about to cleanup connections');
-		
-		mongoose.disconnect();
-	});
-}
+	mongoose.disconnect();
+});
