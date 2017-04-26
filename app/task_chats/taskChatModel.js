@@ -1,48 +1,38 @@
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+const Model = require('objection').Model;
+const User = require('../users/user');
+const Task = require('../tasks/task');
 
-const TaskChatSchema = new Schema({
-    created_at: {
-        type: Date,
-        required: true
-    },
-    updated_at: {
-        type: Date,
-        required: true
-    },
-    message: {
-        type: String,
-        required: true
-    },
-    sender: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-        required: true
-    },
-    task: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Task',
-        required: true
+class TaskChat extends Model {
+    static get tableName() {
+        return 'TaskChat';
     }
-});
 
-TaskChatSchema.pre('validate', function(next) {
-	if(!this.created_at) this.created_at = new Date();
-	this.updated_at = new Date();
-	next();
-});
-
-TaskChatSchema.pre('save', function(next) {
-	if (!this.isNew) return next();
-	next();
-});
-
-TaskChatSchema.methods = {	
-	toJSON: function() {
-		var obj = this.toObject();
-		delete obj.__v;
-		return obj;
-	}
+    static get relationMappings() {
+        return {
+            sender: {
+                relation: Model.BelongsToOneRelation,
+                modelClass: User,
+                join: {
+                    from: 'taskchat.sender',
+                    to: 'user.id'
+                }
+            },
+            receiver: {
+                relation: Model.BelongsToOneRelation,
+                modelClass: User,
+                join: {
+                    from: 'taskchat.receiver',
+                    to: 'user.id'
+                }
+            },
+            task: {
+                relation: Model.BelongsToOneRelation,
+                modelClass: Task,
+                join: {
+                    from: 'taskchat.task',
+                    to: 'task.id'
+                }
+            }
+        }
+    }
 }
-
-module.exports = mongoose.model('TaskChat', TaskChatSchema);
