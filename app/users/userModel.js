@@ -2,7 +2,6 @@ const logger = require('../../lib/logger');
 const bcrypt = require('bcrypt');
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const Response = require('../responses/responseModel');
 
 var UserSchema = new Schema({
 	created_at: {
@@ -39,8 +38,7 @@ var UserSchema = new Schema({
 	},
     apns_token: {
         type: String
-    },
-	most_recent_update_response: Response.schema,
+    }
 });
 
 UserSchema.pre('validate', function(next){
@@ -98,39 +96,11 @@ UserSchema.methods = {
 		delete obj.password;
 		return obj;
 	},
-	storeMostRecentUpdateResponse,
-	storeMostRecentResponseFromUpdate,
 	setRandomAvatarURL
-}
+};
 
 function setRandomAvatarURL() {
 	this.avatar_url = randomAvatarURL();
-}
-
-function storeMostRecentUpdateResponse(response) {
-	return new Promise((resolve, reject) => {
-		this.isNew = false;
-		this.most_recent_update_response = response;
-
-		this.save()
-		.then(resolve)
-		.catch(reject);
-	});
-}
-
-function storeMostRecentResponseFromUpdate(update) {
-	return new Promise((resolve, reject) => {
-		update.responseForAssigneeId(this._id)
-		.then((response) => {
-			if (!response) return reject(new Error('no response on update belongs to user'));
-
-			this.isNew = false;
-			this.most_recent_update_response = response;
-			return this.save();
-		})
-		.then(resolve)
-		.catch(reject);
-	});
 }
 
 module.exports = mongoose.model('User', UserSchema);

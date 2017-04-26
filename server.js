@@ -9,6 +9,9 @@ const Promise = require('bluebird');
 const mongoose = require('mongoose').connect(config.mongo_url);
 mongoose.Promise = Promise;
 
+const mquery = require('express-mquery');
+mongoose.plugin(mquery.plugin, { limit:10 });
+
 const api = require('./app/api/api');
 const express = require('express');
 const app = express();

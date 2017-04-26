@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 
 const statuses = ['in_progress', 'completed'];
 
-var ItemSchema = new Schema({
+var SubtaskSchema = new Schema({
 	created_at: {
 		type: Date,
 		required: true
@@ -13,10 +13,19 @@ var ItemSchema = new Schema({
 		type: Date,
 		required: true
 	},
-	text: {
-		type: String,
-		required: true
+	task: {
+		type: mongoose.Schema.Types.ObjectId,
+		ref: 'Task',
+		required: true 
 	},
+	completed_by: {
+		type: mongoose.Schema.Types.ObjectId,
+		ref: 'User'
+	},
+    text: {
+        type: String,
+        required: true
+    },
     status: {
 		type: String,
 		required: true,
@@ -25,18 +34,18 @@ var ItemSchema = new Schema({
 	}
 });
 
-ItemSchema.pre('validate', function(next) {
+SubtaskSchema.pre('validate', function(next) {
 	if(!this.created_at) this.created_at = new Date();
 	this.updated_at = new Date();
 	next();
 });
 
-ItemSchema.methods = {
+SubtaskSchema.methods = {
 	toJSON: function() {
 		var obj = this.toObject();
 		delete obj.__v;
 		return obj;
 	}
-}
+};
 
-module.exports = mongoose.model('Item', ItemSchema);
+module.exports = mongoose.model('SubTask', SubtaskSchema);
