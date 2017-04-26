@@ -8,6 +8,9 @@ const knex = require('knex')(require('./knexfile')['development']);
 const Model = require('objection').Model;
 const Promise = require('bluebird');
 
+const mquery = require('express-mquery');
+mongoose.plugin(mquery.plugin, { limit:10 });
+
 const api = require('./app/api/api');
 const express = require('express');
 const app = express();
