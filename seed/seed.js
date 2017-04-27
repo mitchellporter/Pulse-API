@@ -8,6 +8,7 @@ const Promise = require('bluebird');
 const config = require('../config/config');
 
 const knex = require('knex')(require('../knexfile')['development']);
+const knex_cleaner = require('knex-cleaner');
 const Model = require('objection').Model;
 Model.knex(knex);
 
@@ -71,16 +72,15 @@ const response_id = '58c9d33a1f3ffc0ee7c2c80e';
 const update_days = ['monday', 'wednesday', 'friday'];
 const task_statuses = ['in_progress', 'completed'];
 
-// knex.raw('select 1+1 as result').then(function () {
-//   // there is a valid connection in the pool
-// })
+knex.raw('select 1+1 as result').then(function () {
+  // there is a valid connection in the pool
+    logger.silly('knex successful connection to pg');
 
-// mongoose.connection.on('connected', function () {
-//     logger.silly('Mongoose default connection open');
-//     dropDb()
-//     .then(startSeed)
-//     .catch(handleSeedError);
-// });
+    dropDb()
+    .then(startSeed)
+    .catch(handleSeedError);
+});
+
 
 function startSeed() {
     logger.silly('starting seed...');
@@ -141,7 +141,11 @@ function startSeed() {
 
 function dropDb() {
     logger.silly('dropping db');
-    return mongoose.connection.db.dropDatabase();
+    return new Promise((resolve, reject) => {
+        knex_cleaner.clean(knex).then(function () {
+            resolve();
+        });
+    });
 }
 
 // Team + Members
