@@ -6,20 +6,22 @@ const casual = require('casual');
 const faker = require('faker');
 const Promise = require('bluebird');
 const config = require('../config/config');
-const mongoose = require('mongoose').connect(config.mongo_url);
-mongoose.Promise = Promise;
+
+const knex = require('knex')(require('../knexfile')['development']);
+const Model = require('objection').Model;
+Model.knex(knex);
 
 const logger = require('../lib/logger');
-const Team = require('../app/teams/teamModel');
-const User = require('../app/users/userModel');
-const Project = require('../app/projects/projectModel');
-const ProjectInvitation = require('../app/project_invitations/projectInvitationModel');
-const Task = require('../app/tasks/taskModel');
-const TaskInvitation = require('../app/task_invitations/taskInvitationModel');
-const Subtask = require('../app/subtasks/subtaskModel');
-const Update = require('../app/updates/updateModel');
-const UpdateRequest = require('../app/update_requests/updateRequestModel');
-const Standup = require('../app/standups/standupModel');
+const Team = require('../app/teams/team');
+const User = require('../app/users/user');
+const Project = require('../app/projects/project');
+const ProjectInvitation = require('../app/project_invitations/projectInvitation');
+const Task = require('../app/tasks/task');
+const TaskInvitation = require('../app/task_invitations/taskInvitation');
+const Subtask = require('../app/subtasks/subtask');
+const Update = require('../app/updates/update');
+const UpdateRequest = require('../app/update_requests/updateRequest');
+const Standup = require('../app/standups/standup');
 
 // Assets
 const cdn_url = 'https://d33833kh9ui3rd.cloudfront.net/';
@@ -69,12 +71,16 @@ const response_id = '58c9d33a1f3ffc0ee7c2c80e';
 const update_days = ['monday', 'wednesday', 'friday'];
 const task_statuses = ['in_progress', 'completed'];
 
-mongoose.connection.on('connected', function () {
-    logger.silly('Mongoose default connection open');
-    dropDb()
-    .then(startSeed)
-    .catch(handleSeedError);
-});
+// knex.raw('select 1+1 as result').then(function () {
+//   // there is a valid connection in the pool
+// })
+
+// mongoose.connection.on('connected', function () {
+//     logger.silly('Mongoose default connection open');
+//     dropDb()
+//     .then(startSeed)
+//     .catch(handleSeedError);
+// });
 
 function startSeed() {
     logger.silly('starting seed...');

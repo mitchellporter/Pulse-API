@@ -19,3 +19,5 @@ class Standup extends Model {
 		}
 	}
 }
+
+module.exports = Standup;

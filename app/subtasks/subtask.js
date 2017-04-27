@@ -36,3 +36,5 @@ class Subtask extends Model {
 		}
 	}
 }
+
+module.exports = Subtask;

@@ -36,3 +36,5 @@ class TaskChat extends Model {
         }
     }
 }
+
+module.exports = TaskChat;

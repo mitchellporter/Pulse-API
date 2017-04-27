@@ -36,3 +36,5 @@ class ProjectInvitation extends Model {
 		}
 	}
 }
+
+module.exports = ProjectInvitation;

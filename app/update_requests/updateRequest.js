@@ -19,3 +19,5 @@ class UpdateRequest extends Model {
 		}
 	}
 }
+
+module.exports = UpdateRequest;

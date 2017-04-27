@@ -45,3 +45,5 @@ class Update extends Model {
 		}
 	}
 }
+
+module.exports = Update;
