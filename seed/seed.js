@@ -189,7 +189,6 @@ const createKoriUser = ['team', function(results, callback) {
     logger.silly('creating kori user');
 
     var user = new User({
-        _id: new mongoose.mongo.ObjectId(dummy_user_kori_id),
         name: 'Kori',
         password: '1234',
         email: 'mitchell@founderfox.io',
@@ -209,7 +208,6 @@ const createAllenUser = ['team', function (results, callback) {
     logger.silly('creating allen user');
 
     var user = new User({
-        _id: new mongoose.mongo.ObjectId(dummy_user_allen_id),
         name: 'Allen',
         password: '1234',
         email: 'allen@designfirstapps.com',
@@ -229,7 +227,6 @@ const createMikeUser = ['team', function (results, callback) {
     logger.silly('creating mike user');
 
     var user = new User({
-        _id: new mongoose.mongo.ObjectId(dummy_user_mike_id),
         name: 'Mike',
         password: '1234',
         email: 'mike@designfirstapps.com',
