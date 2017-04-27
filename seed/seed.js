@@ -152,16 +152,15 @@ function dropDb() {
 
 function createTeam(callback) {
     logger.silly('creating design first apps team');
-    var design_first_apps_team = new Team({
-        name: 'designfirstapps'
-    });
-    design_first_apps_team._id = team_id;
 
-    design_first_apps_team.save()
-        .then(team => {
-            callback(null, team);
-        })
-        .catch(callback);
+    Team
+    .query()
+    .insert({ name: 'designfirstapps' })
+    .then(team => {
+        logger.silly(`created team: ${team}`);
+        callback(null, team);
+    })
+    .catch(handleSeedError);
 }
 
 const createMitchellUser = ['team', function createMitchellUser(results, callback) {
