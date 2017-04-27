@@ -157,7 +157,6 @@ function createTeam(callback) {
     .query()
     .insert({ name: 'designfirstapps' })
     .then(team => {
-        logger.silly(`created team: ${team}`);
         callback(null, team);
     })
     .catch(handleSeedError);
@@ -166,21 +165,24 @@ function createTeam(callback) {
 const createMitchellUser = ['team', function createMitchellUser(results, callback) {
     logger.silly('creating mitchell user');
 
-    var user = new User({
-        _id: new mongoose.mongo.ObjectId(dummy_user_mitchell_id),
+    const mitchell = {
         name: 'Mitchell',
         password: '1234',
         email: 'mitchell@designfirstapps.com',
         position: 'iOS dev',
         avatar_url: mitchell_avatar_url,
         team: results.team
-    });
+    };
 
-    user.save()
+    User
+    .query()
+    .insert(mitchell)
     .then(mitchell => {
+        logger.silly(`created mitchell user: ${mitchell.name}`);
         callback(null, mitchell);
     })
-    .catch(callback);
+    .catch(handleSeedError);
+
 }];
 
 const createKoriUser = ['team', function(results, callback) {
