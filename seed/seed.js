@@ -106,10 +106,10 @@ function startSeed() {
         mike_created_projects: mikeCreatedProjects,
 
         // // Project invitations
-        mitchellReceivedProjectInvitations
-        // koriReceivedProjectInvitations,
-        // allenReceivedProjectInvitations,
-        // mikeReceivedProjectInvitations
+        mitchellReceivedProjectInvitations,
+        koriReceivedProjectInvitations,
+        allenReceivedProjectInvitations,
+        mikeReceivedProjectInvitations
 
         // // Tasks
         // tasks_assigned_by_mitchell: tasksAssignedByMitchell,
@@ -409,12 +409,13 @@ const koriReceivedProjectInvitations = ['kori', 'mitchell_created_projects', 'al
     const projects = _.merge(results.mitchell_created_projects, results.allen_created_projects, results.mike_created_projects);
     var createProjectInvitation = function(n, callback) {
 
-        let project_invitation = new ProjectInvitation({
-            sender: projects[n].creator,
-            receiver: results.kori,
-            project: projects[n]
-        });
- 
+        let project_invitation_json = {
+            project: projects[n].id,
+            sender: projects[n].creator_id,
+            receiver: results.kori.id
+        };
+
+        const project_invitation = ProjectInvitation.fromJson(project_invitation_json);
         callback(null, project_invitation); 
     };
 
@@ -424,7 +425,7 @@ const koriReceivedProjectInvitations = ['kori', 'mitchell_created_projects', 'al
         });
     }, (err, project_invitations) => {
         if (err) return callback(err);
-        ProjectInvitation.create(project_invitations).then(project_invitations => { callback(null, project_invitations) }).catch(logger.error);
+        ProjectInvitation.query().insert(project_invitations).then(project_invitations => { callback(null, project_invitations) }).catch(logger.error);
     });
 }];
 
@@ -434,12 +435,13 @@ const allenReceivedProjectInvitations = ['allen', 'mitchell_created_projects', '
     const projects = _.merge(results.mitchell_created_projects, results.kori_created_projects, results.mike_created_projects);
     var createProjectInvitation = function(n, callback) {
 
-        let project_invitation = new ProjectInvitation({
-            sender: projects[n].creator,
-            receiver: results.allen,
-            project: projects[n]
-        });
- 
+        let project_invitation_json = {
+            project: projects[n].id,
+            sender: projects[n].creator_id,
+            receiver: results.allen.id
+        };
+
+        const project_invitation = ProjectInvitation.fromJson(project_invitation_json);
         callback(null, project_invitation); 
     };
 
@@ -449,7 +451,7 @@ const allenReceivedProjectInvitations = ['allen', 'mitchell_created_projects', '
         });
     }, (err, project_invitations) => {
         if (err) return callback(err);
-        ProjectInvitation.create(project_invitations).then(project_invitations => { callback(null, project_invitations) }).catch(logger.error);
+        ProjectInvitation.query().insert(project_invitations).then(project_invitations => { callback(null, project_invitations) }).catch(logger.error);
     });
 }];
 
@@ -459,12 +461,13 @@ const mikeReceivedProjectInvitations = ['mike', 'mitchell_created_projects', 'ko
     const projects = _.merge(results.mitchell_created_projects, results.kori_created_projects, results.allen_created_projects);
     var createProjectInvitation = function(n, callback) {
 
-        let project_invitation = new ProjectInvitation({
-            sender: projects[n].creator,
-            receiver: results.mike,
-            project: projects[n]
-        });
- 
+        let project_invitation_json = {
+            project: projects[n].id,
+            sender: projects[n].creator_id,
+            receiver: results.mike.id
+        };
+
+        const project_invitation = ProjectInvitation.fromJson(project_invitation_json);
         callback(null, project_invitation); 
     };
 
@@ -474,7 +477,7 @@ const mikeReceivedProjectInvitations = ['mike', 'mitchell_created_projects', 'ko
         });
     }, (err, project_invitations) => {
         if (err) return callback(err);
-        ProjectInvitation.create(project_invitations).then(project_invitations => { callback(null, project_invitations) }).catch(logger.error);
+        ProjectInvitation.query().insert(project_invitations).then(project_invitations => { callback(null, project_invitations) }).catch(logger.error);
     });
 }];
 
