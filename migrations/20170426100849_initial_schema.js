@@ -19,6 +19,7 @@ exports.up = function(knex, Promise) {
         .createTable('Project', table => {
             table.increments('id').primary().notNullable();
             table.timestamps(true, true);
+            table.integer('creator_id').unsigned().references('id').inTable('User').notNullable();
             table.date('due_date');        
             table.integer('completion_percentage').defaultTo(0).notNullable();
             table.integer('standups_count').defaultTo(0).notNullable();

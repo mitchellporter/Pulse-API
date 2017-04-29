@@ -23,7 +23,27 @@ class Project extends Model {
                     to: 'User.id'
                 }
             }
+        };
+    }
+
+    static get jsonSchema() {
+        return {
+            type: 'object',
+            required: ['creator_id'],
+            properties: {
+                id: { type: 'integer' },
+                creator_id: { type: 'integer' },
+				due_date: { type: 'date' }
+            }
+        };
+    }
+
+    $parseJson(json, opt) {
+        if (json.creator) {
+            json.creator_id = json.creator;
+            delete json.creator;
         }
+        return super.$parseJson(json, opt);
     }
 }
 

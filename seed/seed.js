@@ -97,13 +97,13 @@ function startSeed() {
         mitchell: createMitchellUser,
         kori: createKoriUser,
         allen: createAllenUser,
-        mike: createMikeUser
+        mike: createMikeUser,
 
         // // Projects
-        // mitchell_created_projects: mitchellCreatedProjects,
-        // kori_created_projects: koriCreatedProjects,
-        // allen_created_projects: allenCreatedProjects,
-        // mike_created_projects: mikeCreatedProjects,
+        mitchell_created_projects: mitchellCreatedProjects,
+        kori_created_projects: koriCreatedProjects,
+        allen_created_projects: allenCreatedProjects,
+        mike_created_projects: mikeCreatedProjects
 
         // // Project invitations
         // mitchellReceivedProjectInvitations,
@@ -271,15 +271,14 @@ const mitchellCreatedProjects = ['mitchell', 'kori', 'allen', 'mike', function (
 
     var createProject = function(callback) {
 
-        let project = new Project({
-            creator: results.mitchell,
-            members: [results.mitchell, results.kori, results.allen, results.mike],
+        let project = {
+            creator: results.mitchell.id,
             name: 'This is a test project title',
             completion_percentage: 0, // TODO: Add random completion percentage
             standups_count: 0,
             tasks_in_progress_count: 0,
             tasks_completed_count: 0
-        });
+        };
         
         callback(null, project);
     };
@@ -290,7 +289,7 @@ const mitchellCreatedProjects = ['mitchell', 'kori', 'allen', 'mike', function (
         });
     }, (err, projects) => {
         if (err) return callback(err);
-        Project.create(projects).then(projects => { callback(null, projects) }).catch(logger.error);
+        Project.query().insert(projects).then(projects => { callback(null, projects) }).catch(logger.error);
     });
 }];
 
@@ -299,15 +298,14 @@ const koriCreatedProjects = ['kori', 'mitchell', 'allen', 'mike', function (resu
 
     var createProject = function(callback) {
 
-        let project = new Project({
-            creator: results.kori,
-            members: [results.mitchell, results.kori, results.allen, results.mike],
+        let project = {
+            creator: results.kori.id,
             name: 'This is a test project title',
             completion_percentage: 0, // TODO: Add random completion percentage
             standups_count: 0,
             tasks_in_progress_count: 0,
             tasks_completed_count: 0
-        });
+        };
         
         callback(null, project);
     };
@@ -318,7 +316,7 @@ const koriCreatedProjects = ['kori', 'mitchell', 'allen', 'mike', function (resu
         });
     }, (err, projects) => {
         if (err) return callback(err);
-        Project.create(projects).then(projects => { callback(null, projects) }).catch(logger.error);
+        Project.query().insert(projects).then(projects => { callback(null, projects) }).catch(logger.error);
     });
 }];
 
@@ -327,15 +325,14 @@ const allenCreatedProjects = ['mitchell', 'kori', 'allen', 'mike', function (res
 
     var createProject = function(callback) {
 
-        let project = new Project({
-            creator: results.allen,
-            members: [results.mitchell, results.kori, results.allen, results.mike],
+        let project = {
+            creator: results.allen.id,
             name: 'This is a test project title',
             completion_percentage: 0, // TODO: Add random completion percentage
             standups_count: 0,
             tasks_in_progress_count: 0,
             tasks_completed_count: 0
-        });
+        };
         
         callback(null, project);
     };
@@ -346,7 +343,7 @@ const allenCreatedProjects = ['mitchell', 'kori', 'allen', 'mike', function (res
         });
     }, (err, projects) => {
         if (err) return callback(err);
-        Project.create(projects).then(projects => { callback(null, projects) }).catch(logger.error);
+        Project.query().insert(projects).then(projects => { callback(null, projects) }).catch(logger.error);
     });
 }];
 
@@ -355,15 +352,14 @@ const mikeCreatedProjects = ['mitchell', 'kori', 'allen', 'mike', function (resu
 
     var createProject = function(callback) {
 
-        let project = new Project({
-            creator: results.mike,
-            members: [results.mitchell, results.kori, results.allen, results.mike],
+        let project = {
+            creator: results.mike.id,
             name: 'This is a test project title',
             completion_percentage: 0, // TODO: Add random completion percentage
             standups_count: 0,
             tasks_in_progress_count: 0,
             tasks_completed_count: 0
-        });
+        };
         
         callback(null, project);
     };
@@ -374,7 +370,7 @@ const mikeCreatedProjects = ['mitchell', 'kori', 'allen', 'mike', function (resu
         });
     }, (err, projects) => {
         if (err) return callback(err);
-        Project.create(projects).then(projects => { callback(null, projects) }).catch(logger.error);
+        Project.query().insert(projects).then(projects => { callback(null, projects) }).catch(logger.error);
     });
 }];
 
