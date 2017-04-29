@@ -14,7 +14,7 @@ exports.up = function(knex, Promise) {
             table.string('name').notNullable();
             table.string('avatar_url').notNullable();
             table.string('position').notNullable();
-            table.integer('team').unsigned().references('id').inTable('Team').notNullable();
+            table.integer('team_id').unsigned().references('id').inTable('Team').notNullable();
         })
         .createTable('Project', table => {
             table.increments('id').primary().notNullable();
@@ -28,8 +28,8 @@ exports.up = function(knex, Promise) {
         .createTable('Project_Member', table => {
             table.increments('id').primary(['project', 'member']);
             table.timestamps(true, true);
-            table.integer('project').unsigned().references('id').inTable('Project').notNullable();
-            table.integer('member').unsigned().references('id').inTable('User').notNullable();
+            table.integer('project_id').unsigned().references('id').inTable('Project').notNullable();
+            table.integer('member_id').unsigned().references('id').inTable('User').notNullable();
         })
         .createTable('Task', table => {
             table.increments('id').primary().notNullable();
@@ -38,56 +38,56 @@ exports.up = function(knex, Promise) {
             table.enu('status', ['pending', 'in_progress', 'completed']).defaultTo('pending').notNullable();
             table.date('due_date');
             table.integer('completion_percentage').defaultTo(0).notNullable();
-            table.integer('project').unsigned().references('id').inTable('Project').notNullable();
-            table.integer('assigner').unsigned().references('id').inTable('User').notNullable();
-            table.integer('assignee').unsigned().references('id').inTable('User').notNullable();
+            table.integer('project_id').unsigned().references('id').inTable('Project').notNullable();
+            table.integer('assigner_id').unsigned().references('id').inTable('User').notNullable();
+            table.integer('assignee_id').unsigned().references('id').inTable('User').notNullable();
         })
         .createTable('Subtask', table => {
             table.increments('id').primary().notNullable();
             table.timestamps(true, true);
             table.text('text').notNullable();
-            table.integer('created_by').unsigned().references('id').inTable('User').notNullable();
-            table.integer('completed_by').unsigned().references('id').inTable('User').notNullable();
-            table.integer('task').unsigned().references('id').inTable('Task').notNullable();
+            table.integer('created_by_id').unsigned().references('id').inTable('User').notNullable();
+            table.integer('completed_by_id').unsigned().references('id').inTable('User').notNullable();
+            table.integer('task_id').unsigned().references('id').inTable('Task').notNullable();
             table.enu('status', ['pending', 'in_progress', 'completed']).defaultTo('pending').notNullable();
         })
         .createTable('Standup', table  => {
             table.increments('id').primary().notNullable();
             table.timestamps(true, true);
             table.text('text').notNullable();
-            table.integer('author').unsigned().references('id').inTable('User').notNullable();
+            table.integer('author_id').unsigned().references('id').inTable('User').notNullable();
         })
         .createTable('UpdateRequest', table => {
             table.increments('id').primary();
             table.timestamps(true, true);
-            table.integer('sender').unsigned().references('id').inTable('User').notNullable();
-            table.integer('receiver').unsigned().references('id').inTable('User').notNullable();
-            table.integer('task').unsigned().references('id').inTable('Task').notNullable();
+            table.integer('sender_id').unsigned().references('id').inTable('User').notNullable();
+            table.integer('receiver_id').unsigned().references('id').inTable('User').notNullable();
+            table.integer('task_id').unsigned().references('id').inTable('Task').notNullable();
             table.enu('status', ['sent', 'responded']).defaultTo('sent').notNullable();
         })
         .createTable('Update', table => {
             table.increments('id').primary();
             table.timestamps(true, true);
             table.text('comment').notNullable();
-            table.integer('sender').unsigned().references('id').inTable('User').notNullable();
-            table.integer('receiver').unsigned().references('id').inTable('User').notNullable();
-            table.integer('task').unsigned().references('id').inTable('Task').notNullable();
-            table.integer('update_request').unsigned().references('id').inTable('UpdateRequest');
+            table.integer('sender_id').unsigned().references('id').inTable('User').notNullable();
+            table.integer('receiver_id').unsigned().references('id').inTable('User').notNullable();
+            table.integer('task_id').unsigned().references('id').inTable('Task').notNullable();
+            table.integer('update_request_id').unsigned().references('id').inTable('UpdateRequest');
         })
         .createTable('ProjectInvitation', table => {
             table.increments('id').primary();
             table.timestamps(true, true);
-            table.integer('project').unsigned().references('id').inTable('Project');
-            table.integer('sender').unsigned().references('id').inTable('User');
-            table.integer('receiver').unsigned().references('id').inTable('User');
+            table.integer('project_id').unsigned().references('id').inTable('Project');
+            table.integer('sender_id').unsigned().references('id').inTable('User');
+            table.integer('receiver_id').unsigned().references('id').inTable('User');
             table.enu('status', ['sent', 'accepted', 'denied']).defaultTo('sent').notNullable();
         })
         .createTable('TaskChat', table => {
             table.increments('id').primary();
             table.timestamps(true, true);
             table.text('message').notNullable();
-            table.integer('task').unsigned().references('id').inTable('Task').notNullable();
-            table.integer('sender').unsigned().references('id').inTable('User').notNullable();
+            table.integer('task_id').unsigned().references('id').inTable('Task').notNullable();
+            table.integer('sender_id').unsigned().references('id').inTable('User').notNullable();
         });
 };
 

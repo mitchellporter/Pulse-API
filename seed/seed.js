@@ -1,5 +1,7 @@
 'use strict'
 
+const util = require('util');
+
 const async = require('async');
 const _ = require('lodash');
 const casual = require('casual');
@@ -15,6 +17,9 @@ Model.knex(knex);
 const logger = require('../lib/logger');
 const Team = require('../app/teams/team');
 const User = require('../app/users/user');
+
+// console.log('haha: ' + User.relationMappings.team.modelClass.name);
+
 const Project = require('../app/projects/project');
 const ProjectInvitation = require('../app/project_invitations/projectInvitation');
 const Task = require('../app/tasks/task');
@@ -92,46 +97,46 @@ function startSeed() {
         mitchell: createMitchellUser,
         kori: createKoriUser,
         allen: createAllenUser,
-        mike: createMikeUser,
+        mike: createMikeUser
 
-        // Projects
-        mitchell_created_projects: mitchellCreatedProjects,
-        kori_created_projects: koriCreatedProjects,
-        allen_created_projects: allenCreatedProjects,
-        mike_created_projects: mikeCreatedProjects,
+        // // Projects
+        // mitchell_created_projects: mitchellCreatedProjects,
+        // kori_created_projects: koriCreatedProjects,
+        // allen_created_projects: allenCreatedProjects,
+        // mike_created_projects: mikeCreatedProjects,
 
-        // Project invitations
-        mitchellReceivedProjectInvitations,
-        koriReceivedProjectInvitations,
-        allenReceivedProjectInvitations,
-        mikeReceivedProjectInvitations,
+        // // Project invitations
+        // mitchellReceivedProjectInvitations,
+        // koriReceivedProjectInvitations,
+        // allenReceivedProjectInvitations,
+        // mikeReceivedProjectInvitations,
 
-        // Tasks
-        tasks_assigned_by_mitchell: tasksAssignedByMitchell,
-        tasks_assigned_by_kori: tasksAssignedByKori,
-        tasks_assigned_by_allen: tasksAssignedByAllen,
-        tasks_assigned_by_mike: tasksAssignedByMike,
+        // // Tasks
+        // tasks_assigned_by_mitchell: tasksAssignedByMitchell,
+        // tasks_assigned_by_kori: tasksAssignedByKori,
+        // tasks_assigned_by_allen: tasksAssignedByAllen,
+        // tasks_assigned_by_mike: tasksAssignedByMike,
 
-        // Task invitations
-        task_invitations_sent_by_mitchell: taskInvitationsSentByMitchell,
-        task_invitations_sent_by_kori: taskInvitationsSentByKori,
-        task_invitations_sent_by_allen: taskInvitationsSentByAllen,
-        task_invitations_sent_by_mike: taskInvitationsSentByMike,
+        // // Task invitations
+        // task_invitations_sent_by_mitchell: taskInvitationsSentByMitchell,
+        // task_invitations_sent_by_kori: taskInvitationsSentByKori,
+        // task_invitations_sent_by_allen: taskInvitationsSentByAllen,
+        // task_invitations_sent_by_mike: taskInvitationsSentByMike,
 
-        // Update requests
-        update_requests_sent_by_mitchell: updateRequestsSentByMitchell,
-        update_requests_sent_by_kori: updateRequestsSentByKori,
-        update_requests_sent_by_allen: updateRequestsSentByAllen,
-        update_requests_sent_by_mike: updateRequestsSentByMike,
+        // // Update requests
+        // update_requests_sent_by_mitchell: updateRequestsSentByMitchell,
+        // update_requests_sent_by_kori: updateRequestsSentByKori,
+        // update_requests_sent_by_allen: updateRequestsSentByAllen,
+        // update_requests_sent_by_mike: updateRequestsSentByMike,
 
-        // Updates
-        updates_sent_to_mitchell: updatesSentToMitchell,
-        updates_sent_to_kori: updatesSentToKori,
-        updates_sent_to_allen: updatesSentToAllen,
-        updates_sent_to_mike: updatesSentToMike,
+        // // Updates
+        // updates_sent_to_mitchell: updatesSentToMitchell,
+        // updates_sent_to_kori: updatesSentToKori,
+        // updates_sent_to_allen: updatesSentToAllen,
+        // updates_sent_to_mike: updatesSentToMike,
 
-        // Standups
-        standups
+        // // Standups
+        // standups
 
     }, (err, results) => {
         if (err) return handleSeedError(err);
@@ -165,20 +170,22 @@ function createTeam(callback) {
 const createMitchellUser = ['team', function createMitchellUser(results, callback) {
     logger.silly('creating mitchell user');
 
-    const mitchell = {
-        name: 'Mitchell',
+    const user = {
+        name: 'Mitchell Porter',
         password: '1234',
         email: 'mitchell@designfirstapps.com',
         position: 'iOS dev',
         avatar_url: mitchell_avatar_url,
-        team: results.team
+        team: results.team.id
     };
+
+    const mitchell = User.fromJson(user);
 
     User
     .query()
     .insert(mitchell)
+    .returning('*')
     .then(mitchell => {
-        logger.silly(`created mitchell user: ${mitchell.name}`);
         callback(null, mitchell);
     })
     .catch(handleSeedError);
@@ -188,58 +195,73 @@ const createMitchellUser = ['team', function createMitchellUser(results, callbac
 const createKoriUser = ['team', function(results, callback) {
     logger.silly('creating kori user');
 
-    var user = new User({
-        name: 'Kori',
+    const user = {
+        name: 'Kori Handy',
         password: '1234',
-        email: 'mitchell@founderfox.io',
-        position: 'designer',
+        email: 'kori@designfirstapps.com',
+        position: 'CEO',
         avatar_url: kori_avatar_url,
-        team: results.team
-    });
+        team: results.team.id
+    };
 
-    user.save()
+    const kori = User.fromJson(user);
+
+    User
+    .query()
+    .insert(kori)
+    .returning('*')
     .then(kori => {
         callback(null, kori);
     })
-    .catch(callback);
+    .catch(handleSeedError);
 }];
 
 const createAllenUser = ['team', function (results, callback) {
     logger.silly('creating allen user');
 
-    var user = new User({
-        name: 'Allen',
+    const user = {
+        name: 'Allen Hurst',
         password: '1234',
         email: 'allen@designfirstapps.com',
-        position: 'iOS dev',
+        position: 'iOS Dev',
         avatar_url: allen_avatar_url,
-        team: results.team
-    });
+        team: results.team.id
+    };
 
-    user.save()
+    const allen = User.fromJson(user);
+
+    User
+    .query()
+    .insert(allen)
+    .returning('*')
     .then(allen => {
         callback(null, allen);
     })
-    .catch(callback);
+    .catch(handleSeedError);
 }];
 
 const createMikeUser = ['team', function (results, callback) {
     logger.silly('creating mike user');
 
-    var user = new User({
-        name: 'Mike',
+    const user = {
+        name: 'Mike Chen',
         password: '1234',
         email: 'mike@designfirstapps.com',
-        position: 'web dev',
+        position: 'Web Dev',
         avatar_url: mike_avatar_url,
-        team: results.team
-    });
+        team: results.team.id
+    };
 
-    user.save()
+    const mike = User.fromJson(user);
+
+    User
+    .query()
+    .insert(mike)
+    .returning('*')
     .then(mike => {
         callback(null, mike);
     })
-    .catch(callback);
+    .catch(handleSeedError);
 }];
 
 // Projects

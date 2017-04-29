@@ -4,6 +4,6 @@ class Team extends Model {
 	static get tableName() {
 		return 'Team';
 	}
-};
+}
 
 module.exports = Team;

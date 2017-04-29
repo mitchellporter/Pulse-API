@@ -7,7 +7,6 @@ module.exports = {
             min: 0,
             max: 10,
             afterCreate: function (conn, cb) {
-                console.log('after create');
               conn.query('SET timezone="UTC";', function (err) {
                 if (err) {
                   cb(err, conn);      
