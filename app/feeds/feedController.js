@@ -95,8 +95,12 @@ exports.getUpdates = function(req, res, next) {
 	});
 
 	function findUpdateRequestsSentToMe(callback) {
-		UpdateRequest.find({ receiver: user , status: 'sent' })
-		.populate('task sender receiver') // task.assigner
+
+		UpdateRequest
+		.query()
+		.where('receiver_id', user.id)
+		.andWhere('status', 'sent')
+		.eager('[task, sender, receiver]')
 		.then(update_requests => {
 			response.update_requests = update_requests;
 			callback(null, update_requests);
@@ -105,9 +109,12 @@ exports.getUpdates = function(req, res, next) {
 	}
 
 	function findUpdatesSentToMe(callback) {
-		Update.find({ receiver: user })
-		.populate('task sender receiver')
-		.then((updates) => {
+
+		Update
+		.query()
+		.where('receiver_id', user.id)
+		.eager('[task, sender, receiver]')
+		.then(updates => {
 			response.updates = updates;
 			callback(null, updates);
 		})
