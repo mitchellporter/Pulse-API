@@ -124,10 +124,10 @@ function startSeed() {
         task_invitations_sent_by_mike: taskInvitationsSentByMike,
 
         // // Update requests
-        // update_requests_sent_by_mitchell: updateRequestsSentByMitchell,
-        // update_requests_sent_by_kori: updateRequestsSentByKori,
-        // update_requests_sent_by_allen: updateRequestsSentByAllen,
-        // update_requests_sent_by_mike: updateRequestsSentByMike,
+        update_requests_sent_by_mitchell: updateRequestsSentByMitchell,
+        update_requests_sent_by_kori: updateRequestsSentByKori,
+        update_requests_sent_by_allen: updateRequestsSentByAllen,
+        update_requests_sent_by_mike: updateRequestsSentByMike
 
         // // Updates
         // updates_sent_to_mitchell: updatesSentToMitchell,
@@ -712,12 +712,13 @@ const updateRequestsSentByMitchell = ['tasks_assigned_by_mitchell', function (re
 
     const createUpdateRequest = function(n, callback) {
 
-        let update_request = new UpdateRequest({
-            sender: results.tasks_assigned_by_mitchell[n].assigner,
-            receiver: results.tasks_assigned_by_mitchell[n].assignee,
-            task: results.tasks_assigned_by_mitchell[n]
-        });
+        let update_request_json = {
+            sender: results.tasks_assigned_by_mitchell[n].assigner_id,
+            receiver: results.tasks_assigned_by_mitchell[n].assignee_id,
+            task: results.tasks_assigned_by_mitchell[n].id
+        };
 
+        const update_request = UpdateRequest.fromJson(update_request_json);
         callback(null, update_request);
     };
 
@@ -727,30 +728,32 @@ const updateRequestsSentByMitchell = ['tasks_assigned_by_mitchell', function (re
         });
     }, (err, update_requests) => {
         if (err) return callback(err);
-        UpdateRequest.create(update_requests).then(update_requests => { callback(null, update_requests) }).catch(logger.error);
+        UpdateRequest.query().insert(update_requests).then(update_requests => { callback(null, update_requests) }).catch(logger.error);
     });
 }];
 
 const updateRequestsSentByKori = ['tasks_assigned_by_kori', function (results, callback) {
     logger.silly('creating update requests sent by kori');
 
-    const createUpdateRequest = function(n, callback) {
-        let update_request = new UpdateRequest({
-            sender: results.tasks_assigned_by_kori[n].assigner,
-            receiver: results.tasks_assigned_by_kori[n].assignee,
-            task: results.tasks_assigned_by_kori[n]
-        });
+   const createUpdateRequest = function(n, callback) {
+
+        let update_request_json = {
+            sender: results.tasks_assigned_by_kori[n].assigner_id,
+            receiver: results.tasks_assigned_by_kori[n].assignee_id,
+            task: results.tasks_assigned_by_kori[n].id
+        };
+
+        const update_request = UpdateRequest.fromJson(update_request_json);
         callback(null, update_request);
     };
 
     async.times(results.tasks_assigned_by_kori.length, (n, next) => {
         createUpdateRequest(n, (err, update_request) => {
-            // logger.silly('update request: ' + update_request);
             next(err, update_request);
         });
     }, (err, update_requests) => {
         if (err) return callback(err);
-        UpdateRequest.create(update_requests).then(update_requests => { callback(null, update_requests) }).catch(logger.error);
+        UpdateRequest.query().insert(update_requests).then(update_requests => { callback(null, update_requests) }).catch(logger.error);
     });
 }];
 
@@ -759,11 +762,13 @@ const updateRequestsSentByAllen = ['tasks_assigned_by_allen', function (results,
 
     const createUpdateRequest = function(n, callback) {
 
-        let update_request = new UpdateRequest({
-            sender: results.tasks_assigned_by_allen[n].assigner,
-            receiver: results.tasks_assigned_by_allen[n].assignee,
-            task: results.tasks_assigned_by_allen[n]
-        });
+        let update_request_json = {
+            sender: results.tasks_assigned_by_allen[n].assigner_id,
+            receiver: results.tasks_assigned_by_allen[n].assignee_id,
+            task: results.tasks_assigned_by_allen[n].id
+        };
+
+        const update_request = UpdateRequest.fromJson(update_request_json);
         callback(null, update_request);
     };
 
@@ -773,7 +778,7 @@ const updateRequestsSentByAllen = ['tasks_assigned_by_allen', function (results,
         });
     }, (err, update_requests) => {
         if (err) return callback(err);
-        UpdateRequest.create(update_requests).then(update_requests => { callback(null, update_requests) }).catch(logger.error);
+        UpdateRequest.query().insert(update_requests).then(update_requests => { callback(null, update_requests) }).catch(logger.error);
     });
 }];
 
@@ -782,11 +787,13 @@ const updateRequestsSentByMike = ['tasks_assigned_by_mike', function (results, c
 
     const createUpdateRequest = function(n, callback) {
 
-        let update_request = new UpdateRequest({
-            sender: results.tasks_assigned_by_mike[n].assigner,
-            receiver: results.tasks_assigned_by_mike[n].assignee,
-            task: results.tasks_assigned_by_mike[n]
-        });
+        let update_request_json = {
+            sender: results.tasks_assigned_by_mike[n].assigner_id,
+            receiver: results.tasks_assigned_by_mike[n].assignee_id,
+            task: results.tasks_assigned_by_mike[n].id
+        };
+
+        const update_request = UpdateRequest.fromJson(update_request_json);
         callback(null, update_request);
     };
 
@@ -796,7 +803,7 @@ const updateRequestsSentByMike = ['tasks_assigned_by_mike', function (results, c
         });
     }, (err, update_requests) => {
         if (err) return callback(err);
-        UpdateRequest.create(update_requests).then(update_requests => { callback(null, update_requests) }).catch(logger.error);
+        UpdateRequest.query().insert(update_requests).then(update_requests => { callback(null, update_requests) }).catch(logger.error);
     });
 }];
 

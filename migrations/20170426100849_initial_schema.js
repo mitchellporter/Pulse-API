@@ -61,9 +61,9 @@ exports.up = function(knex, Promise) {
         .createTable('UpdateRequest', table => {
             table.increments('id').primary();
             table.timestamps(true, true);
+            table.integer('task_id').unsigned().references('id').inTable('Task').notNullable();
             table.integer('sender_id').unsigned().references('id').inTable('User').notNullable();
             table.integer('receiver_id').unsigned().references('id').inTable('User').notNullable();
-            table.integer('task_id').unsigned().references('id').inTable('Task').notNullable();
             table.enu('status', ['sent', 'responded']).defaultTo('sent').notNullable();
         })
         .createTable('Update', table => {
