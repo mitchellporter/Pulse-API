@@ -1,7 +1,7 @@
 const logger = require('../../lib/logger');
 const config = require('../../config/config');
 const Emailer = require('../../lib/emailer');
-const Update = require('./updateModel');
+const Update = require('./update');
 const async = require('async');
 const messenger = require('../messenger/messenger');
 

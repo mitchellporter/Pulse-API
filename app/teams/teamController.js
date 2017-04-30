@@ -1,6 +1,6 @@
 const logger = require('../../lib/logger');
-const Team = require('./teamModel');
-const User = require('../users/userModel');
+const Team = require('./team');
+const User = require('../users/user');
 const signToken = require('../auth/auth').signToken;
 
 exports.params = function(req, res, next, id) {

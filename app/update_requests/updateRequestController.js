@@ -1,5 +1,5 @@
 const logger = require('../../lib/logger');
-const UpdateRequest = require('./updateRequestModel');
+const UpdateRequest = require('./updateRequest');
 
 exports.params = function(req, res, next, id) {
     UpdateRequest.findById(id)

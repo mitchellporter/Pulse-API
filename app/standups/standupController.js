@@ -1,5 +1,5 @@
 const logger = require('../../lib/logger');
-const Standup = require('./standupModel');
+const Standup = require('./standup');
 const async = require('async');
 
 exports.params = function(req, res, next, id) {

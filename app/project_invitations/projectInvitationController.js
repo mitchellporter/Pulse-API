@@ -1,5 +1,5 @@
 const logger = require('../../lib/logger');
-const ProjectInvitation = require('./projectInvitationModel');
+const ProjectInvitation = require('./projectInvitation');
 
 exports.params = function(req, res, next, id) {
     ProjectInvitation.findById(id)

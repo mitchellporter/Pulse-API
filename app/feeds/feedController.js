@@ -1,9 +1,9 @@
 const logger = require('../../lib/logger');
-const Task = require('../tasks/taskModel');
-const TaskInvitation = require('../task_invitations/taskInvitationModel');
-const Update = require('../updates/updateModel');
-const UpdateRequest = require('../update_requests/updateRequestModel');
-const Subtask = require('../subtasks/subtaskModel');
+const Task = require('../tasks/task');
+const TaskInvitation = require('../task_invitations/taskInvitation');
+const Update = require('../updates/update');
+const UpdateRequest = require('../update_requests/updateRequest');
+const Subtask = require('../subtasks/subtask');
 const async = require('async');
 const messenger = require('../messenger/messenger');
 

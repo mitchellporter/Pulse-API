@@ -1,4 +1,4 @@
-const User = require('../users/userModel');
+const User = require('../users/user');
 const signToken = require('./auth').signToken;
 
 exports.signin = function(req, res, next) {

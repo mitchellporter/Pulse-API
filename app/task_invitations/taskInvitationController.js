@@ -1,5 +1,5 @@
 const logger = require('../../lib/logger');
-const TaskInvitation = require('./taskInvitationModel');
+const TaskInvitation = require('./taskInvitation');
 const async = require('async');
 
 exports.params = function(req, res, next, id) {

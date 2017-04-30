@@ -1,5 +1,5 @@
 const logger = require('../../lib/logger');
-const TaskChat = require('./taskChatModel');
+const TaskChat = require('./taskChat');
 
 exports.params = function(req, res, next, id) {
     TaskChat.findById(id)

@@ -1,5 +1,5 @@
 const logger = require('../../lib/logger');
-const Subtask = require('./subtaskModel');
+const Subtask = require('./subtask');
 
 exports.params = function(req, res, next, id) {
     Subtask.findById(id)

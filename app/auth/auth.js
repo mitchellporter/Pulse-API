@@ -1,8 +1,8 @@
 const Promise = require('bluebird');
 const jwt = require('jsonwebtoken');
 const expressJwt = require('express-jwt');
-const User = require('../users/userModel');
-const Team = require('../teams/teamModel');
+const User = require('../users/user');
+const Team = require('../teams/team');
 const logger = require('../../lib/logger');
 const config = require('../../config/config');
 const checkToken = expressJwt({ secret: config.secrets.jwt });
