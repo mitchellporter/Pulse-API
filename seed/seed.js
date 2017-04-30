@@ -133,10 +133,10 @@ function startSeed() {
         updates_sent_to_mitchell: updatesSentToMitchell,
         updates_sent_to_kori: updatesSentToKori,
         updates_sent_to_allen: updatesSentToAllen,
-        updates_sent_to_mike: updatesSentToMike
+        updates_sent_to_mike: updatesSentToMike,
 
         // // Standups
-        // standups
+        standups
 
     }, (err, results) => {
         if (err) return handleSeedError(err);
@@ -920,10 +920,12 @@ const standups = ['mitchell', 'kori', 'allen', 'mike', function (results, callba
     const createStandup = function(n, callback) {
         
         const index = Math.trunc((n / 12) * 4);
-        let standup = new Standup({
-            author: users[index],
+        let json = {
+            author: users[index].id,
             text: 'this is a test standup'
-        });
+        };
+
+        const standup = Standup.fromJson(json);
         callback(null, standup);
     };
 
@@ -933,7 +935,7 @@ const standups = ['mitchell', 'kori', 'allen', 'mike', function (results, callba
         });
     }, (err, standups) => {
         if (err) return callback(err);
-        Standup.create(standups).then(standups => { callback(null, standups) }).catch(logger.error);
+        Standup.query().insert(standups).then(standups => { callback(null, standups) }).catch(logger.error);
     });
 }];
 

@@ -12,11 +12,30 @@ class Standup extends Model {
 				relation: Model.BelongsToOneRelation,
 				modelClass: User,
 				join: {
-					from: 'standup.author',
-					to: 'user.id'
+					from: 'Standup.author_id',
+					to: 'User.id'
 				}
 			}
+		};
+	}
+
+	static get jsonSchema() {
+		return {
+			type: 'object',
+			required: ['author_id', 'text'],
+			properties: {
+				author_id: { type: 'integer' },
+				text: { type: 'string' }
+			}
+		};
+	}
+
+	$parseJson(json, opt) {
+		if (json.author) {
+			json.author_id = json.author;
+			delete json.author;
 		}
+		return super.$parseJson(json, opt);
 	}
 }
 
