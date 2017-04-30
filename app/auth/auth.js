@@ -11,14 +11,17 @@ exports.getUser = function(req, res, next) {
   logger.silly('fetching user with decoded tokens _id field');
 	// user is the decoded token payload
 	// we store the _id for identification :P
-	var userId = req.user._id;
-	User.findById(userId)
-		.then((user) => {
-		if(!user) return next(new Error('no user exists with that id'));
-		req.user = user;
-		next();
-	})
-	.catch(next);
+  var userId = req.user._id;
+  User
+    .query()
+    .where('id', userId)
+    .first()
+    .then(user => {
+      if (!user) return next(new Error('no user exists with that id'));
+      req.user = user;
+      next();
+    })
+    .catch(next);
 };
 
 exports.decodeToken = function() {
@@ -47,19 +50,17 @@ exports.decodeToken = function() {
 exports.verifyUser = function () {
   return function (req, res, next) {
 
-    logger.silly('about to verify user');
-
     const { team_id, team_name, email, password } = req.body;
 
     if (team_name) {
-      Team.findOne({ name: team_name })
-        .then((team) => {
+      Team.query().where({ name: team_name }).first()
+      .then(team => {
           if (!team) return next(new Error('No team found with that team name'));
-          return User.findOne({ team: team, email: email });
+          return User.query().where({ team_id: team.id, email: email }).first();
         })
-        .then((user) => {
+        .then(user => {
           if (!user) return next(new Error('No user found'));
-          user.authenticate(password)
+          user.$authenticate(password)
             .then((result) => {
               if (!result) return res.status(401).json({
                 error: {

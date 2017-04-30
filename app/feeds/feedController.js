@@ -25,29 +25,34 @@ exports.myTasks = function (req, res, next) {
 	});
 
 	function findTaskInvitationsForUser(callback) {
-		TaskInvitation.find({ receiver: user })
-			.populate('sender receiver task')
-			.then((task_invitations) => {
-				logger.silly('found this many task invitations: ' + task_invitations.length);
-				response.task_invitations = task_invitations;
-				callback(null, task_invitations);
-			})
-			.catch((err) => {
-				callback(err, null);
-			});
+
+		TaskInvitation
+		.query()
+		.where('receiver_id', user.id)
+		.eager('[sender, receiver]')
+		.then(task_invitations => {
+			response.task_invitations = task_invitations;
+			callback(null, task_invitations);
+		})
+		.catch(callback);
 	}
 
 	function findTasks(callback) {
-		Task.find({ $or: [{'status': 'in_progress'}, {'status': 'completed'}], assignee: user })
-			.populate(populate)
-			.then((tasks) => {
-				logger.silly('found this many tasks: ' + tasks.length);
-				response.tasks = tasks;
-				callback(null, tasks);
-			})
-			.catch((err) => {
-				callback(err, null);
-			});
+
+		// TODO: This query is not correct
+		// Needs filters for statuses
+
+		Task
+		.query()
+		.where('assignee_id', user.id)
+		.eager('[assigner, assignee]')
+		// .andWhere('status', 'in_progress')
+		// .orWhere('status', 'completed')
+		.then(tasks => {
+			response.tasks = tasks;
+			callback(null, tasks);
+		})
+		.catch(callback);
 	}
 };
 

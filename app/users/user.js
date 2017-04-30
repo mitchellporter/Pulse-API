@@ -3,6 +3,7 @@
 const Model = require('objection').Model;
 const Team = require('../teams/team');
 const util = require('util');
+const bcrypt = require('bcrypt');
 
 class User extends Model {
 
@@ -39,6 +40,9 @@ class User extends Model {
 		};
 	}
 
+	$beforeInsert() {
+		this.password = this.$encryptPassword(this.password);
+	}
 
 	$parseJson(json, opt) {
 		if (json.team) {
@@ -59,6 +63,19 @@ class User extends Model {
 		
 		return json;
 	};
+
+	$encryptPassword(password) {
+		return bcrypt.hashSync(password, 10);
+	}
+
+	$authenticate(password) {
+		return new Promise((resolve, reject) => {
+			bcrypt.compare(password, this.password, (err, result) => {
+				if (err) return reject(err);
+				resolve(result);
+			});
+		});
+	}
 }
 
 module.exports = User;
