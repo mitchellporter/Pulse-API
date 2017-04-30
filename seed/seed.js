@@ -127,13 +127,13 @@ function startSeed() {
         update_requests_sent_by_mitchell: updateRequestsSentByMitchell,
         update_requests_sent_by_kori: updateRequestsSentByKori,
         update_requests_sent_by_allen: updateRequestsSentByAllen,
-        update_requests_sent_by_mike: updateRequestsSentByMike
+        update_requests_sent_by_mike: updateRequestsSentByMike,
 
         // // Updates
-        // updates_sent_to_mitchell: updatesSentToMitchell,
-        // updates_sent_to_kori: updatesSentToKori,
-        // updates_sent_to_allen: updatesSentToAllen,
-        // updates_sent_to_mike: updatesSentToMike,
+        updates_sent_to_mitchell: updatesSentToMitchell,
+        updates_sent_to_kori: updatesSentToKori,
+        updates_sent_to_allen: updatesSentToAllen,
+        updates_sent_to_mike: updatesSentToMike
 
         // // Standups
         // standups
@@ -813,12 +813,14 @@ const updatesSentToMitchell = ['tasks_assigned_by_mitchell', function (results, 
 
     const createUpdate = function(n, callback) {
         
-        let update = new Update({
-            sender: results.tasks_assigned_by_mitchell[n].assignee,
-            receiver: results.tasks_assigned_by_mitchell[n].assigner,
+        let json = {
+            task: results.tasks_assigned_by_mitchell[n].id,
+            sender: results.tasks_assigned_by_mitchell[n].assignee_id,
+            receiver: results.tasks_assigned_by_mitchell[n].assigner_id,
             comment: 'this is a test update comment',
-            task: results.tasks_assigned_by_mitchell[n]
-        });
+        };
+
+        const update = Update.fromJson(json);
         callback(null, update);
     };
 
@@ -828,7 +830,7 @@ const updatesSentToMitchell = ['tasks_assigned_by_mitchell', function (results, 
         });
     }, (err, updates) => {
         if (err) return callback(err);
-        Update.create(updates).then(updates => { callback(null, updates) }).catch(logger.error);    
+        Update.query().insert(updates).then(updates => { callback(null, updates) }).catch(logger.error);    
     });
 }];
 
@@ -837,12 +839,14 @@ const updatesSentToKori = ['tasks_assigned_by_kori', function (results, callback
 
     const createUpdate = function(n, callback) {
         
-        let update = new Update({
-            sender: results.tasks_assigned_by_kori[n].assignee,
-            receiver: results.tasks_assigned_by_kori[n].assigner,
+        let json = {
+            task: results.tasks_assigned_by_kori[n].id,
+            sender: results.tasks_assigned_by_kori[n].assignee_id,
+            receiver: results.tasks_assigned_by_kori[n].assigner_id,
             comment: 'this is a test update comment',
-            task: results.tasks_assigned_by_kori[n]
-        });
+        };
+
+        const update = Update.fromJson(json);
         callback(null, update);
     };
 
@@ -852,7 +856,7 @@ const updatesSentToKori = ['tasks_assigned_by_kori', function (results, callback
         });
     }, (err, updates) => {
         if (err) return callback(err);
-        Update.create(updates).then(updates => { callback(null, updates) }).catch(logger.error);    
+        Update.query().insert(updates).then(updates => { callback(null, updates) }).catch(logger.error);    
     });
 }];
 
@@ -861,12 +865,14 @@ const updatesSentToAllen = ['tasks_assigned_by_allen', function (results, callba
 
     const createUpdate = function(n, callback) {
         
-        let update = new Update({
-            sender: results.tasks_assigned_by_allen[n].assignee,
-            receiver: results.tasks_assigned_by_allen[n].assigner,
+        let json = {
+            task: results.tasks_assigned_by_allen[n].id,
+            sender: results.tasks_assigned_by_allen[n].assignee_id,
+            receiver: results.tasks_assigned_by_allen[n].assigner_id,
             comment: 'this is a test update comment',
-            task: results.tasks_assigned_by_allen[n]
-        });
+        };
+
+        const update = Update.fromJson(json);
         callback(null, update);
     };
 
@@ -876,7 +882,7 @@ const updatesSentToAllen = ['tasks_assigned_by_allen', function (results, callba
         });
     }, (err, updates) => {
         if (err) return callback(err);
-        Update.create(updates).then(updates => { callback(null, updates) }).catch(logger.error);    
+        Update.query().insert(updates).then(updates => { callback(null, updates) }).catch(logger.error);    
     });
 }];
 
@@ -885,12 +891,14 @@ const updatesSentToMike = ['tasks_assigned_by_mike', function (results, callback
 
     const createUpdate = function(n, callback) {
         
-        let update = new Update({
-            sender: results.tasks_assigned_by_mike[n].assignee,
-            receiver: results.tasks_assigned_by_mike[n].assigner,
+        let json = {
+            task: results.tasks_assigned_by_mike[n].id,
+            sender: results.tasks_assigned_by_mike[n].assignee_id,
+            receiver: results.tasks_assigned_by_mike[n].assigner_id,
             comment: 'this is a test update comment',
-            task: results.tasks_assigned_by_mike[n]
-        });
+        };
+
+        const update = Update.fromJson(json);
         callback(null, update);
     };
 
@@ -900,7 +908,7 @@ const updatesSentToMike = ['tasks_assigned_by_mike', function (results, callback
         });
     }, (err, updates) => {
         if (err) return callback(err);
-        Update.create(updates).then(updates => { callback(null, updates) }).catch(logger.error);    
+        Update.query().insert(updates).then(updates => { callback(null, updates) }).catch(logger.error);    
     });
 }];
 
