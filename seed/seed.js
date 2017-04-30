@@ -109,13 +109,13 @@ function startSeed() {
         mitchellReceivedProjectInvitations,
         koriReceivedProjectInvitations,
         allenReceivedProjectInvitations,
-        mikeReceivedProjectInvitations
+        mikeReceivedProjectInvitations,
 
         // // Tasks
-        // tasks_assigned_by_mitchell: tasksAssignedByMitchell,
-        // tasks_assigned_by_kori: tasksAssignedByKori,
-        // tasks_assigned_by_allen: tasksAssignedByAllen,
-        // tasks_assigned_by_mike: tasksAssignedByMike,
+        tasks_assigned_by_mitchell: tasksAssignedByMitchell,
+        tasks_assigned_by_kori: tasksAssignedByKori,
+        tasks_assigned_by_allen: tasksAssignedByAllen,
+        tasks_assigned_by_mike: tasksAssignedByMike
 
         // // Task invitations
         // task_invitations_sent_by_mitchell: taskInvitationsSentByMitchell,
@@ -488,18 +488,18 @@ const tasksAssignedByMitchell = ['mitchell', 'kori', 'allen', 'mike', 'mitchell_
     const assignees = [results.kori, results.allen, results.mike];
     var createTask = function(n, callback) {
 
-        let task = new Task({
-            assigner: results.mitchell,
-            assignee: assignees[n],
-            project: results.mitchell_created_projects[n],
+        let task_json = {
+            assigner: results.mitchell.id,
+            assignee: assignees[n].id,
+            project: results.mitchell_created_projects[n].id,
             title: 'this is a test task title',
             status: 'in_progress',
-            due_date: dummy_task_due_dates[Math.floor(Math.random() * dummy_task_due_dates.length)],
             completion_percentage: Number(Math.random() * (100 - 27) + 27).toFixed(0),
             attachment_count: Number(Math.random() * (10 - 2) + 2).toFixed(0),
             chat_count: Number(Math.random() * (10 - 2) + 2).toFixed(0)
-        });
+        };
         
+        const task = Task.fromJson(task_json);
         callback(null, task);
     };
 
@@ -509,28 +509,27 @@ const tasksAssignedByMitchell = ['mitchell', 'kori', 'allen', 'mike', 'mitchell_
         });
     }, (err, tasks) => {
         if (err) return callback(err);
-        Task.create(tasks).then(tasks => { callback(null, tasks) }).catch(logger.error);
+        Task.query().insert(tasks).then(tasks => { callback(null, tasks) }).catch(logger.error);
     });
 }];
 
 const tasksAssignedByKori = ['mitchell', 'kori', 'allen', 'mike', 'kori_created_projects', function (results, callback) {
 
     const assignees = [results.mitchell, results.allen, results.mike];
-    
     var createTask = function(n, callback) {
 
-        let task = new Task({
-            assigner: results.kori,
-            assignee: assignees[n],
-            project: results.kori_created_projects[n],
+        let task_json = {
+            assigner: results.kori.id,
+            assignee: assignees[n].id,
+            project: results.kori_created_projects[n].id,
             title: 'this is a test task title',
             status: 'in_progress',
-            due_date: dummy_task_due_dates[Math.floor(Math.random() * dummy_task_due_dates.length)],
             completion_percentage: Number(Math.random() * (100 - 27) + 27).toFixed(0),
             attachment_count: Number(Math.random() * (10 - 2) + 2).toFixed(0),
             chat_count: Number(Math.random() * (10 - 2) + 2).toFixed(0)
-        });
-
+        };
+        
+        const task = Task.fromJson(task_json);
         callback(null, task);
     };
 
@@ -540,7 +539,7 @@ const tasksAssignedByKori = ['mitchell', 'kori', 'allen', 'mike', 'kori_created_
         });
     }, (err, tasks) => {
         if (err) return callback(err);
-        Task.create(tasks).then(tasks => { callback(null, tasks) }).catch(logger.error);
+        Task.query().insert(tasks).then(tasks => { callback(null, tasks) }).catch(logger.error);
     });
 }];
 
@@ -550,18 +549,18 @@ const tasksAssignedByAllen = ['mitchell', 'kori', 'allen', 'mike', 'allen_create
     const assignees = [results.mitchell, results.kori, results.mike];
     var createTask = function(n, callback) {
 
-        let task = new Task({
-            assigner: results.allen,
-            assignee: assignees[n],
-            project: results.allen_created_projects[n],
+        let task_json = {
+            assigner: results.allen.id,
+            assignee: assignees[n].id,
+            project: results.allen_created_projects[n].id,
             title: 'this is a test task title',
             status: 'in_progress',
-            due_date: dummy_task_due_dates[Math.floor(Math.random() * dummy_task_due_dates.length)],
             completion_percentage: Number(Math.random() * (100 - 27) + 27).toFixed(0),
             attachment_count: Number(Math.random() * (10 - 2) + 2).toFixed(0),
             chat_count: Number(Math.random() * (10 - 2) + 2).toFixed(0)
-        });
+        };
         
+        const task = Task.fromJson(task_json);
         callback(null, task);
     };
 
@@ -571,7 +570,7 @@ const tasksAssignedByAllen = ['mitchell', 'kori', 'allen', 'mike', 'allen_create
         });
     }, (err, tasks) => {
         if (err) return callback(err);
-        Task.create(tasks).then(tasks => { callback(null, tasks) }).catch(logger.error);
+        Task.query().insert(tasks).then(tasks => { callback(null, tasks) }).catch(logger.error);
     });
 }];
 
@@ -581,18 +580,18 @@ const tasksAssignedByMike = ['mitchell', 'kori', 'allen', 'mike', 'mike_created_
     const assignees = [results.mitchell, results.kori, results.allen];
     var createTask = function(n, callback) {
 
-        let task = new Task({
-            assigner: results.mike,
-            assignee: assignees[n],
-            project: results.mike_created_projects[n],
+        let task_json = {
+            assigner: results.mike.id,
+            assignee: assignees[n].id,
+            project: results.mike_created_projects[n].id,
             title: 'this is a test task title',
             status: 'in_progress',
-            due_date: dummy_task_due_dates[Math.floor(Math.random() * dummy_task_due_dates.length)],
             completion_percentage: Number(Math.random() * (100 - 27) + 27).toFixed(0),
             attachment_count: Number(Math.random() * (10 - 2) + 2).toFixed(0),
             chat_count: Number(Math.random() * (10 - 2) + 2).toFixed(0)
-        });
+        };
         
+        const task = Task.fromJson(task_json);
         callback(null, task);
     };
 
@@ -602,7 +601,7 @@ const tasksAssignedByMike = ['mitchell', 'kori', 'allen', 'mike', 'mike_created_
         });
     }, (err, tasks) => {
         if (err) return callback(err);
-        Task.create(tasks).then(tasks => { callback(null, tasks) }).catch(logger.error);
+        Task.query().insert(tasks).then(tasks => { callback(null, tasks) }).catch(logger.error);
     });
 }];
 

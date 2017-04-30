@@ -13,27 +13,59 @@ class Task extends Model {
 				relation: Model.BelongsToOneRelation,
 				modelClass: Project,
 				join: {
-					from: 'task.project',
-					to: 'project.id'
+					from: 'Task.project_id',
+					to: 'Project.id'
 				}
 			},
 			assigner: {
 				relation: Model.BelongsToOneRelation,
 				modelClass: User,
 				join: {
-					from: 'task.assigner',
-					to: 'user.id'
+					from: 'Task.assigner_id',
+					to: 'User.id'
 				}
 			},
 			assignee: {
 				relation: Model.BelongsToOneRelation,
 				modelClass: User,
 				join: {
-					from: 'task.assignee',
-					to: 'user.id'
+					from: 'Task.assignee_id',
+					to: 'User.id'
 				}
 			}
 		}
+	}
+
+	static get jsonSchema() {
+		return {
+			type: 'object',
+			required: ['title', 'project_id', 'assigner_id', 'assignee_id'],
+			properties: {
+				title: { type: 'string' },
+				due_date: { type: 'date' },
+				project_id: { type: 'integer' },
+				assigner_id: { type: 'integer' },
+				assignee_id: { type: 'integer' }
+			}
+		}
+	}
+
+	$parseJson(json, opt) {
+		if (json.project) {
+			json.project_id = json.project;
+			delete json.project;
+		}
+
+		if (json.assigner) {
+			json.assigner_id = json.assigner;
+			delete json.assigner;
+		}
+
+		if (json.assignee) {
+			json.assignee_id = json.assignee;
+			delete json.assignee;
+		}
+		return super.$parseJson(json, opt);
 	}
 }
 
