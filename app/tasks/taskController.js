@@ -22,6 +22,21 @@ exports.params = function(req, res, next, taskId) {
 
 exports.get = function(req, res, next) {
 
+	if (req.query.project) {
+		req.query.project_id = req.query.project;
+		delete req.query.project;
+	}
+
+	if (req.query.assigner) {
+		req.query.assigner_id = req.query.assigner;
+		delete req.query.assigner;
+	}
+
+	if (req.query.assignee) {
+		req.query.assignee_id = req.query.assignee;
+		delete req.query.assignee;
+	}
+
 	findQuery(Task)
 	.allowEager('[project, assigner, assignee]')
 	.build(req.query)
