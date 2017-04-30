@@ -69,16 +69,16 @@ exports.tasksCreated = function (req, res, next) {
 	});
 
 	function findTasks(callback) {
-		Task.find({ assigner: user })
-			.populate('assigner assignee')
-			.then((tasks) => {
-				logger.silly('found this many tasks: ' + tasks.length);
-				response.tasks = tasks;
-				callback(null, tasks);
-			})
-			.catch((err) => {
-				callback(err, null);
-			});
+
+		Task
+		.query()
+		.where('assigner_id', user.id)
+		.eager('[assigner, assignee]')
+		.then(tasks => {
+			response.tasks = tasks;
+			callback(null, tasks);
+		})
+		.catch(callback);
 	}
 };
 
