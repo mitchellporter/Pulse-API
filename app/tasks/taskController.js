@@ -7,17 +7,19 @@ const messenger = require('../messenger/messenger');
 
 const findQuery = require('objection-find');
 
-exports.params = function(req, res, next, taskId) {
-	Task.findById(taskId)
-	.populate('subtasks assigner assignee')
-	.then((task) => {
-		if(!task) return next(new Error('no task exists with that id'));
+exports.params = function(req, res, next, id) {
+
+	req.query.id = id;
+
+	findQuery(Task)
+	.allowEager('[project, assigner, assignee]')
+	.build(req.query)
+	.then(task => {
+		if (!task) return next(new Error('no task exists with that id'));
 		req.task = task;
 		next();
 	})
-	.catch((err) => {
-		next(err);
-	})
+	.catch(next);
 };
 
 exports.get = function(req, res, next) {
