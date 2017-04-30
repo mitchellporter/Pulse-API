@@ -115,13 +115,13 @@ function startSeed() {
         tasks_assigned_by_mitchell: tasksAssignedByMitchell,
         tasks_assigned_by_kori: tasksAssignedByKori,
         tasks_assigned_by_allen: tasksAssignedByAllen,
-        tasks_assigned_by_mike: tasksAssignedByMike
+        tasks_assigned_by_mike: tasksAssignedByMike,
 
         // // Task invitations
-        // task_invitations_sent_by_mitchell: taskInvitationsSentByMitchell,
-        // task_invitations_sent_by_kori: taskInvitationsSentByKori,
-        // task_invitations_sent_by_allen: taskInvitationsSentByAllen,
-        // task_invitations_sent_by_mike: taskInvitationsSentByMike,
+        task_invitations_sent_by_mitchell: taskInvitationsSentByMitchell,
+        task_invitations_sent_by_kori: taskInvitationsSentByKori,
+        task_invitations_sent_by_allen: taskInvitationsSentByAllen,
+        task_invitations_sent_by_mike: taskInvitationsSentByMike,
 
         // // Update requests
         // update_requests_sent_by_mitchell: updateRequestsSentByMitchell,
@@ -611,12 +611,13 @@ const taskInvitationsSentByMitchell = ['mitchell', 'tasks_assigned_by_mitchell',
 
     const createTaskInvitation = function(n, callback) {
 
-        let task_invitation = new TaskInvitation({
-            task: results.tasks_assigned_by_mitchell[n],
-            sender: results.mitchell,
-            receiver: results.tasks_assigned_by_mitchell[n].assignee
-        });
+        let task_invitation_json = {
+            task: results.tasks_assigned_by_mitchell[n].id,
+            sender: results.mitchell.id,
+            receiver: results.tasks_assigned_by_mitchell[n].assignee_id
+        };
         
+        const task_invitation = TaskInvitation.fromJson(task_invitation_json);
         callback(null, task_invitation);
     };
 
@@ -626,7 +627,7 @@ const taskInvitationsSentByMitchell = ['mitchell', 'tasks_assigned_by_mitchell',
         });
     }, (err, task_invitations) => {
         if (err) return callback(err);
-        TaskInvitation.create(task_invitations).then(task_invitations => { callback(null, task_invitations) }).catch(logger.error);
+        TaskInvitation.query().insert(task_invitations).then(task_invitations => { callback(null, task_invitations) }).catch(logger.error);
     });
 }];
 
@@ -635,12 +636,13 @@ const taskInvitationsSentByKori = ['kori', 'tasks_assigned_by_kori', function (r
 
     const createTaskInvitation = function(n, callback) {
 
-        let task_invitation = new TaskInvitation({
-            task: results.tasks_assigned_by_kori[n],
-            sender: results.kori,
-            receiver: results.tasks_assigned_by_kori[n].assignee
-        });
+        let task_invitation_json = {
+            task: results.tasks_assigned_by_kori[n].id,
+            sender: results.kori.id,
+            receiver: results.tasks_assigned_by_kori[n].assignee_id
+        };
         
+        const task_invitation = TaskInvitation.fromJson(task_invitation_json);
         callback(null, task_invitation);
     };
 
@@ -650,7 +652,7 @@ const taskInvitationsSentByKori = ['kori', 'tasks_assigned_by_kori', function (r
         });
     }, (err, task_invitations) => {
         if (err) return callback(err);
-        TaskInvitation.create(task_invitations).then(task_invitations => { callback(null, task_invitations) }).catch(logger.error);
+        TaskInvitation.query().insert(task_invitations).then(task_invitations => { callback(null, task_invitations) }).catch(logger.error);
     });
 }];
 
@@ -659,12 +661,13 @@ const taskInvitationsSentByAllen = ['allen', 'tasks_assigned_by_allen', function
 
     const createTaskInvitation = function(n, callback) {
 
-        let task_invitation = new TaskInvitation({
-            task: results.tasks_assigned_by_allen[n],
-            sender: results.allen,
-            receiver: results.tasks_assigned_by_allen[n].assignee
-        });
+        let task_invitation_json = {
+            task: results.tasks_assigned_by_allen[n].id,
+            sender: results.allen.id,
+            receiver: results.tasks_assigned_by_allen[n].assignee_id
+        };
         
+        const task_invitation = TaskInvitation.fromJson(task_invitation_json);
         callback(null, task_invitation);
     };
 
@@ -674,7 +677,7 @@ const taskInvitationsSentByAllen = ['allen', 'tasks_assigned_by_allen', function
         });
     }, (err, task_invitations) => {
         if (err) return callback(err);
-        TaskInvitation.create(task_invitations).then(task_invitations => { callback(null, task_invitations) }).catch(logger.error);
+        TaskInvitation.query().insert(task_invitations).then(task_invitations => { callback(null, task_invitations) }).catch(logger.error);
     });
 }];
 
@@ -683,12 +686,13 @@ const taskInvitationsSentByMike = ['mike', 'tasks_assigned_by_mike', function (r
 
     const createTaskInvitation = function(n, callback) {
 
-        let task_invitation = new TaskInvitation({
-            task: results.tasks_assigned_by_mike[n],
-            sender: results.mike,
-            receiver: results.tasks_assigned_by_mike[n].assignee
-        });
+        let task_invitation_json = {
+            task: results.tasks_assigned_by_mike[n].id,
+            sender: results.mike.id,
+            receiver: results.tasks_assigned_by_mike[n].assignee_id
+        };
         
+        const task_invitation = TaskInvitation.fromJson(task_invitation_json);
         callback(null, task_invitation);
     };
 
@@ -698,7 +702,7 @@ const taskInvitationsSentByMike = ['mike', 'tasks_assigned_by_mike', function (r
         });
     }, (err, task_invitations) => {
         if (err) return callback(err);
-        TaskInvitation.create(task_invitations).then(task_invitations => { callback(null, task_invitations) }).catch(logger.error);
+        TaskInvitation.query().insert(task_invitations).then(task_invitations => { callback(null, task_invitations) }).catch(logger.error);
     });
 }];
 
