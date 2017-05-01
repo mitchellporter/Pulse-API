@@ -52,17 +52,17 @@ class Task extends Model {
 
 	$parseJson(json, opt) {
 		if (json.project) {
-			json.project_id = json.project;
+			json.project_id = parseInt(json.project);
 			delete json.project;
 		}
 
 		if (json.assigner) {
-			json.assigner_id = json.assigner;
+			json.assigner_id = parseInt(json.assigner);
 			delete json.assigner;
 		}
 
 		if (json.assignee) {
-			json.assignee_id = json.assignee;
+			json.assignee_id = parseInt(json.assignee);
 			delete json.assignee;
 		}
 		return super.$parseJson(json, opt);

@@ -47,9 +47,9 @@ exports.up = function(knex, Promise) {
             table.increments('id').primary().notNullable();
             table.timestamps(true, true);
             table.text('text').notNullable();
-            table.integer('created_by_id').unsigned().references('id').inTable('User').notNullable();
-            table.integer('completed_by_id').unsigned().references('id').inTable('User').notNullable();
             table.integer('task_id').unsigned().references('id').inTable('Task').notNullable();
+            table.integer('created_by_id').unsigned().references('id').inTable('User').notNullable();
+            table.integer('completed_by_id').unsigned().references('id').inTable('User');
             table.enu('status', ['pending', 'in_progress', 'completed']).defaultTo('pending').notNullable();
         })
         .createTable('Standup', table  => {

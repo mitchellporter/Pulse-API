@@ -1,8 +1,10 @@
 const logger = require('../../lib/logger');
 const Task = require('./task');
-const TaskInvitation = require('../task_invitations/taskInvitation');
 const Subtask = require('../subtasks/subtask');
+const TaskInvitation = require('../task_invitations/taskInvitation');
 const async = require('async');
+const _ = require('lodash');
+const objection = require('objection');
 const messenger = require('../messenger/messenger');
 
 const findQuery = require('objection-find');
@@ -110,132 +112,165 @@ exports.put = function(req, res, next) {
 };
 
 exports.post = function(req, res, next) {
-	var assigner = req.user;
-	var subtasks_json = req.body.subtasks;
 
-	// NOTE: If you don't delete this, and req.body is used for Task's init,
-	// then mongoose always throws an exception. Not sure why yet.
-	delete req.body.subtasks;
-
-	var task = new Task(req.body);
-	task.assigner = assigner;
-
-	// TODO: Set real due_date
-	var due_date_interval = req.body.due_date;
-	var due_date = new Date(1970, 0, 1);
-	due_date.setSeconds(due_date_interval);
-	task.due_date = due_date;
-
-	// Loop through subtasks and create subtasks
-	var subtasks = [];
-	async.forEachOf(subtasks_json, (value, key, callback1) => {
-		var subtask_json = value;
-
-		var subtask = new Subtask();
-		subtask.text = subtask_json;
-		subtasks.push(subtask);
-
-		callback1();
-	}, (err) => {
-		if (err) logger.error(err);
-
-		// TODO: Handle this later. We should always have subtasks
-		if (subtasks.count == 0) throw Error('NO SUBTASKS :('); 	
-
-		createSubtasks()
-		.then(createTask)
-		.then(populateAssignee)
-		.then(createTaskInvitation)
-		.then((task_invitation) => {
+// 	- title
+// - array of subtasks
+// - optional due_date
+// - assignee
 
 
-			res.status(201).json({
-				success: true,
-				task: task
-			});
+// TRY DOING THIS WITH an insertGraph or insertWithRelated instead...
+// Is that the same as a transaction? Because we need that safety
 
-			if (!task_invitation) return;
+	var response = {};
 
-			async.forEachOf(task_invitations, (value, key, callback2) => {
-				var task_invitation = value;
-				logger.silly('current task invitation: ' + task_invitation);
+	req.body.assigner = req.user.id;
+	const task = Task.fromJson(req.body);
 
-				sendMessage(task_invitation)
-					.then((response) => {
-						logger.silly('response: ' + response);
-						callback2();
-					})
-					.catch((err) => {
-						logger.silly('error: ' + err);
-						callback2(err);
-					})
+	objection.transaction(Task, Subtask, (Task, Subtask) => {
+		return Task.query().insert(task);
+	}).then(task => {
+		response.task = task;
 
-			}, (err) => {
-				if (err) return logger.error(err);
-				logger.silly('successfully sent task assigned notification to all assignees!!!');
-			});
-		})
-		.catch(next);
-	});
-
-	function createSubtasks() {
-		return Subtask.create(subtasks);
-	}
-
-	function createTask(subtasks) {
-		task.subtasks = subtasks;
-		return task.save();
-	}
-
-	function populateAssignee(task) {
-		logger.silly('populate assignee');
-		return task.populate('assignee').execPopulate();
-	}
-
-	function createTaskInvitation(task) {
-		return new Promise((resolve, reject) => {
-			var task_invitation = new TaskInvitation({
-				sender: task.assigner,
-				receiver: task.assignee,
-				task: task,
-			});
-			task_invitation.save()
-				.then(resolve)
-				.catch(reject);
+		const subtasks = _.map(req.body.subtasks, subtask => {
+			return Subtask.fromJson({ text: subtask, created_by: req.user.id, task: task.id });
 		});
-	}
-
-	// function createTaskInvitations(task) {
-	// 	return new Promise((resolve, reject) => {
-	// 		var task_invitations = [];
-	// 		async.eachOf(task.assignees, (value, key, callback) => {
-	// 			var assignee = value;
-	// 			var task_invitation = new TaskInvitation({
-	// 				sender: task.assigner,
-	// 				receiver: assignee,
-	// 				task: task,
-	// 			});
-	// 			task_invitations.push(task_invitation);
-	// 			callback();
-	// 		}, (err) => {
-	// 			if (err) return reject(err);
-	// 			TaskInvitation.create(task_invitations)
-	// 				.then(resolve)
-	// 				.catch(reject);
-	// 		});
-	// 	});
-	// }
-
-	function sendMessage(task_invitation) {
-		var channel = task_invitation.receiver._id;
-		var message = {
-			type: 'task_assigned',
-			task_invitation: task_invitation
-		}
-
-		return messenger.sendMessage(channel, message);
-	}
+		return Subtask.query().insert(subtasks);
+	}).then(subtasks => {
+		response.success = true;
+		response.task.subtasks = subtasks;
+		response.subtasks = subtasks;
+		res.status(201).json(response);
+	});
 };
+
+// exports.post = function(req, res, next) {
+// 	var assigner = req.user;
+// 	var subtasks_json = req.body.subtasks;
+
+// 	// NOTE: If you don't delete this, and req.body is used for Task's init,
+// 	// then mongoose always throws an exception. Not sure why yet.
+// 	delete req.body.subtasks;
+
+// 	var task = new Task(req.body);
+// 	task.assigner = assigner;
+
+// 	// TODO: Set real due_date
+// 	var due_date_interval = req.body.due_date;
+// 	var due_date = new Date(1970, 0, 1);
+// 	due_date.setSeconds(due_date_interval);
+// 	task.due_date = due_date;
+
+// 	// Loop through subtasks and create subtasks
+// 	var subtasks = [];
+// 	async.forEachOf(subtasks_json, (value, key, callback1) => {
+// 		var subtask_json = value;
+
+// 		var subtask = new Subtask();
+// 		subtask.text = subtask_json;
+// 		subtasks.push(subtask);
+
+// 		callback1();
+// 	}, (err) => {
+// 		if (err) logger.error(err);
+
+// 		// TODO: Handle this later. We should always have subtasks
+// 		if (subtasks.count == 0) throw Error('NO SUBTASKS :('); 	
+
+// 		createSubtasks()
+// 		.then(createTask)
+// 		.then(populateAssignee)
+// 		.then(createTaskInvitation)
+// 		.then((task_invitation) => {
+
+
+// 			res.status(201).json({
+// 				success: true,
+// 				task: task
+// 			});
+
+// 			if (!task_invitation) return;
+
+// 			async.forEachOf(task_invitations, (value, key, callback2) => {
+// 				var task_invitation = value;
+// 				logger.silly('current task invitation: ' + task_invitation);
+
+// 				sendMessage(task_invitation)
+// 					.then((response) => {
+// 						logger.silly('response: ' + response);
+// 						callback2();
+// 					})
+// 					.catch((err) => {
+// 						logger.silly('error: ' + err);
+// 						callback2(err);
+// 					})
+
+// 			}, (err) => {
+// 				if (err) return logger.error(err);
+// 				logger.silly('successfully sent task assigned notification to all assignees!!!');
+// 			});
+// 		})
+// 		.catch(next);
+// 	});
+
+// 	function createSubtasks() {
+// 		return Subtask.create(subtasks);
+// 	}
+
+// 	function createTask(subtasks) {
+// 		task.subtasks = subtasks;
+// 		return task.save();
+// 	}
+
+// 	function populateAssignee(task) {
+// 		logger.silly('populate assignee');
+// 		return task.populate('assignee').execPopulate();
+// 	}
+
+// 	function createTaskInvitation(task) {
+// 		return new Promise((resolve, reject) => {
+// 			var task_invitation = new TaskInvitation({
+// 				sender: task.assigner,
+// 				receiver: task.assignee,
+// 				task: task,
+// 			});
+// 			task_invitation.save()
+// 				.then(resolve)
+// 				.catch(reject);
+// 		});
+// 	}
+
+// 	// function createTaskInvitations(task) {
+// 	// 	return new Promise((resolve, reject) => {
+// 	// 		var task_invitations = [];
+// 	// 		async.eachOf(task.assignees, (value, key, callback) => {
+// 	// 			var assignee = value;
+// 	// 			var task_invitation = new TaskInvitation({
+// 	// 				sender: task.assigner,
+// 	// 				receiver: assignee,
+// 	// 				task: task,
+// 	// 			});
+// 	// 			task_invitations.push(task_invitation);
+// 	// 			callback();
+// 	// 		}, (err) => {
+// 	// 			if (err) return reject(err);
+// 	// 			TaskInvitation.create(task_invitations)
+// 	// 				.then(resolve)
+// 	// 				.catch(reject);
+// 	// 		});
+// 	// 	});
+// 	// }
+
+// 	function sendMessage(task_invitation) {
+// 		var channel = task_invitation.receiver._id;
+// 		var message = {
+// 			type: 'task_assigned',
+// 			task_invitation: task_invitation
+// 		}
+
+// 		return messenger.sendMessage(channel, message);
+// 	}
+// };
 
 exports.acceptTask = function(req, res, next) {
 	var user = req.user;
