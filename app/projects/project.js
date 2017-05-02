@@ -33,7 +33,7 @@ class Project extends Model {
             properties: {
                 id: { type: 'integer' },
                 creator_id: { type: 'integer' },
-				// due_date: { type: 'date' }
+				due_date: { type: 'string' }
             }
         };
     }

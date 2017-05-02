@@ -65,7 +65,7 @@ const mike_standup_id = 10;
 const standup_text = 'Today I did several things to the iOS app:\n\n1. I replaced the old launch screen image with the new image\n2. I added and setup the Crashlytics SDK\n3. I added the new app icons\n';
 
 // 1 day in ms, 2 days, ... 
-const dummy_task_due_dates = [pgFormatDate(new Date('2017-05-02 13:11:09 UTC'))];
+const dummy_task_due_dates = [new Date(Date.now() + 86400000).toISOString(), new Date(Date.now() + 172800000).toISOString(), new Date(Date.now() + 259200000).toISOString(), new Date(Date.now() + 345600000).toISOString()];
 
 const pending_task_id = 11;
 const in_progress_task_id = 12;
@@ -88,16 +88,6 @@ knex.raw('select 1+1 as result').then(function () {
     .catch(handleSeedError);
 });
 
-function pgFormatDate(date) {
-  /* Via http://stackoverflow.com/questions/3605214/javascript-add-leading-zeroes-to-date */
-  function zeroPad(d) {
-    return ("0" + d).slice(-2)
-  }
-
-  var parsed = new Date(date)
-
-  return [parsed.getUTCFullYear(), zeroPad(parsed.getMonth() + 1), zeroPad(parsed.getDate()), zeroPad(parsed.getHours()), zeroPad(parsed.getMinutes()), zeroPad(parsed.getSeconds())].join(" ");
-}
 
 function startSeed() {
     logger.silly('starting seed...');

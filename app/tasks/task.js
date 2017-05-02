@@ -42,7 +42,7 @@ class Task extends Model {
 			required: ['title', 'project_id', 'assigner_id', 'assignee_id'],
 			properties: {
 				title: { type: 'string' },
-				// due_date: { type: 'date' },
+				due_date: { type: 'string' },
 				project_id: { type: 'integer' },
 				assigner_id: { type: 'integer' },
 				assignee_id: { type: 'integer' }
