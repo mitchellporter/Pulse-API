@@ -99,6 +99,7 @@ function startSeed() {
         kori: createKoriUser,
         allen: createAllenUser,
         mike: createMikeUser,
+        createusers: createUsers,
 
         // // Projects
         mitchell_created_projects: mitchellCreatedProjects,
@@ -267,6 +268,20 @@ const createMikeUser = ['team', function (results, callback) {
         callback(null, mike);
     })
     .catch(handleSeedError);
+}];
+
+const createUsers = ['team', function (results, callback) {
+    logger.silly('creating other users');
+
+    const users = require('./users')();
+
+    async.forEach(users, (value, callback) => {
+        const user = User.fromJson(value);
+        User.query().insert(user).then(user => { callback(null) }).catch(callback);
+    }, err => {
+        if (err) return handleSeedError(err);
+        callback(null);
+    });
 }];
 
 // Projects
