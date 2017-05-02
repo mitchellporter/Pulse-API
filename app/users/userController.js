@@ -1,6 +1,6 @@
 const logger = require('../../lib/logger');
-const User = require('./userModel');
-const Team = require('../teams/teamModel');
+const User = require('./user');
+const Team = require('../teams/team');
 const signToken = require('../auth/auth').signToken;
 
 exports.params = function(req, res, next, id) {
@@ -74,11 +74,12 @@ exports.post = function(req, res, next) {
 };
 
 exports.get = function(req, res, next) {
-	User.find({})
-	.then((users) => {
+	User
+	.query()
+	.then(users => {
 		res.status(200).json({
 			success: true,
-			team_members: users
+			members: users
 		});
 	})
 	.catch(next);

@@ -1,4 +1,4 @@
-const User = require('../users/userModel');
+const User = require('../users/user');
 const signToken = require('./auth').signToken;
 
 exports.signin = function(req, res, next) {
@@ -6,7 +6,7 @@ exports.signin = function(req, res, next) {
   // verify user. Then we can just create a token
   // and send it back for the client to consume
   var user = req.user;
-  var token = signToken(user._id);
+  var token = signToken(user.id);
   const expiry = new Date(Date.now() + 1000 * 60 * 60 * 3);
 
   // TODO: Needs final params

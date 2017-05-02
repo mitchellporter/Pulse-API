@@ -1,9 +1,9 @@
 const logger = require('../../lib/logger');
 const async = require('async');
 const _ = require('lodash');
-const Invite = require('./inviteModel');
-const User = require('../users/userModel');
-const TaskInvitation = require('../task_invitations/taskInvitationModel');
+const Invite = require('./invite');
+const User = require('../users/user');
+const TaskInvitation = require('../task_invitations/taskInvitation');
 const signToken = require('../auth/auth').signToken;
 
 exports.params = function(req, res, next, id) {
