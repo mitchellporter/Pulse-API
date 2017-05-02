@@ -29,7 +29,7 @@ exports.myTasks = function (req, res, next) {
 		TaskInvitation
 		.query()
 		.where('receiver_id', user.id)
-		.eager('[sender, receiver]')
+		.eager('[task, sender, receiver]')
 		.then(task_invitations => {
 			response.task_invitations = task_invitations;
 			callback(null, task_invitations);
