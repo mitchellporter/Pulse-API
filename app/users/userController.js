@@ -74,11 +74,12 @@ exports.post = function(req, res, next) {
 };
 
 exports.get = function(req, res, next) {
-	User.find({})
-	.then((users) => {
+	User
+	.query()
+	.then(users => {
 		res.status(200).json({
 			success: true,
-			team_members: users
+			members: users
 		});
 	})
 	.catch(next);

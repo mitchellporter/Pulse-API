@@ -1,5 +1,6 @@
 const logger = require('../../lib/logger');
 const Project = require('./project');
+const User = require('../users/user');
 
 exports.params = function(req, res, next, id) {
     Project.findById(id)

@@ -161,7 +161,7 @@ function createTeam(callback) {
 
     Team
     .query()
-    .insert({ name: 'designfirstapps' })
+    .insert({ id: team_id, name: 'designfirstapps' })
     .then(team => {
         callback(null, team);
     })
