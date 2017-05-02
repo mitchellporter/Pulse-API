@@ -20,7 +20,7 @@ exports.up = function(knex, Promise) {
             table.increments('id').primary().notNullable();
             table.timestamps(true, true);
             table.integer('creator_id').unsigned().references('id').inTable('User').notNullable();
-            table.date('due_date');        
+            table.timestamp('due_date');
             table.integer('completion_percentage').defaultTo(0).notNullable();
             table.integer('standups_count').defaultTo(0).notNullable();
             table.integer('tasks_in_progress_count').defaultTo(0).notNullable();
@@ -37,7 +37,7 @@ exports.up = function(knex, Promise) {
             table.timestamps(true, true);
             table.string('title').notNullable();
             table.enu('status', ['pending', 'in_progress', 'completed']).defaultTo('pending').notNullable();
-            table.date('due_date');
+            table.timestamp('due_date');
             table.integer('completion_percentage').defaultTo(0).notNullable();
             table.integer('project_id').unsigned().references('id').inTable('Project').notNullable();
             table.integer('assigner_id').unsigned().references('id').inTable('User').notNullable();

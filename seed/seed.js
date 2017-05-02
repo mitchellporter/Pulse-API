@@ -4,6 +4,7 @@ const util = require('util');
 
 const async = require('async');
 const _ = require('lodash');
+const moment = require('moment');
 const casual = require('casual');
 const faker = require('faker');
 const Promise = require('bluebird');
@@ -64,7 +65,7 @@ const mike_standup_id = 10;
 const standup_text = 'Today I did several things to the iOS app:\n\n1. I replaced the old launch screen image with the new image\n2. I added and setup the Crashlytics SDK\n3. I added the new app icons\n';
 
 // 1 day in ms, 2 days, ... 
-const dummy_task_due_dates = [Date.now() + 86400000, Date.now() + 172800000, Date.now() + 259200000, Date.now() + 345600000];
+const dummy_task_due_dates = [pgFormatDate(new Date('2017-05-02 13:11:09 UTC'))];
 
 const pending_task_id = 11;
 const in_progress_task_id = 12;
@@ -87,6 +88,16 @@ knex.raw('select 1+1 as result').then(function () {
     .catch(handleSeedError);
 });
 
+function pgFormatDate(date) {
+  /* Via http://stackoverflow.com/questions/3605214/javascript-add-leading-zeroes-to-date */
+  function zeroPad(d) {
+    return ("0" + d).slice(-2)
+  }
+
+  var parsed = new Date(date)
+
+  return [parsed.getUTCFullYear(), zeroPad(parsed.getMonth() + 1), zeroPad(parsed.getDate()), zeroPad(parsed.getHours()), zeroPad(parsed.getMinutes()), zeroPad(parsed.getSeconds())].join(" ");
+}
 
 function startSeed() {
     logger.silly('starting seed...');
@@ -294,6 +305,7 @@ const mitchellCreatedProjects = ['mitchell', 'kori', 'allen', 'mike', function (
         let project_json = {
             creator: results.mitchell.id,
             name: 'This is a test project title',
+            due_date: dummy_task_due_dates[Math.floor(Math.random() * dummy_task_due_dates.length)],
             completion_percentage: 0, // TODO: Add random completion percentage
             standups_count: 0,
             tasks_in_progress_count: 0,
@@ -322,6 +334,7 @@ const koriCreatedProjects = ['kori', 'mitchell', 'allen', 'mike', function (resu
         let project = {
             creator: results.kori.id,
             name: 'This is a test project title',
+            due_date: dummy_task_due_dates[Math.floor(Math.random() * dummy_task_due_dates.length)],
             completion_percentage: 0, // TODO: Add random completion percentage
             standups_count: 0,
             tasks_in_progress_count: 0,
@@ -349,6 +362,7 @@ const allenCreatedProjects = ['mitchell', 'kori', 'allen', 'mike', function (res
         let project = {
             creator: results.allen.id,
             name: 'This is a test project title',
+            due_date: dummy_task_due_dates[Math.floor(Math.random() * dummy_task_due_dates.length)],
             completion_percentage: 0, // TODO: Add random completion percentage
             standups_count: 0,
             tasks_in_progress_count: 0,
@@ -376,6 +390,7 @@ const mikeCreatedProjects = ['mitchell', 'kori', 'allen', 'mike', function (resu
         let project = {
             creator: results.mike.id,
             name: 'This is a test project title',
+            due_date: dummy_task_due_dates[Math.floor(Math.random() * dummy_task_due_dates.length)],
             completion_percentage: 0, // TODO: Add random completion percentage
             standups_count: 0,
             tasks_in_progress_count: 0,
@@ -513,6 +528,7 @@ const tasksAssignedByMitchell = ['mitchell', 'kori', 'allen', 'mike', 'mitchell_
             assignee: assignees[n].id,
             project: results.mitchell_created_projects[n].id,
             title: 'this is a test task title',
+            due_date: dummy_task_due_dates[Math.floor(Math.random() * dummy_task_due_dates.length)],
             status: 'in_progress',
             completion_percentage: Number(Math.random() * (100 - 27) + 27).toFixed(0),
             attachment_count: Number(Math.random() * (10 - 2) + 2).toFixed(0),
@@ -543,6 +559,7 @@ const tasksAssignedByKori = ['mitchell', 'kori', 'allen', 'mike', 'kori_created_
             assignee: assignees[n].id,
             project: results.kori_created_projects[n].id,
             title: 'this is a test task title',
+            due_date: dummy_task_due_dates[Math.floor(Math.random() * dummy_task_due_dates.length)],
             status: 'in_progress',
             completion_percentage: Number(Math.random() * (100 - 27) + 27).toFixed(0),
             attachment_count: Number(Math.random() * (10 - 2) + 2).toFixed(0),
@@ -574,6 +591,7 @@ const tasksAssignedByAllen = ['mitchell', 'kori', 'allen', 'mike', 'allen_create
             assignee: assignees[n].id,
             project: results.allen_created_projects[n].id,
             title: 'this is a test task title',
+            due_date: dummy_task_due_dates[Math.floor(Math.random() * dummy_task_due_dates.length)],
             status: 'in_progress',
             completion_percentage: Number(Math.random() * (100 - 27) + 27).toFixed(0),
             attachment_count: Number(Math.random() * (10 - 2) + 2).toFixed(0),
@@ -605,6 +623,7 @@ const tasksAssignedByMike = ['mitchell', 'kori', 'allen', 'mike', 'mike_created_
             assignee: assignees[n].id,
             project: results.mike_created_projects[n].id,
             title: 'this is a test task title',
+            due_date: dummy_task_due_dates[Math.floor(Math.random() * dummy_task_due_dates.length)],
             status: 'in_progress',
             completion_percentage: Number(Math.random() * (100 - 27) + 27).toFixed(0),
             attachment_count: Number(Math.random() * (10 - 2) + 2).toFixed(0),
