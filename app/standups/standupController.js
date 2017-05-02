@@ -36,12 +36,11 @@ exports.post = function(req, res, next) {
     const author = req.user;
     const text = req.body.text;
 
-    var standup = new Standup({
-        text: text,
-        author: author
-    });
+    const standup = Standup.fromJson({ author: author.id, text: text });
 
-    standup.save()
+    Standup
+    .query()
+    .insert(standup)
     .then(standup => {
         res.status(201).json({
             success: true,
@@ -49,6 +48,5 @@ exports.post = function(req, res, next) {
         });
     })
     .catch(next);
-};
 
-// TODO: PUT and DELETE?
+};
