@@ -39,39 +39,40 @@ const positions = ['iOS Developer', 'Android Developer', 'Mobile Designer', 'Web
 const task_titles = ['Design the new navigation icons for the mobile app', 'We need a basic marketing website for the new app can', 'We need to review resumes for new Android developers'];
 const item_titles = ['Needs, Sign up button, place to input email address, or phone number.', 'Make sure to hi-light the press we recieved (Time, Inc. NYT.)', 'Show screen shots of the app in action.', 'Nice big hero image at the top.'];
 
-// Permanent dummy users
-const dummy_user_kori_id = '585c2130f31b2fbff4efbf68';
-const kori_avatar_url = 'https://d33833kh9ui3rd.cloudfront.net/kori.png';
-const kori_standup_id = '58f91d90afcf2363f3276ec6';
 
-const dummy_user_mitchell_id = '586ecdc0213f22d94db5ef7f';
+const dummy_user_mitchell_id = 1;
 const mitchell_avatar_url = 'https://d33833kh9ui3rd.cloudfront.net/mitchell.png';
-const mitchell_standup_id = '58f91daaafcf2363f3276ec7';
+const mitchell_standup_id = 6;
 
-const dummy_user_allen_id = '5881130a387e980f48c743f7';
+// Permanent dummy users
+const dummy_user_kori_id = 2;
+const kori_avatar_url = 'https://d33833kh9ui3rd.cloudfront.net/kori.png';
+const kori_standup_id = 7;
+
+const dummy_user_allen_id = 3;
 const allen_avatar_url = 'https://d33833kh9ui3rd.cloudfront.net/allen.png';
-const allen_standup_id = '58f91dccafcf2363f3276ec8';
+const allen_standup_id = 8;
 
-const dummy_user_arch_id = '58c70df6105bd171feeb2cbc';
+const dummy_user_arch_id = 4;
 const arch_avatar_url = 'https://d33833kh9ui3rd.cloudfront.net/arch.png'
-const arch_standup_id = '58f91dffdd093264618d3ae5';
+const arch_standup_id = 9;
 
-const dummy_user_mike_id = '58f8ef49de159c22a4d19fd1';
+const dummy_user_mike_id = 5;
 const mike_avatar_url = 'https://d33833kh9ui3rd.cloudfront.net/mike.png';
-const mike_standup_id = '58f91e00dd093264618d3ae6';
+const mike_standup_id = 10;
 
 const standup_text = 'Today I did several things to the iOS app:\n\n1. I replaced the old launch screen image with the new image\n2. I added and setup the Crashlytics SDK\n3. I added the new app icons\n';
 
 // 1 day in ms, 2 days, ... 
 const dummy_task_due_dates = [Date.now() + 86400000, Date.now() + 172800000, Date.now() + 259200000, Date.now() + 345600000];
 
-const pending_task_id = '58d6b31c2d424a133faba773';
-const in_progress_task_id = '586ebcae9188e7b6bfdd85c4';
-const task_invitation_id = '58bf269e9b5a8ff83f9a94e2';
-const team_id = '58b080b2356e913f3a3af182';
-const item_id = '58b09c7c247aa67459185307';
-const update_id = '58c9d33a1f3ffc0ee7c2c80d';
-const response_id = '58c9d33a1f3ffc0ee7c2c80e';
+const pending_task_id = 11;
+const in_progress_task_id = 12;
+const task_invitation_id = 13;
+const team_id = 14;
+const item_id = 15;
+const update_id = 16;
+const response_id = 17;
 
 // Constants
 const update_days = ['monday', 'wednesday', 'friday'];
@@ -171,6 +172,7 @@ const createMitchellUser = ['team', function createMitchellUser(results, callbac
     logger.silly('creating mitchell user');
 
     const user = {
+        id: dummy_user_mitchell_id,
         name: 'Mitchell Porter',
         password: '1234',
         email: 'mitchell@designfirstapps.com',
@@ -196,6 +198,7 @@ const createKoriUser = ['team', function(results, callback) {
     logger.silly('creating kori user');
 
     const user = {
+        id: dummy_user_kori_id,
         name: 'Kori Handy',
         password: '1234',
         email: 'kori@designfirstapps.com',
@@ -220,6 +223,7 @@ const createAllenUser = ['team', function (results, callback) {
     logger.silly('creating allen user');
 
     const user = {
+        id: dummy_user_allen_id,
         name: 'Allen Hurst',
         password: '1234',
         email: 'allen@designfirstapps.com',
@@ -244,6 +248,7 @@ const createMikeUser = ['team', function (results, callback) {
     logger.silly('creating mike user');
 
     const user = {
+        id: dummy_user_mike_id,
         name: 'Mike Chen',
         password: '1234',
         email: 'mike@designfirstapps.com',
