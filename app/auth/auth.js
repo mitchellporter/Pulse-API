@@ -8,10 +8,10 @@ const config = require('../../config/config');
 const checkToken = expressJwt({ secret: config.secrets.jwt });
 
 exports.getUser = function(req, res, next) {
-  logger.silly('fetching user with decoded tokens _id field');
+  logger.silly('fetching user with decoded tokens id field');
 	// user is the decoded token payload
-	// we store the _id for identification :P
-  var userId = req.user._id;
+	// we store the id for identification :P
+  var userId = req.user.id;
   User
     .query()
     .where('id', userId)
@@ -120,7 +120,7 @@ exports.verifyUser = function () {
 // util method to sign tokens on signup
 exports.signToken = function(id) {
   return jwt.sign(
-    { _id: id },
+    { id: id },
     config.secrets.jwt,
     { expiresIn: '100d' }
   );
@@ -129,11 +129,9 @@ exports.signToken = function(id) {
 exports.isOwner = function() {
     return function(req, res, next) {
         
-    var tokenUserId = req.user._id.toString();
+    var tokenUserId = req.user.id.toString();
     var paramUserId = req.params.id;
-    logger.silly('About to run isOwner middleware');
-    logger.silly('token user id: ' + tokenUserId);
-    logger.silly('param user id: ' + paramUserId);
+
     if (tokenUserId !== paramUserId) {
         return res.status(402).json({
             success: false,
