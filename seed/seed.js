@@ -942,7 +942,7 @@ const standups = ['mitchell', 'kori', 'allen', 'mike', function (results, callba
         const index = Math.trunc((n / 12) * 4);
         let json = {
             author: users[index].id,
-            text: 'this is a test standup'
+            text: 'I am going to be designing the website for ellroi. We have a new Web Developer starting on Wednesday and it needs to be ready for him to start.'
         };
 
         const standup = Standup.fromJson(json);

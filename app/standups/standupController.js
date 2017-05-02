@@ -13,8 +13,8 @@ exports.params = function(req, res, next, id) {
 };
 
 exports.get = function(req, res, next) {
-	
-    Standup.mquery(req)
+    Standup
+    .query()
     .then(standups => {
         res.status(200).json({
             success: true,
