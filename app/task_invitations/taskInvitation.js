@@ -41,7 +41,8 @@ class TaskInvitation extends Model {
 			properties: {
 				task_id: { type: 'integer' },
 				sender_id: { type: 'integer' },
-				receiver_id: { type: 'integer' }
+				receiver_id: { type: 'integer' },
+				status: { type: 'string' }
 			}
 		};
 	}
