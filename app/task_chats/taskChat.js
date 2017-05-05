@@ -11,7 +11,7 @@ class TaskChat extends Model {
                 relation: Model.BelongsToOneRelation,
                 modelClass: `${__dirname.replace('task_chats', 'users')}/user`,
                 join: {
-                    from: 'taskchat.sender',
+                    from: 'taskchat.sender_id',
                     to: 'user.id'
                 }
             },
@@ -19,7 +19,7 @@ class TaskChat extends Model {
                 relation: Model.BelongsToOneRelation,
                 modelClass: `${__dirname.replace('task_chats', 'users')}/user`,
                 join: {
-                    from: 'taskchat.receiver',
+                    from: 'taskchat.receiver_id',
                     to: 'user.id'
                 }
             },
@@ -27,7 +27,7 @@ class TaskChat extends Model {
                 relation: Model.BelongsToOneRelation,
                 modelClass: `${__dirname.replace('task_chats', 'tasks')}/task`,
                 join: {
-                    from: 'taskchat.task',
+                    from: 'taskchat.task_id',
                     to: 'task.id'
                 }
             }
