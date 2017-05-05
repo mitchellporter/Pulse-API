@@ -89,6 +89,7 @@ exports.up = function(knex, Promise) {
             table.text('message').notNullable();
             table.integer('task_id').unsigned().references('id').inTable('Task').notNullable();
             table.integer('sender_id').unsigned().references('id').inTable('User').notNullable();
+            table.integer('receiver_id').unsigned().references('id').inTable('User').notNullable();
         });
 };
 
