@@ -64,7 +64,7 @@ const mike_standup_id = 10;
 
 const standup_text = 'Today I did several things to the iOS app:\n\n1. I replaced the old launch screen image with the new image\n2. I added and setup the Crashlytics SDK\n3. I added the new app icons\n';
 
-// 1 day in ms, 2 days, ... 
+// 1 day in ms, 2 days, ...
 const dummy_task_due_dates = [new Date(Date.now() + 86400000).toISOString(), new Date(Date.now() + 172800000).toISOString(), new Date(Date.now() + 259200000).toISOString(), new Date(Date.now() + 345600000).toISOString()];
 
 const pending_task_id = 11;
@@ -330,7 +330,7 @@ const koriCreatedProjects = ['kori', 'mitchell', 'allen', 'mike', function (resu
             tasks_in_progress_count: 0,
             tasks_completed_count: 0
         };
-        
+
         callback(null, project);
     };
 
@@ -358,7 +358,7 @@ const allenCreatedProjects = ['mitchell', 'kori', 'allen', 'mike', function (res
             tasks_in_progress_count: 0,
             tasks_completed_count: 0
         };
-        
+
         callback(null, project);
     };
 
@@ -386,7 +386,7 @@ const mikeCreatedProjects = ['mitchell', 'kori', 'allen', 'mike', function (resu
             tasks_in_progress_count: 0,
             tasks_completed_count: 0
         };
-        
+
         callback(null, project);
     };
 
@@ -415,7 +415,7 @@ const mitchellReceivedProjectInvitations = ['mitchell', 'kori_created_projects',
         };
 
         const project_invitation = ProjectInvitation.fromJson(project_invitation_json);
-        callback(null, project_invitation); 
+        callback(null, project_invitation);
     };
 
     async.times(projects.length, (n, next) => {
@@ -441,7 +441,7 @@ const koriReceivedProjectInvitations = ['kori', 'mitchell_created_projects', 'al
         };
 
         const project_invitation = ProjectInvitation.fromJson(project_invitation_json);
-        callback(null, project_invitation); 
+        callback(null, project_invitation);
     };
 
     async.times(projects.length, (n, next) => {
@@ -467,7 +467,7 @@ const allenReceivedProjectInvitations = ['allen', 'mitchell_created_projects', '
         };
 
         const project_invitation = ProjectInvitation.fromJson(project_invitation_json);
-        callback(null, project_invitation); 
+        callback(null, project_invitation);
     };
 
     async.times(projects.length, (n, next) => {
@@ -493,7 +493,7 @@ const mikeReceivedProjectInvitations = ['mike', 'mitchell_created_projects', 'ko
         };
 
         const project_invitation = ProjectInvitation.fromJson(project_invitation_json);
-        callback(null, project_invitation); 
+        callback(null, project_invitation);
     };
 
     async.times(projects.length, (n, next) => {
@@ -524,7 +524,7 @@ const tasksAssignedByMitchell = ['mitchell', 'kori', 'allen', 'mike', 'mitchell_
             attachment_count: Number(Math.random() * (10 - 2) + 2).toFixed(0),
             chat_count: Number(Math.random() * (10 - 2) + 2).toFixed(0)
         };
-        
+
         const task = Task.fromJson(task_json);
         callback(null, task);
     };
@@ -555,7 +555,7 @@ const tasksAssignedByKori = ['mitchell', 'kori', 'allen', 'mike', 'kori_created_
             attachment_count: Number(Math.random() * (10 - 2) + 2).toFixed(0),
             chat_count: Number(Math.random() * (10 - 2) + 2).toFixed(0)
         };
-        
+
         const task = Task.fromJson(task_json);
         callback(null, task);
     };
@@ -587,7 +587,7 @@ const tasksAssignedByAllen = ['mitchell', 'kori', 'allen', 'mike', 'allen_create
             attachment_count: Number(Math.random() * (10 - 2) + 2).toFixed(0),
             chat_count: Number(Math.random() * (10 - 2) + 2).toFixed(0)
         };
-        
+
         const task = Task.fromJson(task_json);
         callback(null, task);
     };
@@ -619,7 +619,7 @@ const tasksAssignedByMike = ['mitchell', 'kori', 'allen', 'mike', 'mike_created_
             attachment_count: Number(Math.random() * (10 - 2) + 2).toFixed(0),
             chat_count: Number(Math.random() * (10 - 2) + 2).toFixed(0)
         };
-        
+
         const task = Task.fromJson(task_json);
         callback(null, task);
     };
@@ -645,7 +645,7 @@ const taskInvitationsSentByMitchell = ['mitchell', 'tasks_assigned_by_mitchell',
             sender: results.mitchell.id,
             receiver: results.tasks_assigned_by_mitchell[n].assignee_id
         };
-        
+
         const task_invitation = TaskInvitation.fromJson(task_invitation_json);
         callback(null, task_invitation);
     };
@@ -670,7 +670,7 @@ const taskInvitationsSentByKori = ['kori', 'tasks_assigned_by_kori', function (r
             sender: results.kori.id,
             receiver: results.tasks_assigned_by_kori[n].assignee_id
         };
-        
+
         const task_invitation = TaskInvitation.fromJson(task_invitation_json);
         callback(null, task_invitation);
     };
@@ -695,7 +695,7 @@ const taskInvitationsSentByAllen = ['allen', 'tasks_assigned_by_allen', function
             sender: results.allen.id,
             receiver: results.tasks_assigned_by_allen[n].assignee_id
         };
-        
+
         const task_invitation = TaskInvitation.fromJson(task_invitation_json);
         callback(null, task_invitation);
     };
@@ -720,7 +720,7 @@ const taskInvitationsSentByMike = ['mike', 'tasks_assigned_by_mike', function (r
             sender: results.mike.id,
             receiver: results.tasks_assigned_by_mike[n].assignee_id
         };
-        
+
         const task_invitation = TaskInvitation.fromJson(task_invitation_json);
         callback(null, task_invitation);
     };
@@ -841,7 +841,7 @@ const updatesSentToMitchell = ['tasks_assigned_by_mitchell', function (results, 
     logger.silly('creating updates sent to mitchell');
 
     const createUpdate = function(n, callback) {
-        
+
         let json = {
             task: results.tasks_assigned_by_mitchell[n].id,
             sender: results.tasks_assigned_by_mitchell[n].assignee_id,
@@ -859,7 +859,7 @@ const updatesSentToMitchell = ['tasks_assigned_by_mitchell', function (results, 
         });
     }, (err, updates) => {
         if (err) return callback(err);
-        Update.query().insert(updates).then(updates => { callback(null, updates) }).catch(logger.error);    
+        Update.query().insert(updates).then(updates => { callback(null, updates) }).catch(logger.error);
     });
 }];
 
@@ -867,7 +867,7 @@ const updatesSentToKori = ['tasks_assigned_by_kori', function (results, callback
     logger.silly('creating updates sent to kori');
 
     const createUpdate = function(n, callback) {
-        
+
         let json = {
             task: results.tasks_assigned_by_kori[n].id,
             sender: results.tasks_assigned_by_kori[n].assignee_id,
@@ -885,7 +885,7 @@ const updatesSentToKori = ['tasks_assigned_by_kori', function (results, callback
         });
     }, (err, updates) => {
         if (err) return callback(err);
-        Update.query().insert(updates).then(updates => { callback(null, updates) }).catch(logger.error);    
+        Update.query().insert(updates).then(updates => { callback(null, updates) }).catch(logger.error);
     });
 }];
 
@@ -893,7 +893,7 @@ const updatesSentToAllen = ['tasks_assigned_by_allen', function (results, callba
     logger.silly('creating updates sent to allen');
 
     const createUpdate = function(n, callback) {
-        
+
         let json = {
             task: results.tasks_assigned_by_allen[n].id,
             sender: results.tasks_assigned_by_allen[n].assignee_id,
@@ -911,7 +911,7 @@ const updatesSentToAllen = ['tasks_assigned_by_allen', function (results, callba
         });
     }, (err, updates) => {
         if (err) return callback(err);
-        Update.query().insert(updates).then(updates => { callback(null, updates) }).catch(logger.error);    
+        Update.query().insert(updates).then(updates => { callback(null, updates) }).catch(logger.error);
     });
 }];
 
@@ -919,7 +919,7 @@ const updatesSentToMike = ['tasks_assigned_by_mike', function (results, callback
     logger.silly('creating updates sent to mike');
 
     const createUpdate = function(n, callback) {
-        
+
         let json = {
             task: results.tasks_assigned_by_mike[n].id,
             sender: results.tasks_assigned_by_mike[n].assignee_id,
@@ -937,7 +937,7 @@ const updatesSentToMike = ['tasks_assigned_by_mike', function (results, callback
         });
     }, (err, updates) => {
         if (err) return callback(err);
-        Update.query().insert(updates).then(updates => { callback(null, updates) }).catch(logger.error);    
+        Update.query().insert(updates).then(updates => { callback(null, updates) }).catch(logger.error);
     });
 }];
 
@@ -947,7 +947,7 @@ const standups = ['mitchell', 'kori', 'allen', 'mike', function (results, callba
 
     const users = [results.mitchell, results.kori, results.allen, results.mike];
     const createStandup = function(n, callback) {
-        
+
         const index = Math.trunc((n / 12) * 4);
         let json = {
             author: users[index].id,
