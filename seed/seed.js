@@ -77,7 +77,9 @@ const response_id = 17;
 
 // Constants
 const update_days = ['monday', 'wednesday', 'friday'];
-const task_statuses = ['in_progress', 'completed'];
+const task_statuses = ['pending', 'in_progress', 'completed',
+                       'pending', 'in_progress', 'completed',
+                       'pending', 'in_progress', 'completed'];
 
 knex.raw('select 1+1 as result').then(function () {
   // there is a valid connection in the pool
@@ -515,15 +517,24 @@ const tasksAssignedByMitchell = ['mitchell', 'kori', 'allen', 'mike', 'mitchell_
 
     const assignees = [results.kori, results.allen, results.mike];
     var createTask = function(n, callback) {
+        let x = 0;
+
+        if (n > 2) {
+          x = 1;
+        }
+
+        if (n > 5) {
+          x = 2;
+        }
 
         let task_json = {
             assigner: results.mitchell.id,
-            assignee: assignees[n].id,
-            project: results.mitchell_created_projects[n].id,
+            assignee: assignees[x].id,
+            project: results.mitchell_created_projects[x].id,
             title: 'this is a test task title',
             due_date: dummy_task_due_dates[Math.floor(Math.random() * dummy_task_due_dates.length)],
-            status: 'in_progress',
-            completion_percentage: Number(Math.random() * (100 - 27) + 27).toFixed(0),
+            status: task_statuses[n],
+            completion_percentage: n === 2 ? '100' : Number(Math.random() * (100 - 27) + 27).toFixed(0),
             attachment_count: Number(Math.random() * (10 - 2) + 2).toFixed(0),
             chat_count: Number(Math.random() * (10 - 2) + 2).toFixed(0)
         };
@@ -532,7 +543,7 @@ const tasksAssignedByMitchell = ['mitchell', 'kori', 'allen', 'mike', 'mitchell_
         callback(null, task);
     };
 
-    async.times(results.mitchell_created_projects.length, (n, next) => {
+    async.times(results.mitchell_created_projects.length * 3, (n, next) => {
         createTask(n, (err, task) => {
             next(err, task);
         });
@@ -546,15 +557,24 @@ const tasksAssignedByKori = ['mitchell', 'kori', 'allen', 'mike', 'kori_created_
 
     const assignees = [results.mitchell, results.allen, results.mike];
     var createTask = function(n, callback) {
+        let x = 0;
+
+        if (n > 2) {
+          x = 1;
+        }
+
+        if (n > 5) {
+          x = 2;
+        }
 
         let task_json = {
             assigner: results.kori.id,
-            assignee: assignees[n].id,
-            project: results.kori_created_projects[n].id,
+            assignee: assignees[x].id,
+            project: results.kori_created_projects[x].id,
             title: 'this is a test task title',
             due_date: dummy_task_due_dates[Math.floor(Math.random() * dummy_task_due_dates.length)],
-            status: 'in_progress',
-            completion_percentage: Number(Math.random() * (100 - 27) + 27).toFixed(0),
+            status: task_statuses[n],
+            completion_percentage: n === 2 ? '100' : Number(Math.random() * (100 - 27) + 27).toFixed(0),
             attachment_count: Number(Math.random() * (10 - 2) + 2).toFixed(0),
             chat_count: Number(Math.random() * (10 - 2) + 2).toFixed(0)
         };
@@ -563,7 +583,7 @@ const tasksAssignedByKori = ['mitchell', 'kori', 'allen', 'mike', 'kori_created_
         callback(null, task);
     };
 
-    async.times(results.kori_created_projects.length, (n, next) => {
+    async.times(results.kori_created_projects.length * 3, (n, next) => {
         createTask(n, (err, task) => {
             next(err, task);
         });
@@ -578,15 +598,24 @@ const tasksAssignedByAllen = ['mitchell', 'kori', 'allen', 'mike', 'allen_create
 
     const assignees = [results.mitchell, results.kori, results.mike];
     var createTask = function(n, callback) {
+        let x = 0;
+
+        if (n > 2) {
+          x = 1;
+        }
+
+        if (n > 5) {
+          x = 2;
+        }
 
         let task_json = {
             assigner: results.allen.id,
-            assignee: assignees[n].id,
-            project: results.allen_created_projects[n].id,
+            assignee: assignees[x].id,
+            project: results.allen_created_projects[x].id,
             title: 'this is a test task title',
             due_date: dummy_task_due_dates[Math.floor(Math.random() * dummy_task_due_dates.length)],
-            status: 'in_progress',
-            completion_percentage: Number(Math.random() * (100 - 27) + 27).toFixed(0),
+            status: task_statuses[n],
+            completion_percentage: n === 2 ? '100' : Number(Math.random() * (100 - 27) + 27).toFixed(0),
             attachment_count: Number(Math.random() * (10 - 2) + 2).toFixed(0),
             chat_count: Number(Math.random() * (10 - 2) + 2).toFixed(0)
         };
@@ -595,7 +624,7 @@ const tasksAssignedByAllen = ['mitchell', 'kori', 'allen', 'mike', 'allen_create
         callback(null, task);
     };
 
-    async.times(results.allen_created_projects.length, (n, next) => {
+    async.times(results.allen_created_projects.length * 3, (n, next) => {
         createTask(n, (err, task) => {
             next(err, task);
         });
@@ -610,15 +639,24 @@ const tasksAssignedByMike = ['mitchell', 'kori', 'allen', 'mike', 'mike_created_
 
     const assignees = [results.mitchell, results.kori, results.allen];
     var createTask = function(n, callback) {
+        let x = 0;
+
+        if (n > 2) {
+          x = 1;
+        }
+
+        if (n > 5) {
+          x = 2;
+        }
 
         let task_json = {
             assigner: results.mike.id,
-            assignee: assignees[n].id,
-            project: results.mike_created_projects[n].id,
+            assignee: assignees[x].id,
+            project: results.mike_created_projects[x].id,
             title: 'this is a test task title',
             due_date: dummy_task_due_dates[Math.floor(Math.random() * dummy_task_due_dates.length)],
-            status: 'in_progress',
-            completion_percentage: Number(Math.random() * (100 - 27) + 27).toFixed(0),
+            status: task_statuses[n],
+            completion_percentage: n === 2 ? '100' : Number(Math.random() * (100 - 27) + 27).toFixed(0),
             attachment_count: Number(Math.random() * (10 - 2) + 2).toFixed(0),
             chat_count: Number(Math.random() * (10 - 2) + 2).toFixed(0)
         };
@@ -627,7 +665,7 @@ const tasksAssignedByMike = ['mitchell', 'kori', 'allen', 'mike', 'mike_created_
         callback(null, task);
     };
 
-    async.times(results.mike_created_projects.length, (n, next) => {
+    async.times(results.mike_created_projects.length * 3, (n, next) => {
         createTask(n, (err, task) => {
             next(err, task);
         });
@@ -642,18 +680,18 @@ const taskInvitationsSentByMitchell = ['mitchell', 'tasks_assigned_by_mitchell',
     logger.silly('creating task invitations sent by mitchell');
 
     const createTaskInvitation = function(n, callback) {
-
+        const numArr = [0, 3, 6]
         let task_invitation_json = {
-            task: results.tasks_assigned_by_mitchell[n].id,
+            task: results.tasks_assigned_by_mitchell[numArr[n]].id,
             sender: results.mitchell.id,
-            receiver: results.tasks_assigned_by_mitchell[n].assignee_id
+            receiver: results.tasks_assigned_by_mitchell[numArr[n]].assignee_id
         };
 
         const task_invitation = TaskInvitation.fromJson(task_invitation_json);
         callback(null, task_invitation);
     };
 
-    async.times(results.tasks_assigned_by_mitchell.length, (n, next) => {
+    async.times(results.tasks_assigned_by_mitchell.length / 3, (n, next) => {
         createTaskInvitation(n, (err, task_invitation) => {
             next(err, task_invitation);
         });
@@ -667,18 +705,18 @@ const taskInvitationsSentByKori = ['kori', 'tasks_assigned_by_kori', function (r
     logger.silly('creating task invitations sent by kori');
 
     const createTaskInvitation = function(n, callback) {
-
+        const numArr = [0, 3, 6];
         let task_invitation_json = {
-            task: results.tasks_assigned_by_kori[n].id,
+            task: results.tasks_assigned_by_kori[numArr[n]].id,
             sender: results.kori.id,
-            receiver: results.tasks_assigned_by_kori[n].assignee_id
+            receiver: results.tasks_assigned_by_kori[numArr[n]].assignee_id
         };
 
         const task_invitation = TaskInvitation.fromJson(task_invitation_json);
         callback(null, task_invitation);
     };
 
-    async.times(results.tasks_assigned_by_kori.length, (n, next) => {
+    async.times(results.tasks_assigned_by_kori.length / 3, (n, next) => {
         createTaskInvitation(n, (err, task_invitation) => {
             next(err, task_invitation);
         });
@@ -692,18 +730,18 @@ const taskInvitationsSentByAllen = ['allen', 'tasks_assigned_by_allen', function
     logger.silly('creating task invitations sent by allen');
 
     const createTaskInvitation = function(n, callback) {
-
+        const numArr = [0, 3, 6];
         let task_invitation_json = {
-            task: results.tasks_assigned_by_allen[n].id,
+            task: results.tasks_assigned_by_allen[numArr[n]].id,
             sender: results.allen.id,
-            receiver: results.tasks_assigned_by_allen[n].assignee_id
+            receiver: results.tasks_assigned_by_allen[numArr[n]].assignee_id
         };
 
         const task_invitation = TaskInvitation.fromJson(task_invitation_json);
         callback(null, task_invitation);
     };
 
-    async.times(results.tasks_assigned_by_allen.length, (n, next) => {
+    async.times(results.tasks_assigned_by_allen.length / 3, (n, next) => {
         createTaskInvitation(n, (err, task_invitation) => {
             next(err, task_invitation);
         });
@@ -717,18 +755,18 @@ const taskInvitationsSentByMike = ['mike', 'tasks_assigned_by_mike', function (r
     logger.silly('creating task invitations sent by mike');
 
     const createTaskInvitation = function(n, callback) {
-
+        const numArr = [0, 3, 6];
         let task_invitation_json = {
-            task: results.tasks_assigned_by_mike[n].id,
+            task: results.tasks_assigned_by_mike[numArr[n]].id,
             sender: results.mike.id,
-            receiver: results.tasks_assigned_by_mike[n].assignee_id
+            receiver: results.tasks_assigned_by_mike[numArr[n]].assignee_id
         };
 
         const task_invitation = TaskInvitation.fromJson(task_invitation_json);
         callback(null, task_invitation);
     };
 
-    async.times(results.tasks_assigned_by_mike.length, (n, next) => {
+    async.times(results.tasks_assigned_by_mike.length / 3, (n, next) => {
         createTaskInvitation(n, (err, task_invitation) => {
             next(err, task_invitation);
         });

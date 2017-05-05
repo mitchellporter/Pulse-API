@@ -46,8 +46,9 @@ exports.myTasks = function (req, res, next) {
 		.query()
 		.where('assignee_id', user.id)
 		.eager('[assigner, assignee]')
-		// .andWhere('status', 'in_progress')
-		// .orWhere('status', 'completed')
+		.andWhere('status', 'in_progress')
+		.orWhere('assignee_id', user.id)
+		.andWhere('status', 'completed')
 		.then(tasks => {
 			response.tasks = tasks;
 			callback(null, tasks);
@@ -84,7 +85,7 @@ exports.tasksCreated = function (req, res, next) {
 
 exports.getUpdates = function(req, res, next) {
 	var user = req.user;
-	
+
 	var response = {};
 	async.parallel([findUpdateRequestsSentToMe, findUpdatesSentToMe], (err) => {
 		if (err) logger.error(err);
