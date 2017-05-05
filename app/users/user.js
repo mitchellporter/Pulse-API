@@ -1,8 +1,6 @@
 'use strict';
 
 const Model = require('objection').Model;
-const Team = require('../teams/team');
-const util = require('util');
 const bcrypt = require('bcrypt');
 
 class User extends Model {
@@ -15,7 +13,7 @@ class User extends Model {
 		return {
 			team: {
 				relation: Model.BelongsToOneRelation,
-				modelClass: Team,
+				modelClass: `${__dirname.replace('users', 'teams')}/team`,
 				join: {
 					from: 'User.team_id',
 					to: 'Team.id'
