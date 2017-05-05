@@ -42,7 +42,8 @@ class Subtask extends Model {
 				text: { type: 'string' },
 				task_id: { type: 'integer' },
 				created_by_id: { type: 'integer' },
-				completed_by_id: { type: 'integer' }
+				completed_by_id: { type: 'integer' },
+				status: { type: 'string' }
 			}
 		};
 	}

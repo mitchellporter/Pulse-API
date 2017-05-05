@@ -53,9 +53,11 @@ class Task extends Model {
 				completion_percentage: { type: 'string' },
 				project_id: { type: 'integer' },
 				assigner_id: { type: 'integer' },
-				assignee_id: { type: 'integer' }
+				assignee_id: { type: 'integer' },
+				completion_percentage: { type: 'integer' }
+
 			}
-		}
+		};
 	}
 
 	$parseJson(json, opt) {

@@ -41,7 +41,8 @@ class ProjectInvitation extends Model {
 			properties: {
 				project_id: { type: 'integer' },
 				sender_id: { type: 'integer' },
-				receiver_id: { type: 'integer' }
+				receiver_id: { type: 'integer' },
+				status: { type: 'string' }
 			}
 		}
 	}
