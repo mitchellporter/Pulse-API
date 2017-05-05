@@ -1,5 +1,4 @@
 const Model = require('objection').Model;
-const User = require('../users/user');
 
 class Standup extends Model {
 	static get tableName() {
@@ -10,7 +9,7 @@ class Standup extends Model {
 		return {
 			author: {
 				relation: Model.BelongsToOneRelation,
-				modelClass: User,
+				modelClass: `${__dirname.replace('standups', 'users')}/user`,
 				join: {
 					from: 'Standup.author_id',
 					to: 'User.id'
