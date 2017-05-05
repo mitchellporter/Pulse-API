@@ -32,7 +32,11 @@ class Project extends Model {
             properties: {
                 id: { type: 'integer' },
                 creator_id: { type: 'integer' },
-				due_date: { type: 'string' }
+				due_date: { type: 'string' },
+                completion_percentage: { type: 'integer' },
+                standups_count: { type: 'integer' },
+                tasks_in_progress_count: { type: 'integer' },
+                completed_tasks_count: { type: 'integer' }
             }
         };
     }
