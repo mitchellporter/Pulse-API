@@ -1,7 +1,4 @@
 const Model = require('objection').Model;
-const User = require('../users/user');
-const Task = require('../tasks/task');
-const UpdateRequest = require('../update_requests/updateRequest');
 
 class Update extends Model {
 	static get tableName() {
@@ -12,7 +9,7 @@ class Update extends Model {
 		return {
 			task: {
 				relation: Model.BelongsToOneRelation,
-				modelClass: Task,
+				modelClass: `${__dirname.replace('updates', 'tasks')}/task`,
 				join: {
 					from: 'Update.task_id',
 					to: 'Task.id'
@@ -20,7 +17,7 @@ class Update extends Model {
 			},
 			sender: {
 				relation: Model.BelongsToOneRelation,
-				modelClass: User,
+				modelClass: `${__dirname.replace('updates', 'users')}/user`,
 				join: {
 					from: 'Update.sender_id',
 					to: 'User.id'
@@ -28,7 +25,7 @@ class Update extends Model {
 			},
 			receiver: {
 				relation: Model.BelongsToOneRelation,
-				modelClass: User,
+				modelClass: `${__dirname.replace('updates', 'users')}/user`,
 				join: {
 					from: 'Update.receiver_id',
 					to: 'User.id'
@@ -36,7 +33,7 @@ class Update extends Model {
 			},
 			update_request: {
 				relation: Model.BelongsToOneRelation,
-				modelClass: UpdateRequest,
+				modelClass: `${__dirname.replace('updates', 'update_requests')}/updateRequest`,
 				join: {
 					from: 'Update.update_request_id',
 					to: 'UpdateRequest.id'
