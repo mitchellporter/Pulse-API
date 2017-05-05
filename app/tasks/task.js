@@ -1,6 +1,7 @@
 const Model = require('objection').Model;
 const Project = require('../projects/project');
 const User = require('../users/user');
+const Subtask = require('../subtasks/subtask');
 
 class Task extends Model {
 	static get tableName() {
@@ -31,6 +32,14 @@ class Task extends Model {
 				join: {
 					from: 'Task.assignee_id',
 					to: 'User.id'
+				}
+			},
+			subtasks: {
+				relation: Model.HasManyRelation,
+				modelClass: Subtask,
+				join: {
+					from: 'Task.id',
+					to: 'Subtask.task_id'
 				}
 			}
 		}
