@@ -14,8 +14,9 @@ exports.params = function(req, res, next, id) {
 	req.query.id = id;
 
 	findQuery(Task)
-	.allowEager('[project, assigner, assignee]')
+	.allowEager('[project, assigner, assignee, subtasks]')
 	.build(req.query)
+	.first()
 	.then(task => {
 		if (!task) return next(new Error('no task exists with that id'));
 		req.task = task;
@@ -42,7 +43,7 @@ exports.get = function(req, res, next) {
 	}
 
 	findQuery(Task)
-	.allowEager('[project, assigner, assignee]')
+	.allowEager('[project, assigner, assignee, subtasks]')
 	.build(req.query)
 	.then(tasks => {
 		res.status(200).json({

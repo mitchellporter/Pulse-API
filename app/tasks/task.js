@@ -42,7 +42,7 @@ class Task extends Model {
 					to: 'Subtask.task_id'
 				}
 			}
-		}
+		};
 	}
 
 	static get jsonSchema() {

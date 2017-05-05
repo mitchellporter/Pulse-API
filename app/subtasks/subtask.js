@@ -1,6 +1,4 @@
 const Model = require('objection').Model;
-const Task = require('../tasks/task');
-const User = require('../users/user');
 
 class Subtask extends Model {
 	static get tableName() {
@@ -11,7 +9,7 @@ class Subtask extends Model {
 		return {
 			task: {
 				relation: Model.BelongsToOneRelation,
-				modelClass: Task,
+				modelClass: `${__dirname.replace('subtasks', 'tasks')}/task`,
 				join: {
 					from: 'Subtask.task_id',
 					to: 'Task.id'
@@ -19,7 +17,7 @@ class Subtask extends Model {
 			},
 			created_by: {
 				relation: Model.BelongsToOneRelation,
-				modelClass: User,
+				modelClass: `${__dirname.replace('subtasks', 'users')}/user`,
 				join: {
 					from: 'Subtask.created_by_id',
 					to: 'User.id'
@@ -27,7 +25,7 @@ class Subtask extends Model {
 			},
 			completed_by: {
 				relation: Model.BelongsToOneRelation,
-				modelClass: User,
+				modelClass: `${__dirname.replace('subtasks', 'users')}/user`,
 				join: {
 					from: 'Subtask.completed_by_id',
 					to: 'User.id'
