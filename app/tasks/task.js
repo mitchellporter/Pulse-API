@@ -49,7 +49,8 @@ class Task extends Model {
 			properties: {
 				title: { type: 'string' },
 				due_date: { type: 'string' },
-				status: {type: 'string'},
+				status: { type: 'string' },
+				completion_percentage: { type: 'string' },
 				project_id: { type: 'integer' },
 				assigner_id: { type: 'integer' },
 				assignee_id: { type: 'integer' }
