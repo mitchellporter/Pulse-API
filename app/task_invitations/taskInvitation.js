@@ -1,6 +1,4 @@
 const Model = require('objection').Model;
-const User = require('../users/user');
-const Task = require('../tasks/task');
 
 class TaskInvitation extends Model {
 	static get tableName() {
@@ -11,7 +9,7 @@ class TaskInvitation extends Model {
 		return {
 			task: {
 				relation: Model.BelongsToOneRelation,
-				modelClass: Task,
+				modelClass: `${__dirname.replace('task_invitations', 'tasks')}/task`,
 				join: {
 					from: 'TaskInvitation.task_id',
 					to: 'Task.id'
@@ -19,7 +17,7 @@ class TaskInvitation extends Model {
 			},
 			sender: {
 				relation: Model.BelongsToOneRelation,
-				modelClass: User,
+				modelClass: `${__dirname.replace('task_invitations', 'users')}/user`,
 				join: {
 					from: 'TaskInvitation.sender_id',
 					to: 'User.id'
@@ -27,7 +25,7 @@ class TaskInvitation extends Model {
 			},
 			receiver: {
 				relation: Model.BelongsToOneRelation,
-				modelClass: User,
+				modelClass: `${__dirname.replace('task_invitations', 'users')}/user`,
 				join: {
 					from: 'TaskInvitation.receiver_id',
 					to: 'User.id'
