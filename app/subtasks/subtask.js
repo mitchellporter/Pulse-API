@@ -37,7 +37,7 @@ class Subtask extends Model {
 	static get jsonSchema() {
 		return {
 			type: 'object',
-			required: ['task_id', 'created_by_id'],
+			required: ['task_id'],
 			properties: {
 				text: { type: 'string' },
 				task_id: { type: 'integer' },

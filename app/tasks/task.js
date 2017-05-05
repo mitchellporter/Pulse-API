@@ -50,7 +50,6 @@ class Task extends Model {
 				title: { type: 'string' },
 				due_date: { type: 'string' },
 				status: { type: 'string' },
-				completion_percentage: { type: 'string' },
 				project_id: { type: 'integer' },
 				assigner_id: { type: 'integer' },
 				assignee_id: { type: 'integer' },
@@ -75,6 +74,11 @@ class Task extends Model {
 			json.assignee_id = parseInt(json.assignee);
 			delete json.assignee;
 		}
+
+		if (json.completion_percentage) {
+			json.completion_percentage = parseInt(json.completion_percentage);
+		}
+
 		return super.$parseJson(json, opt);
 	}
 }

@@ -120,7 +120,7 @@ function startSeed() {
         tasks_assigned_by_allen: tasksAssignedByAllen,
         tasks_assigned_by_mike: tasksAssignedByMike,
 
-        // // Task invitations
+        // Task invitations
         task_invitations_sent_by_mitchell: taskInvitationsSentByMitchell,
         task_invitations_sent_by_kori: taskInvitationsSentByKori,
         task_invitations_sent_by_allen: taskInvitationsSentByAllen,
@@ -137,6 +137,9 @@ function startSeed() {
         updates_sent_to_kori: updatesSentToKori,
         updates_sent_to_allen: updatesSentToAllen,
         updates_sent_to_mike: updatesSentToMike,
+
+        // Subtasks
+        subtasks,
 
         // // Standups
         standups
@@ -938,6 +941,34 @@ const updatesSentToMike = ['tasks_assigned_by_mike', function (results, callback
     }, (err, updates) => {
         if (err) return callback(err);
         Update.query().insert(updates).then(updates => { callback(null, updates) }).catch(logger.error);
+    });
+}];
+
+// Subtasks
+const subtasks = ['tasks_assigned_by_mitchell', 'tasks_assigned_by_kori', 'tasks_assigned_by_allen', 'tasks_assigned_by_mike', function (results, callback) {
+    logger.silly('creating subtasks');
+
+    const tasks = _.union(results.tasks_assigned_by_mitchell, results.tasks_assigned_by_kori, results.tasks_assigned_by_allen, results.tasks_assigned_by_mike);
+    const createSubtask = function(n, callback) {
+
+        const index = Math.trunc((n / 12) * 4);
+        let json = {
+            created_by: tasks[index].assigner_id,
+            text: `This is a test subtask #${n}`,
+            task: tasks[index].id
+        };
+
+        const subtask = Subtask.fromJson(json);
+        callback(null, subtask);
+    };
+
+    async.times(tasks.length * 3, (n, next) => {
+        createSubtask(n, (err, subtask) => {
+            next(err, subtask);
+        });
+    }, (err, subtasks) => {
+        if (err) return callback(err);
+        Subtask.query().insert(subtasks).then(subtasks => { callback(null, subtasks) }).catch(logger.error);
     });
 }];
 
