@@ -1,7 +1,6 @@
 'use strict';
 
 const Model = require('objection').Model;
-const User = require('../users/user');
 
 class Project extends Model {
     static get tableName() {
@@ -12,7 +11,7 @@ class Project extends Model {
         return {
             members: {
                 relation: Model.ManyToManyRelation,
-                modelClass: User,
+                modelClass: `${__dirname.replace('projects', 'users')}/user`,
                 join: {
                     from: 'Project.id',
                     through: {
