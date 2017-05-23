@@ -10,7 +10,7 @@ const faker = require('faker');
 const Promise = require('bluebird');
 const config = require('../config/config');
 
-const knex = require('knex')(require('../knexfile')['development']);
+const knex = require('knex')(require('../knexfile')['production']);
 const knex_cleaner = require('knex-cleaner');
 const Model = require('objection').Model;
 Model.knex(knex);
@@ -34,7 +34,8 @@ const Standup = require('../app/standups/standup');
 const cdn_url = 'https://d33833kh9ui3rd.cloudfront.net/';
 const asset_file_format = '.png';
 const avatar_asset_names = ['AllisonReynolds', 'DinaAlexander', 'DylanMcKay', 'EddieGelfen', 'EllenJosephineHickle', 'Iggy', 'Lisa', 'Oblina', 'PeteWrigley',
-    'RichardWang', 'Rufio', 'SamEmerson', 'ScottHoward', 'SimonHolmes', 'TinaCarlyle', 'WillSmith'];
+    'RichardWang', 'Rufio', 'SamEmerson', 'ScottHoward', 'SimonHolmes', 'TinaCarlyle', 'WillSmith'
+];
 
 const positions = ['iOS Developer', 'Android Developer', 'Mobile Designer', 'Web Designer', 'Devops', 'Database Engineer', 'Customer Service Rep', 'Sales / Marketing', 'CEO'];
 const task_titles = ['Design the new navigation icons for the mobile app', 'We need a basic marketing website for the new app can', 'We need to review resumes for new Android developers'];
@@ -78,16 +79,17 @@ const response_id = 17;
 // Constants
 const update_days = ['monday', 'wednesday', 'friday'];
 const task_statuses = ['pending', 'in_progress', 'completed',
-                       'pending', 'in_progress', 'completed',
-                       'pending', 'in_progress', 'completed'];
+    'pending', 'in_progress', 'completed',
+    'pending', 'in_progress', 'completed'
+];
 
-knex.raw('select 1+1 as result').then(function () {
-  // there is a valid connection in the pool
+knex.raw('select 1+1 as result').then(function() {
+    // there is a valid connection in the pool
     logger.silly('knex successful connection to pg');
 
     dropDb()
-    .then(startSeed)
-    .catch(handleSeedError);
+        .then(startSeed)
+        .catch(handleSeedError);
 });
 
 
@@ -155,7 +157,7 @@ function startSeed() {
 function dropDb() {
     logger.silly('dropping db');
     return new Promise((resolve, reject) => {
-        knex_cleaner.clean(knex).then(function () {
+        knex_cleaner.clean(knex).then(function() {
             resolve();
         });
     });
@@ -167,12 +169,12 @@ function createTeam(callback) {
     logger.silly('creating design first apps team');
 
     Team
-    .query()
-    .insert({ id: team_id, name: 'designfirstapps' })
-    .then(team => {
-        callback(null, team);
-    })
-    .catch(handleSeedError);
+        .query()
+        .insert({ id: team_id, name: 'designfirstapps' })
+        .then(team => {
+            callback(null, team);
+        })
+        .catch(handleSeedError);
 }
 
 const createMitchellUser = ['team', function createMitchellUser(results, callback) {
@@ -191,13 +193,13 @@ const createMitchellUser = ['team', function createMitchellUser(results, callbac
     const mitchell = User.fromJson(user);
 
     User
-    .query()
-    .insert(mitchell)
-    .returning('*')
-    .then(mitchell => {
-        callback(null, mitchell);
-    })
-    .catch(handleSeedError);
+        .query()
+        .insert(mitchell)
+        .returning('*')
+        .then(mitchell => {
+            callback(null, mitchell);
+        })
+        .catch(handleSeedError);
 
 }];
 
@@ -217,16 +219,16 @@ const createKoriUser = ['team', function(results, callback) {
     const kori = User.fromJson(user);
 
     User
-    .query()
-    .insert(kori)
-    .returning('*')
-    .then(kori => {
-        callback(null, kori);
-    })
-    .catch(handleSeedError);
+        .query()
+        .insert(kori)
+        .returning('*')
+        .then(kori => {
+            callback(null, kori);
+        })
+        .catch(handleSeedError);
 }];
 
-const createAllenUser = ['team', function (results, callback) {
+const createAllenUser = ['team', function(results, callback) {
     logger.silly('creating allen user');
 
     const user = {
@@ -242,16 +244,16 @@ const createAllenUser = ['team', function (results, callback) {
     const allen = User.fromJson(user);
 
     User
-    .query()
-    .insert(allen)
-    .returning('*')
-    .then(allen => {
-        callback(null, allen);
-    })
-    .catch(handleSeedError);
+        .query()
+        .insert(allen)
+        .returning('*')
+        .then(allen => {
+            callback(null, allen);
+        })
+        .catch(handleSeedError);
 }];
 
-const createMikeUser = ['team', function (results, callback) {
+const createMikeUser = ['team', function(results, callback) {
     logger.silly('creating mike user');
 
     const user = {
@@ -267,16 +269,16 @@ const createMikeUser = ['team', function (results, callback) {
     const mike = User.fromJson(user);
 
     User
-    .query()
-    .insert(mike)
-    .returning('*')
-    .then(mike => {
-        callback(null, mike);
-    })
-    .catch(handleSeedError);
+        .query()
+        .insert(mike)
+        .returning('*')
+        .then(mike => {
+            callback(null, mike);
+        })
+        .catch(handleSeedError);
 }];
 
-const createUsers = ['team', function (results, callback) {
+const createUsers = ['team', function(results, callback) {
     logger.silly('creating other users');
 
     const users = require('./users')();
@@ -292,7 +294,7 @@ const createUsers = ['team', function (results, callback) {
 
 // Projects
 
-const mitchellCreatedProjects = ['mitchell', 'kori', 'allen', 'mike', function (results, callback) {
+const mitchellCreatedProjects = ['mitchell', 'kori', 'allen', 'mike', function(results, callback) {
     logger.silly('creating projects created by mitchell');
 
     var createProject = function(callback) {
@@ -321,8 +323,8 @@ const mitchellCreatedProjects = ['mitchell', 'kori', 'allen', 'mike', function (
     });
 }];
 
-const koriCreatedProjects = ['kori', 'mitchell', 'allen', 'mike', function (results, callback) {
-     logger.silly('creating projects created by kori');
+const koriCreatedProjects = ['kori', 'mitchell', 'allen', 'mike', function(results, callback) {
+    logger.silly('creating projects created by kori');
 
     var createProject = function(callback) {
 
@@ -349,8 +351,8 @@ const koriCreatedProjects = ['kori', 'mitchell', 'allen', 'mike', function (resu
     });
 }];
 
-const allenCreatedProjects = ['mitchell', 'kori', 'allen', 'mike', function (results, callback) {
-     logger.silly('creating projects created by allen');
+const allenCreatedProjects = ['mitchell', 'kori', 'allen', 'mike', function(results, callback) {
+    logger.silly('creating projects created by allen');
 
     var createProject = function(callback) {
 
@@ -377,8 +379,8 @@ const allenCreatedProjects = ['mitchell', 'kori', 'allen', 'mike', function (res
     });
 }];
 
-const mikeCreatedProjects = ['mitchell', 'kori', 'allen', 'mike', function (results, callback) {
-     logger.silly('creating projects created by mike');
+const mikeCreatedProjects = ['mitchell', 'kori', 'allen', 'mike', function(results, callback) {
+    logger.silly('creating projects created by mike');
 
     var createProject = function(callback) {
 
@@ -407,7 +409,7 @@ const mikeCreatedProjects = ['mitchell', 'kori', 'allen', 'mike', function (resu
 
 // Project Invitations
 
-const mitchellReceivedProjectInvitations = ['mitchell', 'kori_created_projects', 'allen_created_projects', 'mike_created_projects', function (results, callback) {
+const mitchellReceivedProjectInvitations = ['mitchell', 'kori_created_projects', 'allen_created_projects', 'mike_created_projects', function(results, callback) {
     logger.silly('creating project invitations received by mitchell');
 
     const projects = _.merge(results.kori_created_projects, results.allen_created_projects, results.mike_created_projects);
@@ -433,7 +435,7 @@ const mitchellReceivedProjectInvitations = ['mitchell', 'kori_created_projects',
     });
 }];
 
-const koriReceivedProjectInvitations = ['kori', 'mitchell_created_projects', 'allen_created_projects', 'mike_created_projects', function (results, callback) {
+const koriReceivedProjectInvitations = ['kori', 'mitchell_created_projects', 'allen_created_projects', 'mike_created_projects', function(results, callback) {
     logger.silly('creating project invitations received by kori');
 
     const projects = _.merge(results.mitchell_created_projects, results.allen_created_projects, results.mike_created_projects);
@@ -459,7 +461,7 @@ const koriReceivedProjectInvitations = ['kori', 'mitchell_created_projects', 'al
     });
 }];
 
-const allenReceivedProjectInvitations = ['allen', 'mitchell_created_projects', 'kori_created_projects', 'mike_created_projects', function (results, callback) {
+const allenReceivedProjectInvitations = ['allen', 'mitchell_created_projects', 'kori_created_projects', 'mike_created_projects', function(results, callback) {
     logger.silly('creating project invitations received by allen');
 
     const projects = _.merge(results.mitchell_created_projects, results.kori_created_projects, results.mike_created_projects);
@@ -485,7 +487,7 @@ const allenReceivedProjectInvitations = ['allen', 'mitchell_created_projects', '
     });
 }];
 
-const mikeReceivedProjectInvitations = ['mike', 'mitchell_created_projects', 'kori_created_projects', 'allen_created_projects', function (results, callback) {
+const mikeReceivedProjectInvitations = ['mike', 'mitchell_created_projects', 'kori_created_projects', 'allen_created_projects', function(results, callback) {
     logger.silly('creating project invitations received by mike');
 
     const projects = _.merge(results.mitchell_created_projects, results.kori_created_projects, results.allen_created_projects);
@@ -512,7 +514,7 @@ const mikeReceivedProjectInvitations = ['mike', 'mitchell_created_projects', 'ko
 }];
 
 // Tasks
-const tasksAssignedByMitchell = ['mitchell', 'kori', 'allen', 'mike', 'mitchell_created_projects', function (results, callback) {
+const tasksAssignedByMitchell = ['mitchell', 'kori', 'allen', 'mike', 'mitchell_created_projects', function(results, callback) {
     logger.silly('creating tasks assigned by mitchell');
 
     const assignees = [results.kori, results.allen, results.mike];
@@ -520,11 +522,11 @@ const tasksAssignedByMitchell = ['mitchell', 'kori', 'allen', 'mike', 'mitchell_
         let x = 0;
 
         if (n > 2) {
-          x = 1;
+            x = 1;
         }
 
         if (n > 5) {
-          x = 2;
+            x = 2;
         }
 
         let task_json = {
@@ -553,18 +555,18 @@ const tasksAssignedByMitchell = ['mitchell', 'kori', 'allen', 'mike', 'mitchell_
     });
 }];
 
-const tasksAssignedByKori = ['mitchell', 'kori', 'allen', 'mike', 'kori_created_projects', function (results, callback) {
+const tasksAssignedByKori = ['mitchell', 'kori', 'allen', 'mike', 'kori_created_projects', function(results, callback) {
 
     const assignees = [results.mitchell, results.allen, results.mike];
     var createTask = function(n, callback) {
         let x = 0;
 
         if (n > 2) {
-          x = 1;
+            x = 1;
         }
 
         if (n > 5) {
-          x = 2;
+            x = 2;
         }
 
         let task_json = {
@@ -593,7 +595,7 @@ const tasksAssignedByKori = ['mitchell', 'kori', 'allen', 'mike', 'kori_created_
     });
 }];
 
-const tasksAssignedByAllen = ['mitchell', 'kori', 'allen', 'mike', 'allen_created_projects', function (results, callback) {
+const tasksAssignedByAllen = ['mitchell', 'kori', 'allen', 'mike', 'allen_created_projects', function(results, callback) {
     logger.silly('creating tasks assigned by allen');
 
     const assignees = [results.mitchell, results.kori, results.mike];
@@ -601,11 +603,11 @@ const tasksAssignedByAllen = ['mitchell', 'kori', 'allen', 'mike', 'allen_create
         let x = 0;
 
         if (n > 2) {
-          x = 1;
+            x = 1;
         }
 
         if (n > 5) {
-          x = 2;
+            x = 2;
         }
 
         let task_json = {
@@ -634,7 +636,7 @@ const tasksAssignedByAllen = ['mitchell', 'kori', 'allen', 'mike', 'allen_create
     });
 }];
 
-const tasksAssignedByMike = ['mitchell', 'kori', 'allen', 'mike', 'mike_created_projects', function (results, callback) {
+const tasksAssignedByMike = ['mitchell', 'kori', 'allen', 'mike', 'mike_created_projects', function(results, callback) {
     logger.silly('creating tasks assigned by mike');
 
     const assignees = [results.mitchell, results.kori, results.allen];
@@ -642,11 +644,11 @@ const tasksAssignedByMike = ['mitchell', 'kori', 'allen', 'mike', 'mike_created_
         let x = 0;
 
         if (n > 2) {
-          x = 1;
+            x = 1;
         }
 
         if (n > 5) {
-          x = 2;
+            x = 2;
         }
 
         let task_json = {
@@ -676,7 +678,7 @@ const tasksAssignedByMike = ['mitchell', 'kori', 'allen', 'mike', 'mike_created_
 }];
 
 // Task invitations
-const taskInvitationsSentByMitchell = ['mitchell', 'tasks_assigned_by_mitchell', function (results, callback) {
+const taskInvitationsSentByMitchell = ['mitchell', 'tasks_assigned_by_mitchell', function(results, callback) {
     logger.silly('creating task invitations sent by mitchell');
 
     const createTaskInvitation = function(n, callback) {
@@ -701,7 +703,7 @@ const taskInvitationsSentByMitchell = ['mitchell', 'tasks_assigned_by_mitchell',
     });
 }];
 
-const taskInvitationsSentByKori = ['kori', 'tasks_assigned_by_kori', function (results, callback) {
+const taskInvitationsSentByKori = ['kori', 'tasks_assigned_by_kori', function(results, callback) {
     logger.silly('creating task invitations sent by kori');
 
     const createTaskInvitation = function(n, callback) {
@@ -726,7 +728,7 @@ const taskInvitationsSentByKori = ['kori', 'tasks_assigned_by_kori', function (r
     });
 }];
 
-const taskInvitationsSentByAllen = ['allen', 'tasks_assigned_by_allen', function (results, callback) {
+const taskInvitationsSentByAllen = ['allen', 'tasks_assigned_by_allen', function(results, callback) {
     logger.silly('creating task invitations sent by allen');
 
     const createTaskInvitation = function(n, callback) {
@@ -751,7 +753,7 @@ const taskInvitationsSentByAllen = ['allen', 'tasks_assigned_by_allen', function
     });
 }];
 
-const taskInvitationsSentByMike = ['mike', 'tasks_assigned_by_mike', function (results, callback) {
+const taskInvitationsSentByMike = ['mike', 'tasks_assigned_by_mike', function(results, callback) {
     logger.silly('creating task invitations sent by mike');
 
     const createTaskInvitation = function(n, callback) {
@@ -777,7 +779,7 @@ const taskInvitationsSentByMike = ['mike', 'tasks_assigned_by_mike', function (r
 }];
 
 // Update requests
-const updateRequestsSentByMitchell = ['tasks_assigned_by_mitchell', function (results, callback) {
+const updateRequestsSentByMitchell = ['tasks_assigned_by_mitchell', function(results, callback) {
     logger.silly('creating update requests sent by mitchell');
 
     const createUpdateRequest = function(n, callback) {
@@ -802,10 +804,10 @@ const updateRequestsSentByMitchell = ['tasks_assigned_by_mitchell', function (re
     });
 }];
 
-const updateRequestsSentByKori = ['tasks_assigned_by_kori', function (results, callback) {
+const updateRequestsSentByKori = ['tasks_assigned_by_kori', function(results, callback) {
     logger.silly('creating update requests sent by kori');
 
-   const createUpdateRequest = function(n, callback) {
+    const createUpdateRequest = function(n, callback) {
 
         let update_request_json = {
             sender: results.tasks_assigned_by_kori[n].assigner_id,
@@ -827,7 +829,7 @@ const updateRequestsSentByKori = ['tasks_assigned_by_kori', function (results, c
     });
 }];
 
-const updateRequestsSentByAllen = ['tasks_assigned_by_allen', function (results, callback) {
+const updateRequestsSentByAllen = ['tasks_assigned_by_allen', function(results, callback) {
     logger.silly('creating update requests sent by allen');
 
     const createUpdateRequest = function(n, callback) {
@@ -852,7 +854,7 @@ const updateRequestsSentByAllen = ['tasks_assigned_by_allen', function (results,
     });
 }];
 
-const updateRequestsSentByMike = ['tasks_assigned_by_mike', function (results, callback) {
+const updateRequestsSentByMike = ['tasks_assigned_by_mike', function(results, callback) {
     logger.silly('creating update requests sent by mike');
 
     const createUpdateRequest = function(n, callback) {
@@ -878,7 +880,7 @@ const updateRequestsSentByMike = ['tasks_assigned_by_mike', function (results, c
 }];
 
 // Updates
-const updatesSentToMitchell = ['tasks_assigned_by_mitchell', function (results, callback) {
+const updatesSentToMitchell = ['tasks_assigned_by_mitchell', function(results, callback) {
     logger.silly('creating updates sent to mitchell');
 
     const createUpdate = function(n, callback) {
@@ -904,7 +906,7 @@ const updatesSentToMitchell = ['tasks_assigned_by_mitchell', function (results, 
     });
 }];
 
-const updatesSentToKori = ['tasks_assigned_by_kori', function (results, callback) {
+const updatesSentToKori = ['tasks_assigned_by_kori', function(results, callback) {
     logger.silly('creating updates sent to kori');
 
     const createUpdate = function(n, callback) {
@@ -930,7 +932,7 @@ const updatesSentToKori = ['tasks_assigned_by_kori', function (results, callback
     });
 }];
 
-const updatesSentToAllen = ['tasks_assigned_by_allen', function (results, callback) {
+const updatesSentToAllen = ['tasks_assigned_by_allen', function(results, callback) {
     logger.silly('creating updates sent to allen');
 
     const createUpdate = function(n, callback) {
@@ -956,7 +958,7 @@ const updatesSentToAllen = ['tasks_assigned_by_allen', function (results, callba
     });
 }];
 
-const updatesSentToMike = ['tasks_assigned_by_mike', function (results, callback) {
+const updatesSentToMike = ['tasks_assigned_by_mike', function(results, callback) {
     logger.silly('creating updates sent to mike');
 
     const createUpdate = function(n, callback) {
@@ -983,7 +985,7 @@ const updatesSentToMike = ['tasks_assigned_by_mike', function (results, callback
 }];
 
 // Subtasks
-const subtasks = ['tasks_assigned_by_mitchell', 'tasks_assigned_by_kori', 'tasks_assigned_by_allen', 'tasks_assigned_by_mike', function (results, callback) {
+const subtasks = ['tasks_assigned_by_mitchell', 'tasks_assigned_by_kori', 'tasks_assigned_by_allen', 'tasks_assigned_by_mike', function(results, callback) {
     logger.silly('creating subtasks');
 
     const tasks = _.union(results.tasks_assigned_by_mitchell, results.tasks_assigned_by_kori, results.tasks_assigned_by_allen, results.tasks_assigned_by_mike);
@@ -1011,7 +1013,7 @@ const subtasks = ['tasks_assigned_by_mitchell', 'tasks_assigned_by_kori', 'tasks
 }];
 
 // Standups
-const standups = ['mitchell', 'kori', 'allen', 'mike', function (results, callback) {
+const standups = ['mitchell', 'kori', 'allen', 'mike', function(results, callback) {
     logger.silly('creating standups');
 
     const users = [results.mitchell, results.kori, results.allen, results.mike];

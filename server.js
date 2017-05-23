@@ -4,7 +4,7 @@ const config = require('./config/config');
 const logger = require('./lib/logger');
 const middleware = require('./lib/middleware');
 const errors = require('./lib/errors');
-const knex = require('knex')(require('./knexfile')['development']);
+const knex = require('knex')(require('./knexfile')['production']);
 const Model = require('objection').Model;
 const Promise = require('bluebird');
 
@@ -22,7 +22,7 @@ middleware(app);
 
 // routes
 app.use('/api/' + config.api_version, api);
-
+ 
 // web routes
 app.use('/', require('./web/routes'));
 
@@ -30,20 +30,20 @@ app.use('/', require('./web/routes'));
 app.use(errors);
 
 // Server setup
-var server = app.listen(config.port, () => {
-	logger.silly('pid: ' + process.pid + ' listening on port:' + config.port);
+var server = app.listen(5000, () => {
+    logger.silly('pid: ' + process.pid + ' listening on port:' + config.port);
 });
 
 // Shutdown
 var gracefulShutdown = () => {
-	logger.silly('Received SIGTERM signal, shutting down express server');
-	server.close();
+    logger.silly('Received SIGTERM signal, shutting down express server');
+    server.close();
 }
 
 process.on('SIGTERM', gracefulShutdown);
 
 server.on('close', () => {
-	logger.silly('Express server closed.. about to cleanup connections');
+    logger.silly('Express server closed.. about to cleanup connections');
 
-	mongoose.disconnect();
+    mongoose.disconnect();
 });
