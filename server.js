@@ -22,7 +22,7 @@ middleware(app);
 
 // routes
 app.use('/api/' + config.api_version, api);
- 
+
 // web routes
 app.use('/', require('./web/routes'));
 
@@ -30,7 +30,7 @@ app.use('/', require('./web/routes'));
 app.use(errors);
 
 // Server setup
-var server = app.listen(5000, () => {
+var server = app.listen(config.port, () => {
     logger.silly('pid: ' + process.pid + ' listening on port:' + config.port);
 });
 
